@@ -1,0 +1,5 @@
+<resources>
+    <string name="new_group_name">Group name</string>
+    <string name="new_group_descr">Description</string>
+
+</resources>

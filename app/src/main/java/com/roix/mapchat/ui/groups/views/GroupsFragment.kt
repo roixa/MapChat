@@ -9,6 +9,7 @@ import com.roix.mapchat.databinding.ItemGroupBinding
 import com.roix.mapchat.ui.common.fragments.BaseListFragment
 import com.roix.mapchat.ui.common.view.ToolbarType
 import com.roix.mapchat.ui.groups.viewmodels.GroupsViewModel
+import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 
 /**
  * Created by roix template
@@ -18,6 +19,8 @@ import com.roix.mapchat.ui.groups.viewmodels.GroupsViewModel
 class GroupsFragment : BaseListFragment<GroupsViewModel, FragmentGroupsBinding, ItemGroupBinding, GroupItem>() {
 
 
+    private lateinit var rootViewModel: RootViewModel
+
     override fun getRecyclerView(): RecyclerView = binding.rv
 
     override fun getSwipeToRefreshLayout(): SwipeRefreshLayout? = binding.srl
@@ -25,6 +28,22 @@ class GroupsFragment : BaseListFragment<GroupsViewModel, FragmentGroupsBinding, 
     override fun getLayoutId(): Int = R.layout.fragment_groups
 
     override fun getItemLayoutId(): Int = R.layout.item_group
+
+    override fun setupUi() {
+        super.setupUi()
+        rootViewModel = bindViewModel(RootViewModel::class.java)
+    }
+
+    override fun setupBinding() {
+        super.setupBinding()
+        binding.fab.setOnClickListener { view ->
+            rootViewModel.gotoNewGroupScreen()
+        }
+    }
+
+    override fun handleProgress(isProgress: Boolean) {
+
+    }
 
 }
 

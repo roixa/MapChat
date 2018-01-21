@@ -2,6 +2,7 @@ package com.roix.mapchat.ui.common.activities
 
 import android.databinding.ViewDataBinding
 import android.support.annotation.IdRes
+import android.util.Log
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
 
@@ -65,12 +66,16 @@ abstract class BaseSingleFragmentActivity<ViewModel : BaseLifecycleViewModel, Da
 
     override fun goBack() {
         var count = fragmentManager.backStackEntryCount
-        if (count < 2) {
+        Log.d("boux","goBack" +count)
+        if (count == 0) {
             super.goBack()
         } else {
             popBackStack()
         }
     }
 
+    override fun onBackPressed() {
+        goBack()
+    }
 
 }
