@@ -57,7 +57,7 @@ android {
             res.srcDirs = [
                     "src/main/res/common"
                     , "src/main/res/root"
-            ]
+                    , "src/main/res/groups"]
         }
     }
 }
