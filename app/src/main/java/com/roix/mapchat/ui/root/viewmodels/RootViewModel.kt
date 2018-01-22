@@ -4,10 +4,10 @@ import android.arch.lifecycle.MutableLiveData
 import com.roix.mapchat.buissness.root.IRootInteractor
 import com.roix.mapchat.toothpick.root.RootModule
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
-import com.roix.mapchat.ui.groups.views.GroupsFragment
-import com.roix.mapchat.ui.new_group.views.NewGroupFragment
-import javax.inject.Inject
+import com.roix.mapchat.ui.root.models.NavigationAction
+import com.roix.mapchat.ui.root.models.NavigationState
 import toothpick.config.Module
+import javax.inject.Inject
 
 /**
  * Created by roix template
@@ -15,15 +15,9 @@ import toothpick.config.Module
  */
 class RootViewModel : BaseLifecycleViewModel() {
 
-    val navigation = MutableLiveData<State>()
+    val navigation = MutableLiveData<NavigationState>()
 
-    var state = State.GROUP_LIST
-
-    enum class State {
-        FINISHED,
-        GROUP_LIST,
-        NEW_GROUP
-    }
+    val action = MutableLiveData<NavigationAction>()
 
     @Inject
     protected lateinit var rootInteractor: IRootInteractor
@@ -32,19 +26,17 @@ class RootViewModel : BaseLifecycleViewModel() {
 
     override fun onBindFirstView() {
         super.onBindFirstView()
-        navigation.value = state
+        navigation.value = NavigationState.GROUP_LIST
     }
 
     fun goBack() {
-        when (state) {
-            State.GROUP_LIST -> state = State.FINISHED
-            State.NEW_GROUP -> state = State.GROUP_LIST
+        when (navigation.value) {
+            NavigationState.GROUP_LIST -> navigation.value = NavigationState.FINISHED
+            NavigationState.NEW_GROUP -> navigation.value = NavigationState.GROUP_LIST
         }
-        navigation.value = state
     }
 
     fun gotoNewGroupScreen() {
-        state = State.NEW_GROUP
-        navigation.value = state
+        navigation.value = NavigationState.NEW_GROUP
     }
 }
