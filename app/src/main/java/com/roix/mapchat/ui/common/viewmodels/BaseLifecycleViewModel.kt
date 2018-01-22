@@ -24,7 +24,15 @@ abstract class BaseLifecycleViewModel : BaseViewModel() {
         errorLiveData.postValue(error)
     }
 
-    fun <T> toLiveDataFun(observable: Observable<T>): LiveData<T> = LiveDataReactiveStreams.fromPublisher(observable.withDefaultLoadingHandle().withDefaultShedulers().toFlowable(BackpressureStrategy.BUFFER))
+    fun <T> toLiveDataFun(observable: Observable<T>): LiveData<T> = LiveDataReactiveStreams.fromPublisher(
+            observable
+                    .withDefaultLoadingHandle()
+                    .withDefaultShedulers()
+                    .onErrorResumeNext { t: Throwable ->
+                        errorLiveData.postValue(t)
+                        loadingLiveData.onEndLoad()
+                        return@onErrorResumeNext Observable.never<T>()
+                    }.toFlowable(BackpressureStrategy.BUFFER))
 
     fun <T> MutableLiveData<T>.setValueNoHistory(t: T) {
         value = (t)

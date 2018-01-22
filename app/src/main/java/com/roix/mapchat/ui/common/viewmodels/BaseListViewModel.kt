@@ -1,5 +1,6 @@
 package com.roix.mapchat.ui.common.viewmodels
 
+import android.arch.lifecycle.MutableLiveData
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableField
 import android.databinding.ObservableList
@@ -26,7 +27,7 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
         EMPTY, EMPTY_PROGRESS, EMPTY_ERROR, EMPTY_DATA, DATA, PAGE_PROGRESS, ALL_DATA, PAGE_ERROR, REFRESH
     }
 
-    val stateList = ObservableField<StateList>(StateList.EMPTY)
+    val stateList = MutableLiveData<StateList>()
 
     protected abstract fun getInteractor(): IBaseListInteractor<Item>
 
@@ -45,13 +46,21 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
     override fun onBindFirstView() {
         super.onBindFirstView()
         if (items.isEmpty()) {
-            stateList.set(StateList.EMPTY_PROGRESS)
+            stateList.value = StateList.EMPTY_PROGRESS
         } else {
-            stateList.set(StateList.PAGE_PROGRESS)
+            stateList.value = StateList.PAGE_PROGRESS
         }
         loadNextItems().subList { l ->
             items.addAll(l)
-            stateList.set(StateList.DATA)
+            if (l.isNotEmpty()) {
+                stateList.value = StateList.DATA
+            } else {
+                if (items.isEmpty()) {
+                    stateList.value = StateList.EMPTY_DATA
+                } else {
+                    stateList.value = StateList.ALL_DATA
+                }
+            }
         }
     }
 
@@ -64,20 +73,20 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
     //override if needs
     protected open fun getMaxPage(): Int = Int.MAX_VALUE
 
-    protected open fun isLoading(): Boolean = stateList.get()!!.equals(StateList.EMPTY_PROGRESS) || stateList.get()!!.equals(StateList.PAGE_PROGRESS)
+    protected open fun isLoading(): Boolean = stateList.value!!.equals(StateList.EMPTY_PROGRESS) || stateList.value!!.equals(StateList.PAGE_PROGRESS)
 
     protected open fun isLastPage(): Boolean = mNextPage > getMaxPage()
 
     fun refresh() {
         mNextPage = getMinPage()
-        stateList.set(StateList.REFRESH)
+        stateList.value = StateList.REFRESH
         loadNextItems().subList { list ->
             items.clear()
             items.addAll(list)
             if (items.isEmpty()) {
-                stateList.set(StateList.EMPTY_DATA)
+                stateList.value = StateList.EMPTY_DATA
             } else {
-                stateList.set(StateList.DATA)
+                stateList.value = StateList.DATA
             }
         }
     }
@@ -85,7 +94,7 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
     protected fun loadNextItems(): Single<List<Item>> {
         if (isLastPage()) {
             return Single.create({ e ->
-                stateList.set(StateList.ALL_DATA)
+                stateList.value = StateList.ALL_DATA
                 e.onSuccess(emptyList())
             })
         } else {
@@ -116,9 +125,9 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
     private fun listErrorHandle(error: Throwable) {
         errorLiveData.postValue(error)
         if (items.isEmpty()) {
-            stateList.set(StateList.EMPTY_ERROR)
+            stateList.value = StateList.EMPTY_ERROR
         } else {
-            stateList.set(StateList.PAGE_ERROR)
+            stateList.value = StateList.PAGE_ERROR
         }
     }
 
@@ -133,16 +142,16 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && firstVisibleItemPosition >= 0) {
                     if (items.isEmpty()) {
-                        stateList.set(StateList.EMPTY_PROGRESS)
+                        stateList.value = StateList.EMPTY_PROGRESS
                     } else {
-                        stateList.set(StateList.PAGE_PROGRESS)
+                        stateList.value = StateList.PAGE_PROGRESS
                     }
                     loadNextItems().subList { list ->
                         items.addAll(list)
                         if (items.isEmpty()) {
-                            stateList.set(StateList.EMPTY_DATA)
+                            stateList.value = StateList.EMPTY_DATA
                         } else {
-                            stateList.set(StateList.DATA)
+                            stateList.value = StateList.DATA
                         }
                     }
                 }

@@ -18,9 +18,6 @@ import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 
 class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBinding>() {
 
-    lateinit var addGroupButton :View
-
-
     override fun getFragmentContainerId(): Int = R.id.container
 
     override fun getToolbar(): Toolbar? = binding.toolbar!!.tb
@@ -35,7 +32,7 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                     setFragment(NewGroupFragment::class.java)
                     clearToolbarItems()
                     addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
-                        viewModel.action.value = NavigationAction.ON_CLICKED_ADD_GROUP
+                        viewModel.toolbarAction.value = NavigationAction.ON_CLICKED_ADD_GROUP
                     })
                 }
                 NavigationState.GROUP_LIST ->{

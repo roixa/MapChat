@@ -17,7 +17,7 @@ class RootViewModel : BaseLifecycleViewModel() {
 
     val navigation = MutableLiveData<NavigationState>()
 
-    val action = MutableLiveData<NavigationAction>()
+    val toolbarAction = MutableLiveData<NavigationAction>()
 
     @Inject
     protected lateinit var rootInteractor: IRootInteractor

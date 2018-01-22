@@ -1,5 +1,7 @@
 package com.roix.mapchat.buissness.new_group
 
+import io.reactivex.Completable
+
 /**
  * Created by roix template
  * https://github.com/roixa/RoixArchitectureTemplates
@@ -9,4 +11,6 @@ package com.roix.mapchat.buissness.new_group
  * Created by roix template
  * https://github.com/roixa/RoixArchitectureTemplates
  */
-interface INewGroupInteractor
+interface INewGroupInteractor{
+    fun createGroup(groupName : String,groupDescr:String, ownerName:String):Completable
+}

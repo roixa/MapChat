@@ -64,6 +64,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'com.google.firebase:firebase-database:11.8.0'
+    compile 'com.google.firebase:firebase-core:11.8.0'
+
+
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'android.arch.lifecycle:common-java8:1.0.0'
@@ -103,6 +109,7 @@ kapt {
     }
 }
 apply plugin: "kotlin-kapt"
+apply plugin: 'com.google.gms.google-services'
 
 
 

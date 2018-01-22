@@ -1,6 +1,7 @@
 package com.roix.mapchat.application
 
 import android.app.Application
+import com.google.firebase.FirebaseApp
 import com.roix.mapchat.BuildConfig
 import com.roix.mapchat.FactoryRegistry
 import com.roix.mapchat.MemberInjectorRegistry
@@ -23,6 +24,8 @@ class CommonApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        FirebaseApp.initializeApp(this)
+
         val configuration = if (BuildConfig.DEBUG) forDevelopment() else forProduction()
         setConfiguration(configuration.disableReflection())
         FactoryRegistryLocator.setRootRegistry(FactoryRegistry())
