@@ -9,7 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.view.View
 import android.widget.ImageView
 import com.roix.mapchat.ui.common.viewmodels.BaseListViewModel
-import com.squareup.picasso.Picasso
 
 /**
  * Created by roix template
@@ -27,7 +26,6 @@ fun setSrcVector(imageView: ImageView, @DrawableRes res: Int) {
 
 @BindingAdapter("bind:imageUrl")
 fun setImageUrl(imageView: ImageView, url: String) {
-    Picasso.with(imageView.context).load(url).into(imageView)
 }
 
 @BindingAdapter("bind:refreshing")
