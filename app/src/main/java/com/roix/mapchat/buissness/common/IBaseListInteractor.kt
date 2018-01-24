@@ -7,5 +7,5 @@ import io.reactivex.Single
  * https://github.com/roixa/RoixArchitectureTemplates
  */
 interface IBaseListInteractor<Item> {
-    fun loadItems(page: Int): Single<List<Item>>
+    fun loadItems(page: Long): Single<List<Item>>
 }

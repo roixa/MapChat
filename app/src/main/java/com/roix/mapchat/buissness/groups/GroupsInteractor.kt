@@ -16,7 +16,6 @@ class GroupsInteractor : IGroupsInteractor {
 
     @Inject lateinit var firebaseRepository: FirebaseRepository
 
-    override fun loadItems(page: Int): Single<List<GroupItem>> = Single.never()
-
+    override fun loadItems(page: Long): Single<List<GroupItem>> = firebaseRepository.getGroups(page)
 
 }

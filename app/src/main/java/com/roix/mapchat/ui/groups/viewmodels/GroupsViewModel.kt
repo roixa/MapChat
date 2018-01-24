@@ -20,4 +20,10 @@ class GroupsViewModel : BaseListViewModel<GroupItem>() {
 
     override fun getModule(): Module = GroupsModule()
 
+    override fun getNextPage(lastItem: GroupItem): Long {
+        if(lastItem.ownerUUid==mNextPage){
+            isLastPageVar=true
+        }
+        return lastItem.ownerUUid
+    }
 }

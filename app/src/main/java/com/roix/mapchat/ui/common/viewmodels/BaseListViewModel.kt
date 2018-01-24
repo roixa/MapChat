@@ -21,7 +21,7 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
 
     val items: ObservableList<Item> = ObservableArrayList<Item>()
 
-    private var mNextPage: Int = getMinPage()
+    protected var mNextPage: Long = getMinPage()
 
     enum class StateList {
         EMPTY, EMPTY_PROGRESS, EMPTY_ERROR, EMPTY_DATA, DATA, PAGE_PROGRESS, ALL_DATA, PAGE_ERROR, REFRESH
@@ -65,17 +65,19 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
     }
 
     //override if needs
-    protected open fun getNextPage(lastItem: Item): Int = mNextPage + 1
+    protected open fun getNextPage(lastItem: Item): Long = mNextPage + 1
 
     //override if needs
-    protected open fun getMinPage(): Int = 1
+    protected open fun getMinPage(): Long = -1
 
     //override if needs
-    protected open fun getMaxPage(): Int = Int.MAX_VALUE
+    protected open fun getMaxPage(): Long = Long.MAX_VALUE
 
     protected open fun isLoading(): Boolean = stateList.value!!.equals(StateList.EMPTY_PROGRESS) || stateList.value!!.equals(StateList.PAGE_PROGRESS)
 
-    protected open fun isLastPage(): Boolean = mNextPage > getMaxPage()
+    protected open fun isLastPage(): Boolean = isLastPageVar
+
+    var isLastPageVar = false
 
     fun refresh() {
         mNextPage = getMinPage()
