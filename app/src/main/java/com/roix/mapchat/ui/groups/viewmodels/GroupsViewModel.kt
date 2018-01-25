@@ -2,11 +2,11 @@ package com.roix.mapchat.ui.groups.viewmodels
 
 import com.roix.mapchat.buissness.common.IBaseListInteractor
 import com.roix.mapchat.buissness.groups.GroupsInteractor
-import com.roix.mapchat.toothpick.groups.GroupsModule
 import com.roix.mapchat.data.models.GroupItem
+import com.roix.mapchat.toothpick.groups.GroupsModule
 import com.roix.mapchat.ui.common.viewmodels.BaseListViewModel
-import javax.inject.Inject
 import toothpick.config.Module
+import javax.inject.Inject
 
 /**
  * Created by roix template
@@ -20,9 +20,10 @@ class GroupsViewModel : BaseListViewModel<GroupItem>() {
 
     override fun getModule(): Module = GroupsModule()
 
+    //TODO refactor this bad code
     override fun getNextPage(lastItem: GroupItem): Long {
-        if(lastItem.ownerUUid==mNextPage){
-            isLastPageVar=true
+        if(mNextPage==-2L){
+            return -1L
         }
         return lastItem.ownerUUid
     }

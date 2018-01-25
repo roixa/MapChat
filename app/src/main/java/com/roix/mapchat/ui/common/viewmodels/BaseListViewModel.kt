@@ -2,7 +2,6 @@ package com.roix.mapchat.ui.common.viewmodels
 
 import android.arch.lifecycle.MutableLiveData
 import android.databinding.ObservableArrayList
-import android.databinding.ObservableField
 import android.databinding.ObservableList
 import android.databinding.ViewDataBinding
 import android.support.v4.widget.SwipeRefreshLayout
@@ -68,7 +67,7 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
     protected open fun getNextPage(lastItem: Item): Long = mNextPage + 1
 
     //override if needs
-    protected open fun getMinPage(): Long = -1
+    protected open fun getMinPage(): Long = -2
 
     //override if needs
     protected open fun getMaxPage(): Long = Long.MAX_VALUE
@@ -81,14 +80,14 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
 
     fun refresh() {
         mNextPage = getMinPage()
-        stateList.value = StateList.REFRESH
+        stateList.postValue(StateList.REFRESH)
         loadNextItems().subList { list ->
             items.clear()
             items.addAll(list)
             if (items.isEmpty()) {
-                stateList.value = StateList.EMPTY_DATA
+                stateList.postValue(StateList.EMPTY_DATA)
             } else {
-                stateList.value = StateList.DATA
+                stateList.postValue(StateList.DATA)
             }
         }
     }
@@ -143,17 +142,23 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
             if (!isLoading() && !isLastPage()) {
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && firstVisibleItemPosition >= 0) {
-                    if (items.isEmpty()) {
-                        stateList.value = StateList.EMPTY_PROGRESS
-                    } else {
-                        stateList.value = StateList.PAGE_PROGRESS
-                    }
-                    loadNextItems().subList { list ->
-                        items.addAll(list)
+                    if (stateList.value != StateList.ALL_DATA) {
                         if (items.isEmpty()) {
-                            stateList.value = StateList.EMPTY_DATA
+                            stateList.value = StateList.EMPTY_PROGRESS
                         } else {
-                            stateList.value = StateList.DATA
+                            stateList.value = StateList.PAGE_PROGRESS
+                        }
+                        loadNextItems().subList { list ->
+                            items.addAll(list)
+                            if (items.isEmpty()) {
+                                stateList.value = StateList.EMPTY_DATA
+                            } else {
+                                if (list.isEmpty()) {
+                                    stateList.value = StateList.ALL_DATA
+                                } else {
+                                    stateList.value = StateList.DATA
+                                }
+                            }
                         }
                     }
                 }
