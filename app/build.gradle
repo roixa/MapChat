@@ -57,18 +57,18 @@ android {
             res.srcDirs = [
                     "src/main/res/common"
                     , "src/main/res/root"
-                    , "src/main/res/groups", "src/main/res/new_group"]
+                    , "src/main/res/groups", "src/main/res/new_group", "src/main/res/group", "src/main/res/map", "src/main/res/chat"]
         }
     }
 }
 
 dependencies {
 
-    final def  firebaseVersion='11.8.0'
-    final def  supportVersion='26.1.0'
-    final def  architectureComponentsVersion='1.0.0'
-    final def  permissionDispatcherVersion='2.4.0'
-    final def  toothpickVersion='1.0.8'
+    final def firebaseVersion = '11.8.0'
+    final def supportVersion = '26.1.0'
+    final def architectureComponentsVersion = '1.0.0'
+    final def permissionDispatcherVersion = '2.4.0'
+    final def toothpickVersion = '1.0.8'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

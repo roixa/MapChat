@@ -22,7 +22,7 @@ class GroupsViewModel : BaseListViewModel<GroupItem>() {
 
     //TODO refactor this bad code
     override fun getNextPage(lastItem: GroupItem): Long {
-        if(mNextPage==-2L){
+        if (mNextPage == -2L) {
             return -1L
         }
         return lastItem.ownerUUid

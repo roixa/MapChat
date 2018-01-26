@@ -6,5 +6,6 @@ package com.roix.mapchat.ui.root.models
 enum class NavigationState {
     FINISHED,
     GROUP_LIST,
-    NEW_GROUP
+    NEW_GROUP,
+    CHAT
 }

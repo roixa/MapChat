@@ -19,6 +19,8 @@ class RootViewModel : BaseLifecycleViewModel() {
 
     val toolbarAction = MutableLiveData<NavigationAction>()
 
+    val activeGroupUuid = MutableLiveData<Long>()
+
     @Inject
     protected lateinit var rootInteractor: IRootInteractor
 
@@ -38,5 +40,10 @@ class RootViewModel : BaseLifecycleViewModel() {
 
     fun gotoNewGroupScreen() {
         navigation.value = NavigationState.NEW_GROUP
+    }
+
+    fun gotoGroupScreen(uuid:Long){
+        navigation.value=NavigationState.CHAT
+        activeGroupUuid.value=uuid
     }
 }

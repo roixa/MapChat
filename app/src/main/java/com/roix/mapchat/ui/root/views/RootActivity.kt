@@ -5,6 +5,7 @@ import android.view.View
 import com.roix.mapchat.R
 import com.roix.mapchat.databinding.ActivityRootBinding
 import com.roix.mapchat.ui.common.activities.BaseSingleFragmentActivity
+import com.roix.mapchat.ui.group.views.GroupFragment
 import com.roix.mapchat.ui.groups.views.GroupsFragment
 import com.roix.mapchat.ui.new_group.views.NewGroupFragment
 import com.roix.mapchat.ui.root.models.NavigationAction
@@ -28,6 +29,10 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
         super.setupUi()
         viewModel.navigation.sub { state ->
             when (state) {
+                NavigationState.CHAT ->{
+                  setFragment(GroupFragment::class.java)
+                    clearToolbarItems()
+                }
                 NavigationState.NEW_GROUP -> {
                     setFragment(NewGroupFragment::class.java)
                     clearToolbarItems()

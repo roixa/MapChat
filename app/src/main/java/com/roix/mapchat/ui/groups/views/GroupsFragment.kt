@@ -10,6 +10,7 @@ import com.roix.mapchat.databinding.ItemGroupBinding
 import com.roix.mapchat.ui.common.fragments.BaseListFragment
 import com.roix.mapchat.ui.groups.viewmodels.GroupsViewModel
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
+import com.roix.mapchat.utils.ui.ItemClickSupport
 
 /**
  * Created by roix template
@@ -41,6 +42,11 @@ class GroupsFragment : BaseListFragment<GroupsViewModel, FragmentGroupsBinding, 
         }
         viewModel.stateList.sub { stateList ->
             Log.d("boux", "statelist " + stateList.name)
+        }
+        ItemClickSupport.addTo(getRecyclerView())
+                .setOnItemClickListener{recyclerView, i, view ->
+                    val uuid = viewModel.items[i].ownerUUid
+                    rootViewModel.gotoGroupScreen(uuid)
         }
     }
 
