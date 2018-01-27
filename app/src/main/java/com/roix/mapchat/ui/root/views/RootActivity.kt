@@ -5,6 +5,7 @@ import android.view.View
 import com.roix.mapchat.R
 import com.roix.mapchat.databinding.ActivityRootBinding
 import com.roix.mapchat.ui.common.activities.BaseSingleFragmentActivity
+import com.roix.mapchat.ui.common.view.ToolbarType
 import com.roix.mapchat.ui.group.views.GroupFragment
 import com.roix.mapchat.ui.groups.views.GroupsFragment
 import com.roix.mapchat.ui.new_group.views.NewGroupFragment
@@ -30,23 +31,28 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
         viewModel.navigation.sub { state ->
             when (state) {
                 NavigationState.CHAT ->{
-                  setFragment(GroupFragment::class.java)
-                    clearToolbarItems()
+                    setToolbarWithTitle(R.string.toolbar_title_group)
+                    setFragment(GroupFragment::class.java)
                 }
                 NavigationState.NEW_GROUP -> {
                     setFragment(NewGroupFragment::class.java)
-                    clearToolbarItems()
+                    setToolbarWithTitle(R.string.toolbar_title_new_group)
                     addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
                         viewModel.toolbarAction.value = NavigationAction.ON_CLICKED_ADD_GROUP
                     })
                 }
                 NavigationState.GROUP_LIST ->{
-                    clearToolbarItems()
+                    setToolbarWithTitle(R.string.app_name)
                     setFragment(GroupsFragment::class.java)
                 }
                 NavigationState.FINISHED -> supportFinishAfterTransition()
             }
         }
+    }
+
+    private fun setToolbarWithTitle(titleResId:Int){
+        val type= ToolbarType.Builder(this).default().setTitle(getString(titleResId))
+        setupToolbar(type.build())
     }
 
     override fun goBack() {

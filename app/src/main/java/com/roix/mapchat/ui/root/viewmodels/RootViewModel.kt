@@ -35,6 +35,7 @@ class RootViewModel : BaseLifecycleViewModel() {
         when (navigation.value) {
             NavigationState.GROUP_LIST -> navigation.value = NavigationState.FINISHED
             NavigationState.NEW_GROUP -> navigation.value = NavigationState.GROUP_LIST
+            NavigationState.CHAT -> navigation.value = NavigationState.GROUP_LIST
         }
     }
 
@@ -42,8 +43,8 @@ class RootViewModel : BaseLifecycleViewModel() {
         navigation.value = NavigationState.NEW_GROUP
     }
 
-    fun gotoGroupScreen(uuid:Long){
-        navigation.value=NavigationState.CHAT
-        activeGroupUuid.value=uuid
+    fun gotoGroupScreen(uuid: Long) {
+        navigation.value = NavigationState.CHAT
+        activeGroupUuid.value = uuid
     }
 }

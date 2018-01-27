@@ -15,4 +15,5 @@ class GroupViewModel : BaseLifecycleViewModel() {
     protected lateinit var interactor: IGroupInteractor
 
     override fun getModule(): Module = GroupModule()
+
 }

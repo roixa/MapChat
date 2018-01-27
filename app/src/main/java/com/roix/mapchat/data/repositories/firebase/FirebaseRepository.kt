@@ -41,7 +41,7 @@ class FirebaseRepository : IFirebaseRepository {
     }
 
     override fun getGroups(lastUUid: Long): Single<List<GroupItem>> = Single.create { e ->
-        Log.d("boux","getGroup "+lastUUid.toString())
+        Log.d("boux", "getGroup " + lastUUid.toString())
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -67,14 +67,16 @@ class FirebaseRepository : IFirebaseRepository {
 
     }
 
-    override fun getGroupByUserUuid(uid: Long): Single<GroupItem> = Single.create { e ->
+    override fun getGroupByUserUuid(uid: Long, isOwner: Boolean): Single<GroupItem> = Single.create { e ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(snap: DataSnapshot) {
                 val group = snap.child("group").getValue(FirebaseGroup::class.java)
                 if (group != null && group.isValid()) {
                     group.ownerUUid = uid
-                    e.onSuccess(group.parse())
+                    val ret=group.parse()
+                    ret.isOwner=isOwner
+                    e.onSuccess(ret)
                 } else {
                     e.onError(Throwable("group with this owner not exist"))
                 }

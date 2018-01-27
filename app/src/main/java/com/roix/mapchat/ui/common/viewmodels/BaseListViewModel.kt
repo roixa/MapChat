@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.roix.mapchat.buissness.common.IBaseListInteractor
 import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
+import com.roix.mapchat.ui.common.view.SpaceItemDecoration
 import io.reactivex.Single
 
 /**
@@ -37,6 +38,7 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
             val manager = LinearLayoutManager(context)
             layoutManager = manager
             adapter = baseAdapter
+            addItemDecoration(SpaceItemDecoration(context))
             addOnScrollListener(PaginationScrollListener(manager))
             swipeToRefreshLayout?.setOnRefreshListener(SwipeToRefreshListListener())
         }

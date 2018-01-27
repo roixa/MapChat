@@ -30,7 +30,7 @@ class GroupsInteractor : IGroupsInteractor {
         return databaseRepository.getSavedUsers()
                 .flattenAsObservable { t -> t }
                 .flatMap { t ->
-                    firebaseRepository.getGroupByUserUuid(t.uid).toObservable()
+                    firebaseRepository.getGroupByUserUuid(t.uid,true).toObservable()
                  }.toList()
     }
 }
