@@ -37,7 +37,7 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                     setFragment(NewGroupFragment::class.java)
                     viewModel.toolbarTitle.value = getString(R.string.toolbar_title_new_group)
                     addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
-                        viewModel.toolbarAction.value = NavigationAction.ON_CLICKED_ADD_GROUP
+                        viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_ADD_GROUP)
                     })
                 }
                 NavigationState.GROUP_LIST -> {

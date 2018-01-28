@@ -3,6 +3,7 @@ package com.roix.mapchat.ui.common.activities
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -94,6 +95,12 @@ abstract class BaseLifecycleActivity<ViewModel : BaseLifecycleViewModel> : AppCo
     protected fun <T> Flowable<T>.sub(func: (T) -> Unit) {
         viewModel.toLiveDataFun(this.toObservable()).sub(func)
     }
+
+    fun <T> MutableLiveData<T>.setValueNoHistory(t: T) {
+        value = (t)
+        value = (null)
+    }
+
 
     private fun getViewModelJavaClass(): Class<ViewModel> {
         return (this.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0] as Class<ViewModel>

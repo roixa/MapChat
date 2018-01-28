@@ -9,6 +9,7 @@ import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
 import com.roix.mapchat.toothpick.common.ApplicationScope
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -66,7 +67,7 @@ class FirebaseRepository : IFirebaseRepository {
 
     }
 
-    override fun getGroupByUserUuid(uid: Long, status: GroupItem.MyStatus): Single<GroupItem> = Single.create { e ->
+    override fun getGroupByUserUuid(uid: Long, status: GroupItem.MyStatus): Maybe<GroupItem> = Maybe.create { e ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(snap: DataSnapshot) {
@@ -76,7 +77,8 @@ class FirebaseRepository : IFirebaseRepository {
                     ret.status=status
                     e.onSuccess(ret)
                 } else {
-                    e.onError(Throwable("group with this owner not exist"))
+                    //e.onError(Throwable("group with this owner not exist"))
+                    e.onComplete()
                 }
             }
         }

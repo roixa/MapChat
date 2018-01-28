@@ -4,6 +4,7 @@ import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.models.User
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 /**
@@ -13,5 +14,5 @@ import io.reactivex.Single
 interface IFirebaseRepository {
     fun createGroup(group: FirebaseGroup): Completable
     fun getGroups(lastUUid: Long): Single<List<GroupItem>>
-    fun getGroupByUserUuid(uid:Long,status: GroupItem.MyStatus): Single<GroupItem>
+    fun getGroupByUserUuid(uid:Long,status: GroupItem.MyStatus): Maybe<GroupItem>
 }

@@ -3,10 +3,7 @@ package com.roix.mapchat.ui.common.fragments
 import android.annotation.SuppressLint
 import android.app.Fragment
 import android.app.ProgressDialog
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import android.arch.lifecycle.*
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
@@ -129,6 +126,12 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
     protected fun <T> Flowable<T>.sub(func: (T) -> Unit) {
         viewModel.toLiveDataFun(this.toObservable()).sub(func)
     }
+
+    fun <T> MutableLiveData<T>.setValueNoHistory(t: T) {
+        value = (t)
+        value = (null)
+    }
+
 
     private fun getViewModelJavaClass(): Class<ViewModel> {
         return (this.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0] as Class<ViewModel>
