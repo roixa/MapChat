@@ -1,3 +1,9 @@
 <resources>
+    <string name="status_not_member">""</string>
+    <string name="status_member">"Member"</string>
+    <string name="status_owner">"Owner"</string>
+    <!-- TODO use plurals-->
+    <string name="users_count">members: %1$d</string>
+    <string name="owner_name">owner: %1$s</string>
 
 </resources>

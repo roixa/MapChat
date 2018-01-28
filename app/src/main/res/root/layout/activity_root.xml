@@ -30,6 +30,7 @@
                 android:id="@+id/app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:theme="@style/AppTheme.WhiteBackground">
                 <include
                     android:id="@+id/toolbar"

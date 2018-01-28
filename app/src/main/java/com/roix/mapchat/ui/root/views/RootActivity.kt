@@ -30,28 +30,30 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
         super.setupUi()
         viewModel.navigation.sub { state ->
             when (state) {
-                NavigationState.CHAT ->{
-                    setToolbarWithTitle(R.string.toolbar_title_group)
+                NavigationState.CHAT -> {
                     setFragment(GroupFragment::class.java)
                 }
                 NavigationState.NEW_GROUP -> {
                     setFragment(NewGroupFragment::class.java)
-                    setToolbarWithTitle(R.string.toolbar_title_new_group)
+                    viewModel.toolbarTitle.value = getString(R.string.toolbar_title_new_group)
                     addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
                         viewModel.toolbarAction.value = NavigationAction.ON_CLICKED_ADD_GROUP
                     })
                 }
-                NavigationState.GROUP_LIST ->{
-                    setToolbarWithTitle(R.string.app_name)
+                NavigationState.GROUP_LIST -> {
+                    viewModel.toolbarTitle.value = getString(R.string.app_name)
                     setFragment(GroupsFragment::class.java)
                 }
                 NavigationState.FINISHED -> supportFinishAfterTransition()
             }
         }
+        viewModel.toolbarTitle.sub { s ->
+            setToolbarWithTitle(s)
+        }
     }
 
-    private fun setToolbarWithTitle(titleResId:Int){
-        val type= ToolbarType.Builder(this).default().setTitle(getString(titleResId))
+    private fun setToolbarWithTitle(title: String) {
+        val type = ToolbarType.Builder(this).default().setTitle(title)
         setupToolbar(type.build())
     }
 

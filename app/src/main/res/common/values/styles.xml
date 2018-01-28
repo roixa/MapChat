@@ -16,6 +16,39 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="Text.Regular.Medium">
+        <item name="android:textSize">@dimen/low_text</item>
+    </style>
 
+
+    <style name="Text.Regular.Small">
+        <item name="android:textSize">@dimen/little_text</item>
+    </style>
+
+    <style name="Text.Bold.Small">
+        <item name="android:textSize">@dimen/little_text</item>
+    </style>
+
+    <style name="Text.Bold.Medium">
+        <item name="android:textSize">@dimen/low_text</item>
+    </style>
+
+    <style name="Text.Regular.Medium.Primary">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+
+    <style name="Text.Regular.Small.Primary">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="Text.Regular.Medium.Accent">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+
+    <style name="Text.Regular.Small.Accent">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
 
 </resources>

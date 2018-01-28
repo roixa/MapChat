@@ -45,8 +45,8 @@ class GroupsFragment : BaseListFragment<GroupsViewModel, FragmentGroupsBinding, 
         }
         ItemClickSupport.addTo(getRecyclerView())
                 .setOnItemClickListener{recyclerView, i, view ->
-                    val uuid = viewModel.items[i].ownerUUid
-                    rootViewModel.gotoGroupScreen(uuid)
+                    val group = viewModel.items[i]
+                    rootViewModel.gotoGroupScreen(group)
         }
     }
 

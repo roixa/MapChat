@@ -10,6 +10,7 @@ import com.roix.mapchat.data.models.User
 data class FirebaseGroup(var name: String, var descr: String, var users: List<FirebaseUser>?) : Parseble<GroupItem> {
 
     var ownerUUid: Long = -1
+    var ownerName: String = ""
 
     constructor() : this("", "", null)
 
@@ -20,9 +21,13 @@ data class FirebaseGroup(var name: String, var descr: String, var users: List<Fi
         for (user in users!!) {
             if (user.isValid()) {
                 retList.add(user.parse())
+                }
+            if (user.owner!=null&&user.owner) {
+                ownerUUid = user.uid!!
+                ownerName = user.name!!
             }
         }
-        return GroupItem(name, descr, retList,ownerUUid)
+        return GroupItem(name, descr, users!!.size, ownerUUid, ownerName)
     }
 
 }

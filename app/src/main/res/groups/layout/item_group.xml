@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -13,29 +13,81 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <android.support.v7.widget.CardView
-            android:padding="@dimen/micro"
-            app:cardCornerRadius="@dimen/nano"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="@dimen/micro"
+
+            app:cardCornerRadius="@dimen/nano">
+
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tv_name"
-                    android:text="@{item.name}"
-                    style="@style/Text.Bold"
-                    />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/tv_status"
+                    style="@style/Text.Regular.Medium"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/Text.Regular"
+                    android:layout_margin="@dimen/nano"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:statusTextViewState="@{item}"
+                    tools:text='"status"' />
+
+                <TextView
+                    android:id="@+id/tv_owner"
+
+                    style="@style/Text.Regular.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/nano"
+                    android:text="@{@string/owner_name(item.ownerName)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_name"
+                    tools:text='"owner"' />
+
+                <TextView
+                    android:id="@+id/tv_name"
+
+                    style="@style/Text.Bold.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/nano"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@{item.name}"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_status"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text='"name"' />
+
+                <TextView
+                    android:id="@+id/tv_count"
+
+                    style="@style/Text.Regular.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/nano"
+                    android:text="@{@string/users_count(item.usersCount)}"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_status"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_owner"
+                    tools:text="count" />
+
+                <TextView
+                    android:id="@+id/tv_descr"
+
+                    style="@style/Text.Regular.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/nano"
                     android:text="@{item.descr}"
-                    app:layout_constraintTop_toBottomOf="@id/tv_name"
-                     />
+                    app:layout_constraintEnd_toStartOf="@+id/tv_count"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_name"
+                    tools:text='"description"' />
 
             </android.support.constraint.ConstraintLayout>
 

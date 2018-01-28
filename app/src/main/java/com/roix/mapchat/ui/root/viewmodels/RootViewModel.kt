@@ -2,6 +2,7 @@ package com.roix.mapchat.ui.root.viewmodels
 
 import android.arch.lifecycle.MutableLiveData
 import com.roix.mapchat.buissness.root.IRootInteractor
+import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.toothpick.root.RootModule
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
 import com.roix.mapchat.ui.root.models.NavigationAction
@@ -19,7 +20,9 @@ class RootViewModel : BaseLifecycleViewModel() {
 
     val toolbarAction = MutableLiveData<NavigationAction>()
 
-    val activeGroupUuid = MutableLiveData<Long>()
+    val toolbarTitle = MutableLiveData<String>()
+
+    val activeGroup = MutableLiveData<GroupItem>()
 
     @Inject
     protected lateinit var rootInteractor: IRootInteractor
@@ -43,8 +46,9 @@ class RootViewModel : BaseLifecycleViewModel() {
         navigation.value = NavigationState.NEW_GROUP
     }
 
-    fun gotoGroupScreen(uuid: Long) {
+    fun gotoGroupScreen(group: GroupItem) {
         navigation.value = NavigationState.CHAT
-        activeGroupUuid.value = uuid
+        activeGroup.value = group
+        toolbarTitle.value = group.name
     }
 }

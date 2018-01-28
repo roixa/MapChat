@@ -32,7 +32,10 @@ class CommonApplication : Application() {
         MemberInjectorRegistryLocator.setRootRegistry(MemberInjectorRegistry())
 
         val appScope = Toothpick.openScope(this)
-        appScope.installModules(SmoothieApplicationModule(this), ApplicationModule(this))
+        appScope.installModules(
+                SmoothieApplicationModule(this),
+                ApplicationModule(this)
+        )
         appScope.bindScopeAnnotation(ApplicationScope::class.java)
     }
 }

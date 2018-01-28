@@ -8,6 +8,9 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
+import com.roix.mapchat.R
+import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.ui.common.viewmodels.BaseListViewModel
 
 /**
@@ -43,4 +46,18 @@ fun setTint(view: ImageView, @ColorRes colorRes: Int) {
 fun setTintColor(view: ImageView, color: Int) {
     view.setColorFilter(color)
 }
+
+@BindingAdapter("bind:statusTextViewState")
+fun setTintColor(view: TextView, item:GroupItem) {
+    if(item.status== GroupItem.MyStatus.OWNER){
+        view.setTextColor(view.resources.getColor(R.color.colorAccent))
+        view.setText(R.string.status_owner)
+    }else if(item.status==GroupItem.MyStatus.MEMBER){
+        view.setTextColor(view.resources.getColor(R.color.colorPrimary))
+        view.setText(R.string.status_member)
+    }else{
+        view.setText(R.string.status_not_member)
+    }
+}
+
 
