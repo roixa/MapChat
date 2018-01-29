@@ -6,10 +6,16 @@ package com.roix.mapchat.data.models
  */
 data class GroupItem(val name: String, val descr: String, val usersCount: Int, val ownerUUid: Long, val ownerName:String) {
 
-    enum class MyStatus{
+    enum class Status {
         NOT_MEMBER,
         MEMBER,
-        OWNER
+        OWNER,
+        INFO
     }
-    var status : MyStatus= MyStatus.NOT_MEMBER
+    companion object {
+        fun createInfoItem():GroupItem = GroupItem("hello","",0,0,"")
+    }
+
+
+    var mStatus: Status = Status.NOT_MEMBER
 }

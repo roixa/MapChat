@@ -1,12 +1,12 @@
 package com.roix.mapchat.data.repositories.firebase
 
-import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
+import com.roix.mapchat.data.repositories.firebase.models.FirebaseUser
 import com.roix.mapchat.toothpick.common.ApplicationScope
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -41,6 +41,22 @@ class FirebaseRepository : IFirebaseRepository {
                 })
     }
 
+    override fun enterToGroup(user: FirebaseUser, groupUuid: Long): Completable = Completable.create { e ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError?) {}
+            override fun onDataChange(snap: DataSnapshot) {
+                val group = snap.child("group").getValue(FirebaseGroup::class.java)
+                if (group != null ) {
+                    group.users!!.add(user)
+                    snap.child("group").ref.setValue(group)
+                }
+                e.onComplete()
+            }
+        }
+        database.getReference("groups").child(groupUuid.toString()).addListenerForSingleValueEvent(listener)
+
+    }
+
     override fun getGroups(lastUUid: Long): Single<List<GroupItem>> = Single.create { e ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
@@ -67,17 +83,16 @@ class FirebaseRepository : IFirebaseRepository {
 
     }
 
-    override fun getGroupByUserUuid(uid: Long, status: GroupItem.MyStatus): Maybe<GroupItem> = Maybe.create { e ->
+    override fun getGroupByOwnerUuid(uid: Long, status: GroupItem.Status): Maybe<GroupItem> = Maybe.create { e ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(snap: DataSnapshot) {
                 val group = snap.child("group").getValue(FirebaseGroup::class.java)
                 if (group != null && group.isValid()) {
-                    val ret=group.parse()
-                    ret.status=status
+                    val ret = group.parse()
+                    ret.mStatus = status
                     e.onSuccess(ret)
                 } else {
-                    //e.onError(Throwable("group with this owner not exist"))
                     e.onComplete()
                 }
             }

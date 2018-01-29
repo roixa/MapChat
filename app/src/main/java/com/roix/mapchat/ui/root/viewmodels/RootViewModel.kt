@@ -48,9 +48,10 @@ class RootViewModel : BaseLifecycleViewModel() {
     }
 
     fun onClickedGroupItem(group: GroupItem) {
-        if(group.status==GroupItem.MyStatus.NOT_MEMBER){
+        if (group.mStatus == GroupItem.Status.NOT_MEMBER) {
             navigation.value = NavigationState.INVITATION
-        }else{
+            activeGroup.value = group
+        } else if (group.mStatus != GroupItem.Status.INFO) {
             navigation.value = NavigationState.CHAT
             activeGroup.value = group
             toolbarTitle.value = group.name

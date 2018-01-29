@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableList
 import android.databinding.ViewDataBinding
+import android.support.annotation.CallSuper
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -80,7 +81,8 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
 
     var isLastPageVar = false
 
-    fun refresh() {
+    @CallSuper
+    open fun refresh() {
         mNextPage = getMinPage()
         stateList.postValue(StateList.REFRESH)
         loadNextItems().subList { list ->

@@ -22,8 +22,9 @@ class NewGroupInteractor : INewGroupInteractor {
     @Inject lateinit var roomRepository: RoomRepository
 
     override fun createGroup(groupName: String, groupDescr: String, ownerName: String): Completable {
-        val owner= FirebaseUser(UUID.randomUUID().mostSignificantBits,ownerName,true,-1)
-        return firebaseRepository.createGroup(FirebaseGroup(groupName,groupDescr, listOf(owner))).mergeWith(roomRepository.saveUser(RoomUser(owner.parse())))
+        val uuid = UUID.randomUUID().mostSignificantBits
+        val owner = FirebaseUser(uuid, uuid, ownerName,-1)
+        return firebaseRepository.createGroup(FirebaseGroup(groupName, groupDescr, mutableListOf(owner))).mergeWith(roomRepository.saveUser(RoomUser(owner.parse())))
     }
 
 }

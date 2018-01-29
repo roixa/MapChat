@@ -49,10 +49,10 @@ fun setTintColor(view: ImageView, color: Int) {
 
 @BindingAdapter("bind:statusTextViewState")
 fun setTintColor(view: TextView, item:GroupItem) {
-    if(item.status== GroupItem.MyStatus.OWNER){
+    if(item.mStatus == GroupItem.Status.OWNER){
         view.setTextColor(view.resources.getColor(R.color.colorAccent))
         view.setText(R.string.status_owner)
-    }else if(item.status==GroupItem.MyStatus.MEMBER){
+    }else if(item.mStatus ==GroupItem.Status.MEMBER){
         view.setTextColor(view.resources.getColor(R.color.colorPrimary))
         view.setText(R.string.status_member)
     }else{

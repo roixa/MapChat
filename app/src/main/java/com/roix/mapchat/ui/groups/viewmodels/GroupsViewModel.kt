@@ -27,4 +27,10 @@ class GroupsViewModel : BaseListViewModel<GroupItem>() {
         }
         return lastItem.ownerUUid
     }
+
+    override fun refresh() {
+        super.refresh()
+        interactor.collisionableGroups.clear()
+    }
+
 }
