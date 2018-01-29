@@ -18,9 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.group.views.GroupActivity" />
-        <activity android:name=".ui.map.views.MapActivity" />
-        <activity android:name=".ui.chat.views.ChatActivity" />
+
     </application>
 
 </manifest>

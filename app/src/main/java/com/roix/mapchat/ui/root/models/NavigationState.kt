@@ -7,5 +7,7 @@ enum class NavigationState {
     FINISHED,
     GROUP_LIST,
     NEW_GROUP,
-    CHAT
+    INVITATION,
+    CHAT,
+    MAP
 }

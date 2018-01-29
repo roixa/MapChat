@@ -38,6 +38,7 @@ class RootViewModel : BaseLifecycleViewModel() {
         when (navigation.value) {
             NavigationState.GROUP_LIST -> navigation.value = NavigationState.FINISHED
             NavigationState.NEW_GROUP -> navigation.value = NavigationState.GROUP_LIST
+            NavigationState.INVITATION -> navigation.value = NavigationState.GROUP_LIST
             NavigationState.CHAT -> navigation.value = NavigationState.GROUP_LIST
         }
     }
@@ -46,9 +47,13 @@ class RootViewModel : BaseLifecycleViewModel() {
         navigation.value = NavigationState.NEW_GROUP
     }
 
-    fun gotoGroupScreen(group: GroupItem) {
-        navigation.value = NavigationState.CHAT
-        activeGroup.value = group
-        toolbarTitle.value = group.name
+    fun onClickedGroupItem(group: GroupItem) {
+        if(group.status==GroupItem.MyStatus.NOT_MEMBER){
+            navigation.value = NavigationState.INVITATION
+        }else{
+            navigation.value = NavigationState.CHAT
+            activeGroup.value = group
+            toolbarTitle.value = group.name
+        }
     }
 }

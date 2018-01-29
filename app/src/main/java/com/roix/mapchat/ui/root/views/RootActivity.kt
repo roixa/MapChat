@@ -8,6 +8,7 @@ import com.roix.mapchat.ui.common.activities.BaseSingleFragmentActivity
 import com.roix.mapchat.ui.common.view.ToolbarType
 import com.roix.mapchat.ui.group.views.GroupFragment
 import com.roix.mapchat.ui.groups.views.GroupsFragment
+import com.roix.mapchat.ui.invitiation.views.InvitiationFragment
 import com.roix.mapchat.ui.new_group.views.NewGroupFragment
 import com.roix.mapchat.ui.root.models.NavigationAction
 import com.roix.mapchat.ui.root.models.NavigationState
@@ -33,9 +34,19 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                 NavigationState.CHAT -> {
                     setFragment(GroupFragment::class.java)
                 }
+                NavigationState.INVITATION->{
+                    setFragment(InvitiationFragment::class.java)
+                    viewModel.toolbarTitle.value = getString(R.string.toolbar_title_invintation)
+                    clearToolbarItems()
+                    addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
+                        viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_INVITE)
+                    })
+
+                }
                 NavigationState.NEW_GROUP -> {
                     setFragment(NewGroupFragment::class.java)
                     viewModel.toolbarTitle.value = getString(R.string.toolbar_title_new_group)
+                    clearToolbarItems()
                     addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
                         viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_ADD_GROUP)
                     })
