@@ -9,6 +9,7 @@
         <variable
             name="viewmodel"
             type="com.roix.mapchat.ui.chat.viewmodels.ChatViewModel" />
+        <import type="com.roix.mapchat.ui.common.viewmodels.BaseListViewModel.StateList"></import>
 
     </data>
 
@@ -16,10 +17,51 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <TextView
-            android:text="fragment chat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/iv_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/srl"
+            app:srcCompat="@drawable/ic_pan_tool_black" />
+        <EditText
+            android:id="@+id/et_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="@={viewmodel.message}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_send"
+            app:layout_constraintStart_toStartOf="parent"
+            bind:text="message" />
+        <ProgressBar
+            android:id="@+id/pb_empty_list"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="@{viewmodel.stateList.equals(StateList.EMPTY_PROGRESS)}"
+            app:layout_constraintBottom_toBottomOf="@+id/srl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/et_message"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pb_empty_list"
+            app:reverseLayout="true" />
 
 
     </android.support.constraint.ConstraintLayout>

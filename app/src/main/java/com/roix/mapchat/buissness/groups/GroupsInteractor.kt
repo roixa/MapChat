@@ -31,11 +31,12 @@ class GroupsInteractor : IGroupsInteractor {
     }
 
     private fun getOwnGroups(): Single<List<GroupItem>> = databaseRepository.getSavedUsers()
-            .flattenAsObservable { t -> t }
+            .flattenAsObservable { r -> r }
             .flatMap { t ->
                 val status = if (t.uid.equals(t.groupOwnerUuid)) GroupItem.Status.OWNER else GroupItem.Status.MEMBER
                 firebaseRepository.getGroupByOwnerUuid(t.groupOwnerUuid, status).toObservable()
-            }.filter { t ->
+            }
+            .filter { t ->
                 val has = collisionableGroups.containsKey(t.ownerUUid)
                 if (!has) {
                   collisionableGroups.set(t.ownerUUid, t)

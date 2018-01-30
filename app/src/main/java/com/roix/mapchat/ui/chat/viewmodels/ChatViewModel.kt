@@ -1,18 +1,30 @@
 package com.roix.mapchat.ui.chat.viewmodels
 
-import com.roix.mapchat.buissness.chat.IChatInteractor
+import android.arch.lifecycle.MutableLiveData
+import com.roix.mapchat.buissness.common.IBaseListInteractor
+import com.roix.mapchat.buissness.chat.ChatInteractor
 import com.roix.mapchat.toothpick.chat.ChatModule
-import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
+import com.roix.mapchat.data.models.MessageItem
+import com.roix.mapchat.ui.common.viewmodels.BaseListViewModel
 import javax.inject.Inject
 import toothpick.config.Module
 
 /**
- * Created by roix on 06.01.2018.
+ * Created by roix template
+ * https://github.com/roixa/RoixArchitectureTemplates
  */
-class ChatViewModel : BaseLifecycleViewModel() {
+class ChatViewModel : BaseListViewModel<MessageItem>() {
 
-    @Inject
-    protected lateinit var interactor: IChatInteractor
+    @Inject lateinit var interactor: ChatInteractor
+
+    val message = MutableLiveData<String>()
+
+    override fun getInteractor(): IBaseListInteractor<MessageItem> = ChatInteractor()
 
     override fun getModule(): Module = ChatModule()
+
+    override fun getMaxPage(): Long = 1
+
+    override fun getMinPage(): Long = 0
+
 }
