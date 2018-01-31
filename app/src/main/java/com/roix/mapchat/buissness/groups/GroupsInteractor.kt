@@ -1,12 +1,13 @@
 package com.roix.mapchat.buissness.groups
 
-import android.util.Log
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.models.User
 import com.roix.mapchat.data.repositories.firebase.FirebaseRepository
 import com.roix.mapchat.data.repositories.room.RoomRepository
 import io.reactivex.Single
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by roix template
@@ -30,39 +31,54 @@ class GroupsInteractor : IGroupsInteractor {
         }
     }
 
-    private fun getOwnGroups(): Single<List<GroupItem>> = databaseRepository.getSavedUsers()
-            .flattenAsObservable { r -> r }
-            .flatMap { t ->
-                val status = if (t.uid.equals(t.groupOwnerUuid)) GroupItem.Status.OWNER else GroupItem.Status.MEMBER
-                firebaseRepository.getGroupByOwnerUuid(t.groupOwnerUuid, status).toObservable()
-            }
-            .filter { t ->
-                val has = collisionableGroups.containsKey(t.ownerUUid)
-                if (!has) {
-                  collisionableGroups.set(t.ownerUUid, t)
+    //TODO add comments
+    private fun getOwnGroups(): Single<List<GroupItem>> {
+        val users: ArrayList<User> = ArrayList()
+        return databaseRepository.getSavedUsers()
+                .flattenAsObservable { it }
+                .flatMap {
+                    users.add(it)
+                    val status = if (it.uid.equals(it.groupOwnerUuid)) GroupItem.Status.OWNER else GroupItem.Status.MEMBER
+                    firebaseRepository.getGroupByOwnerUuid(it.groupOwnerUuid, status).toObservable()
                 }
-                return@filter !has
-             }
-            .toList()
-            .map { t ->
-                if (t.isEmpty()) {
-                 return@map listOf(GroupItem.createInfoItem())
-                } else{
-                    return@map t
+                .map {
+                    it.client = users.removeAt(0)
+                    return@map it
                 }
-            }
+                .filter {
+                    val has = collisionableGroups.containsKey(it.ownerUUid)
+                    if (!has) {
+                        collisionableGroups.set(it.ownerUUid, it)
+                    }
+                    return@filter !has
+                }
+                .toList()
+                .map {
+                    if (it.isEmpty()) {
+                        return@map listOf(GroupItem.createInfoItem())
+                    } else {
+                        return@map it
+                    }
+                }
+    }
 
-
-
-    private fun getAllGroups(page: Long): Single<List<GroupItem>> =
-            firebaseRepository.getGroups(page)
-                    .flattenAsObservable { t -> t }
-                    .filter { t ->
-                        val has = collisionableGroups.containsKey(t.ownerUUid)
-                        if (!has) {
-                            collisionableGroups.set(t.ownerUUid, t)
-                        }
-                        return@filter !has
-                    }.toList()
+    //TODO add comments
+    private fun getAllGroups(page: Long): Single<List<GroupItem>> {
+        val users: ArrayList<User> = ArrayList()
+        return databaseRepository.getSavedUsers()
+                .flatMap { t ->
+                    users.addAll(t)
+                    firebaseRepository.getGroups(page)
+                }
+                .flattenAsObservable { it }
+                .filter {
+                    val has = collisionableGroups.containsKey(it.ownerUUid)
+                    if (!has) {
+                        collisionableGroups.set(it.ownerUUid, it)
+                    }
+                    return@filter !has
+                }
+                .toList()
+    }
 
 }

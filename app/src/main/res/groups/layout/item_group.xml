@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/nano"
-                    android:text="@{@string/users_count(item.usersCount)}"
+                    android:text="@{@string/users_count(item.users.size())}"
                     app:layout_constraintEnd_toEndOf="@+id/tv_status"
                     app:layout_constraintTop_toBottomOf="@+id/tv_owner"
                     tools:text="count" />

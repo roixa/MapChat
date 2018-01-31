@@ -4,7 +4,7 @@ package com.roix.mapchat.data.models
  * Created by roix template
  * https://github.com/roixa/RoixArchitectureTemplates
  */
-data class GroupItem(val name: String, val descr: String, val usersCount: Int, val ownerUUid: Long, val ownerName: String) {
+data class GroupItem(val name: String, val descr: String, val users: List<User>, val ownerUUid: Long, val ownerName: String) {
 
     var client: User? = null
 
@@ -16,9 +16,8 @@ data class GroupItem(val name: String, val descr: String, val usersCount: Int, v
     }
 
     companion object {
-        fun createInfoItem(): GroupItem = GroupItem("hello", "", 0, 0, "")
+        fun createInfoItem(): GroupItem = GroupItem("hello", "", emptyList(), 0, "")
     }
-
 
     var mStatus: Status = Status.NOT_MEMBER
 }

@@ -28,7 +28,7 @@ data class FirebaseGroup(var name: String, var descr: String, var users: Mutable
                 ownerName = user.name!!
             }
         }
-        return GroupItem(name, descr, users!!.size, ownerUUid, ownerName)
+        return GroupItem(name, descr, retList, ownerUUid, ownerName)
     }
 
 }
