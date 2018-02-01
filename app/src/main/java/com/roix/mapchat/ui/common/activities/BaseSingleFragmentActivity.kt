@@ -1,7 +1,11 @@
 package com.roix.mapchat.ui.common.activities
 
+import android.annotation.SuppressLint
+import android.app.FragmentTransaction
 import android.databinding.ViewDataBinding
 import android.support.annotation.IdRes
+import android.transition.Transition
+import android.transition.TransitionSet
 import android.util.Log
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
@@ -16,6 +20,7 @@ abstract class BaseSingleFragmentActivity<ViewModel : BaseLifecycleViewModel, Da
 
     @IdRes protected abstract fun getFragmentContainerId(): Int
 
+    @SuppressLint("ResourceType")
     protected fun <T : BaseDatabindingFragment<*, *>> setFragment(newFragmentClazz: Class<T>) {
         fragmentManager.executePendingTransactions()
 
@@ -30,7 +35,7 @@ abstract class BaseSingleFragmentActivity<ViewModel : BaseLifecycleViewModel, Da
         }
 
         val tr = fragmentManager.beginTransaction()
-
+        tr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (null != currentFragment) {
             tr.detach(currentFragment)
         }

@@ -32,6 +32,7 @@ class GroupsFragment : BaseListFragment<GroupsViewModel, FragmentGroupsBinding, 
 
     override fun setupUi() {
         super.setupUi()
+        retainInstance=true
         rootViewModel = bindViewModel(RootViewModel::class.java)
     }
 

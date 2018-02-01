@@ -23,6 +23,9 @@ class ChatFragment : BaseListFragment<ChatViewModel, FragmentChatBinding, ItemMe
     override fun setupBinding() {
         super.setupBinding()
         rootViewModel=bindViewModel(RootViewModel::class.java)
+        binding.ivSend.setOnClickListener {
+            viewModel.onPostMessageClicked()
+        }
     }
 
     override fun getRecyclerView(): RecyclerView = binding.rv

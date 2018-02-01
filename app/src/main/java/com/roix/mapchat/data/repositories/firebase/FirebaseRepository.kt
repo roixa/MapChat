@@ -5,12 +5,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.roix.mapchat.data.models.GroupItem
+import com.roix.mapchat.data.models.MessageItem
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseUser
 import com.roix.mapchat.toothpick.common.ApplicationScope
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Single
+import io.reactivex.*
 import javax.inject.Inject
 
 
@@ -46,7 +45,7 @@ class FirebaseRepository : IFirebaseRepository {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(snap: DataSnapshot) {
                 val group = snap.child("group").getValue(FirebaseGroup::class.java)
-                if (group != null ) {
+                if (group != null) {
                     group.users!!.add(user)
                     snap.child("group").ref.setValue(group)
                 }
@@ -100,5 +99,13 @@ class FirebaseRepository : IFirebaseRepository {
         database.getReference("groups").child(uid.toString()).addListenerForSingleValueEvent(listener)
     }
 
+    override fun postMessagesInGroupChat(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
+                                         , location: Pair<Double, Double>): Completable = Completable.create { e ->
+
+    }
+
+    override fun getMessagesInGroupChat(ownerUuid: Long): Flowable<List<MessageItem>> =Flowable.create({ e ->
+
+    },BackpressureStrategy.BUFFER)
 
 }

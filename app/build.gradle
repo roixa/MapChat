@@ -57,7 +57,13 @@ android {
             res.srcDirs = [
                     "src/main/res/common"
                     , "src/main/res/root"
-                    , "src/main/res/groups", "src/main/res/new_group", "src/main/res/group", "src/main/res/map", "src/main/res/chat", "src/main/res/invitiation"]
+                    , "src/main/res/groups"
+                    , "src/main/res/new_group"
+                    , "src/main/res/group"
+                    , "src/main/res/map"
+                    , "src/main/res/chat"
+                    , "src/main/res/invitiation"
+                    , "src/main/res/test_architecture"]
         }
     }
 }

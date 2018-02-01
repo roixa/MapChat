@@ -2,6 +2,7 @@ package com.roix.mapchat.ui.common.viewmodels
 
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.CallSuper
+import android.util.Log
 import com.roix.mapchat.application.CommonApplication
 import com.roix.mapchat.utils.rx.general.RxSchedulersAbs
 
@@ -60,7 +61,6 @@ abstract class BaseViewModel : ViewModel() {
         super.onCleared()
         subscription.dispose()
         Toothpick.closeScope(viewModelScope)
-
     }
 
     open fun <T> Observable<T>.withDefaultShedulers(): Observable<T> {

@@ -20,11 +20,21 @@ class ChatViewModel : BaseListViewModel<MessageItem>() {
     val message = MutableLiveData<String>()
 
     override fun getInteractor(): IBaseListInteractor<MessageItem> = ChatInteractor()
-
     override fun getModule(): Module = ChatModule()
-
     override fun getMaxPage(): Long = 1
-
     override fun getMinPage(): Long = 0
+
+    fun onReceiveData(ownerUuid:Long){
+        interactor.getMessages(ownerUuid).toObservable().sub { list ->
+            items.clear()
+            items.addAll(list)
+        }
+    }
+
+    fun onPostMessageClicked(){
+
+    }
+
+
 
 }

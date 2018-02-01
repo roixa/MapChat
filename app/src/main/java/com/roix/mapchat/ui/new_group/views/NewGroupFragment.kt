@@ -21,6 +21,7 @@ class NewGroupFragment : BaseDatabindingFragment<NewGroupViewModel, FragmentNewG
 
     override fun setupUi() {
         super.setupUi()
+        retainInstance=true
         rootViewModel = bindViewModel(RootViewModel::class.java)
         rootViewModel.toolbarAction.sub {action->
             if(action==NavigationAction.ON_CLICKED_ADD_GROUP){

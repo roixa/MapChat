@@ -20,12 +20,11 @@ class ChatInteractor : IChatInteractor {
 
     override fun loadItems(page: Long): Single<List<MessageItem>> = Single.create { e -> e.onSuccess(emptyList()) }
 
-    override fun postMessage(message: String, author: String): Completable= Completable.create{e ->
+    override fun postMessage(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
+                             , location: Pair<Double, Double>): Completable= Completable.create{e ->
 
     }
 
-    override fun getMesages(): Flowable<List<MessageItem>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getMessages(ownerUuid: Long): Flowable<List<MessageItem>> = firebaseRepository.getMessagesInGroupChat(ownerUuid)
 
 }

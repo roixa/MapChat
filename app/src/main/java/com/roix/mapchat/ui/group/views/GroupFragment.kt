@@ -18,6 +18,7 @@ class GroupFragment : BaseDatabindingFragment<GroupViewModel, FragmentGroupBindi
 
     override fun setupBinding() {
         super.setupBinding()
+        retainInstance=true
         initViewPagerAndTabs()
     }
 

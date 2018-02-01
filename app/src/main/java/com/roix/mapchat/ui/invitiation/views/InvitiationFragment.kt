@@ -21,6 +21,7 @@ class InvitiationFragment : BaseDatabindingFragment<InvitiationViewModel, Fragme
 
     override fun setupUi() {
         super.setupUi()
+        retainInstance=true
         rootViewModel = bindViewModel(RootViewModel::class.java)
     }
 

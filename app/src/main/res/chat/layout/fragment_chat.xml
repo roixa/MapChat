@@ -23,10 +23,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/srl"
-            app:srcCompat="@drawable/ic_pan_tool_black" />
+            app:srcCompat="@drawable/ic_send_black" />
         <EditText
             android:id="@+id/et_message"
             android:layout_width="0dp"

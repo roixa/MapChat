@@ -17,8 +17,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".ui.chat.views.ChatActivity" />
+
+        <activity android:name=".ui.test_architecture.views.TestArchitectureActivity" >
+
+        </activity>
     </application>
 
 </manifest>
