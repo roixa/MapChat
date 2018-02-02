@@ -100,11 +100,11 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
     }
 
     protected open fun showMessageDialog(message: String) {
-        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+        //Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
     }
 
     protected open fun handleError(throwable: Throwable) {
-        Toast.makeText(activity, throwable.message, Toast.LENGTH_LONG).show()
+        //Toast.makeText(activity, throwable.message, Toast.LENGTH_LONG).show()
     }
 
     protected fun <T> LiveData<T>.sub(func: (T) -> Unit) {

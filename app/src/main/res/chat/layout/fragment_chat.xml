@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bind="http://schemas.android.com/tools">
 
@@ -9,6 +8,7 @@
         <variable
             name="viewmodel"
             type="com.roix.mapchat.ui.chat.viewmodels.ChatViewModel" />
+
         <import type="com.roix.mapchat.ui.common.viewmodels.BaseListViewModel.StateList"></import>
 
     </data>
@@ -22,12 +22,13 @@
             android:id="@+id/iv_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/srl"
             app:srcCompat="@drawable/ic_send_black" />
+
         <EditText
             android:id="@+id/et_message"
             android:layout_width="0dp"
@@ -40,6 +41,7 @@
             app:layout_constraintEnd_toStartOf="@+id/iv_send"
             app:layout_constraintStart_toStartOf="parent"
             bind:text="message" />
+
         <ProgressBar
             android:id="@+id/pb_empty_list"
             style="?android:attr/progressBarStyle"
@@ -56,8 +58,8 @@
             android:id="@+id/rv"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:background="@color/white"
+            app:stackFromEnd="true"
             app:layout_constraintBottom_toTopOf="@+id/et_message"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

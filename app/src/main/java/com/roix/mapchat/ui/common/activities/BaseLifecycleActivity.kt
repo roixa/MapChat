@@ -68,11 +68,11 @@ abstract class BaseLifecycleActivity<ViewModel : BaseLifecycleViewModel> : AppCo
 
     @CallSuper
     protected open fun showMessageDialog(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        //Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     protected open fun handleError(throwable: Throwable) {
-        Toast.makeText(this, throwable.message, Toast.LENGTH_LONG).show()
+        //Toast.makeText(this, throwable.message, Toast.LENGTH_LONG).show()
     }
 
 

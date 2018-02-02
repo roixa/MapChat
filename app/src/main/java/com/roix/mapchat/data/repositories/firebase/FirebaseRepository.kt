@@ -123,10 +123,11 @@ class FirebaseRepository : IFirebaseRepository {
                         .mapNotNull { it.getValue(FirebaseMessage::class.java) }
                         .filter { it.isValid() }
                         .mapTo(list) { it.parse() }
+                list.sortBy { messageItem -> -messageItem.unixTimeStamp }
                 e.onNext(list)
             }
         }
-            database.getReference("groups").child(ownerUuid.toString()).child("messages").orderByChild("unixTimeStamp").addValueEventListener(listener)
+            database.getReference("groups").child(ownerUuid.toString()).child("messages").addValueEventListener(listener)
 
     }, BackpressureStrategy.BUFFER)
 
