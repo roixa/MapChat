@@ -21,7 +21,7 @@ class InvitiationFragment : BaseDatabindingFragment<InvitiationViewModel, Fragme
 
     override fun setupUi() {
         super.setupUi()
-        retainInstance=true
+        retainInstance = true
         rootViewModel = bindViewModel(RootViewModel::class.java)
     }
 
@@ -29,11 +29,9 @@ class InvitiationFragment : BaseDatabindingFragment<InvitiationViewModel, Fragme
         super.setupBinding()
         rootViewModel.toolbarAction.sub { navigationAction ->
             if (navigationAction == NavigationAction.ON_CLICKED_INVITE) {
-                viewModel.enterToGroup(rootViewModel.activeGroup.value!!.ownerUUid)
-                        .sub<Boolean> { it ->
-                            rootViewModel.navigation.value = NavigationState.CHAT
-                            rootViewModel.toolbarTitle.value = rootViewModel.activeGroup.value!!.name
-                        }
+                viewModel.enterToGroup(rootViewModel.activeGroup.value!!.ownerUUid).sub {
+                    rootViewModel.gotoChatScreen(it)
+                }
             }
         }
     }

@@ -27,21 +27,21 @@ class FirebaseRepository : IFirebaseRepository {
 
     @Inject constructor() {}
 
-    override fun createGroup(group: FirebaseGroup): Completable = Completable.create { e ->
+    override fun createGroup(group: FirebaseGroup): Single<GroupItem> = Single.create { e ->
         val ownerUuid = group.users!![0].uid
         database.getReference("groups")
                 .child(ownerUuid!!.toString())
                 .child("group")
                 .setValue(group, { databaseError, databaseReference ->
                     if (databaseError == null) {
-                        e.onComplete()
+                        e.onSuccess(group.parse())
                     } else {
                         e.onError(databaseError.toException())
                     }
                 })
     }
 
-    override fun enterToGroup(user: FirebaseUser, groupUuid: Long): Completable = Completable.create { e ->
+    override fun enterToGroup(user: FirebaseUser, groupUuid: Long): Single<GroupItem> = Single.create { e ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(snap: DataSnapshot) {
@@ -49,8 +49,10 @@ class FirebaseRepository : IFirebaseRepository {
                 if (group != null) {
                     group.users!!.add(user)
                     snap.child("group").ref.setValue(group)
+                    e.onSuccess(group.parse())
+                }else{
+                    e.onError(Throwable("invintation failed"))
                 }
-                e.onComplete()
             }
         }
         database.getReference("groups").child(groupUuid.toString()).addListenerForSingleValueEvent(listener)
@@ -124,7 +126,7 @@ class FirebaseRepository : IFirebaseRepository {
                 e.onNext(list)
             }
         }
-            database.getReference("groups").child(ownerUuid.toString()).child("messages").orderByKey().addValueEventListener(listener)
+            database.getReference("groups").child(ownerUuid.toString()).child("messages").orderByChild("unixTimeStamp").addValueEventListener(listener)
 
     }, BackpressureStrategy.BUFFER)
 

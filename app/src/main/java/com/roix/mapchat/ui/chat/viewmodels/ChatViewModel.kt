@@ -1,6 +1,7 @@
 package com.roix.mapchat.ui.chat.viewmodels
 
 import android.arch.lifecycle.MutableLiveData
+import android.util.Log
 import com.roix.mapchat.buissness.common.IBaseListInteractor
 import com.roix.mapchat.buissness.chat.ChatInteractor
 import com.roix.mapchat.toothpick.chat.ChatModule
@@ -39,6 +40,7 @@ class ChatViewModel : BaseListViewModel<MessageItem>() {
     fun onPostMessageClicked() {
         if (ownerUuid != null && author != null) {
             interactor.postMessage(ownerUuid!!, message.value!!, author!!, System.currentTimeMillis(), null).sub {
+                Log.d("boux","on postMessage")
                 message.value = ""
             }
         }

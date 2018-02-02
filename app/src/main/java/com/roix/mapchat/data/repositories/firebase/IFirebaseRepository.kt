@@ -14,8 +14,8 @@ import io.reactivex.Single
  * https://github.com/roixa/RoixArchitectureTemplates
  */
 interface IFirebaseRepository {
-    fun createGroup(group: FirebaseGroup): Completable
-    fun enterToGroup(user: FirebaseUser, groupUuid: Long): Completable
+    fun createGroup(group: FirebaseGroup): Single<GroupItem>
+    fun enterToGroup(user: FirebaseUser, groupUuid: Long): Single<GroupItem>
     fun getGroups(lastUUid: Long): Single<List<GroupItem>>
     fun getGroupByOwnerUuid(uid: Long, status: GroupItem.Status): Maybe<GroupItem>
     fun postMessagesInGroupChat(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long

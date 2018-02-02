@@ -47,14 +47,18 @@ class RootViewModel : BaseLifecycleViewModel() {
         navigation.value = NavigationState.NEW_GROUP
     }
 
+    fun gotoChatScreen(groupItem: GroupItem){
+        activeGroup.value = groupItem
+        navigation.value = NavigationState.CHAT
+        toolbarTitle.value = groupItem.name
+    }
+
     fun onClickedGroupItem(group: GroupItem) {
         if (group.mStatus == GroupItem.Status.NOT_MEMBER) {
             navigation.value = NavigationState.INVITATION
             activeGroup.value = group
         } else if (group.mStatus != GroupItem.Status.INFO) {
-            navigation.value = NavigationState.CHAT
-            activeGroup.value = group
-            toolbarTitle.value = group.name
+            gotoChatScreen(group)
         }
     }
 }

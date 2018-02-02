@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView
 import com.roix.mapchat.buissness.common.IBaseListInteractor
 import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.view.SpaceItemDecoration
+import io.reactivex.Completable
 import io.reactivex.Single
 
 /**

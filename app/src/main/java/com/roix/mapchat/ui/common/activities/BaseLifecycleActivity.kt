@@ -88,8 +88,8 @@ abstract class BaseLifecycleActivity<ViewModel : BaseLifecycleViewModel> : AppCo
         viewModel.toLiveDataFun(this.toObservable()).sub(func)
     }
 
-    protected fun <T> Completable.sub(func: (T) -> Unit) {
-        viewModel.toLiveDataFun(this.toObservable<T>()).sub(func)
+    protected fun Completable.sub(func: (Boolean) -> Unit) {
+        viewModel.toLiveDataFun(this).sub(func)
     }
 
     protected fun <T> Flowable<T>.sub(func: (T) -> Unit) {

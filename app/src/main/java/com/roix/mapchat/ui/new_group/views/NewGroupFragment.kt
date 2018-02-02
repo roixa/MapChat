@@ -6,6 +6,7 @@ import com.roix.mapchat.databinding.FragmentNewGroupBinding
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
 import com.roix.mapchat.ui.new_group.viewmodels.NewGroupViewModel
 import com.roix.mapchat.ui.root.models.NavigationAction
+import com.roix.mapchat.ui.root.models.NavigationState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 
 /**
@@ -21,12 +22,12 @@ class NewGroupFragment : BaseDatabindingFragment<NewGroupViewModel, FragmentNewG
 
     override fun setupUi() {
         super.setupUi()
-        retainInstance=true
+        retainInstance = true
         rootViewModel = bindViewModel(RootViewModel::class.java)
-        rootViewModel.toolbarAction.sub {action->
-            if(action==NavigationAction.ON_CLICKED_ADD_GROUP){
-                viewModel.createGroup().sub<Boolean> {
-
+        rootViewModel.toolbarAction.sub { action ->
+            if (action == NavigationAction.ON_CLICKED_ADD_GROUP) {
+                viewModel.createGroup().sub {
+                    rootViewModel.gotoChatScreen(it)
                 }
             }
         }

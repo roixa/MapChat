@@ -20,9 +20,19 @@ abstract class BaseLifecycleViewModel : BaseViewModel() {
         return withLoadingHandle(loadingLiveData)
     }
 
+    fun  Completable.withDefaultLoadingHandle(): Completable {
+        return withLoadingHandle(loadingLiveData)
+    }
+
+
     override fun <T> Observable<T>.defaultErrorHandle(error: Throwable) {
         errorLiveData.postValue(error)
     }
+
+    fun Completable.defaultErrorHandle(error: Throwable) {
+        errorLiveData.postValue(error)
+    }
+
 
     fun <T> toLiveDataFun(observable: Observable<T>): LiveData<T> = LiveDataReactiveStreams.fromPublisher(
             observable
@@ -34,10 +44,32 @@ abstract class BaseLifecycleViewModel : BaseViewModel() {
                         return@onErrorResumeNext Observable.never<T>()
                     }.toFlowable(BackpressureStrategy.BUFFER))
 
+    fun toLiveDataFun(observable: Completable): LiveData<Boolean> = LiveDataReactiveStreams.fromPublisher(
+            observable
+                    .withDefaultLoadingHandle()
+                    .withDefaultShedulers()
+                    .onErrorResumeNext { t: Throwable ->
+                        errorLiveData.postValue(t)
+                        loadingLiveData.onEndLoad()
+                        return@onErrorResumeNext Completable.never()
+                    }.toFlowable())
+
     fun <T> MutableLiveData<T>.setValueNoHistory(t: T) {
         value = (t)
         value = (null)
     }
+
+    fun Completable.sub(function: () -> Unit){
+        subscription.add(
+                withDefaultLoadingHandle().
+                        withDefaultShedulers().
+                        subscribe({
+                            function.invoke()
+                        }, { t -> defaultErrorHandle(t) })
+        )
+
+    }
+
 
     fun <T> Observable<T>.toLiveData(): LiveData<T> = this@BaseLifecycleViewModel.toLiveDataFun(this)
 
