@@ -18,11 +18,16 @@ import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 
 class ChatFragment : BaseListFragment<ChatViewModel, FragmentChatBinding, ItemMessageBinding, MessageItem>() {
 
-    lateinit var rootViewModel:RootViewModel
+    lateinit var rootViewModel: RootViewModel
 
     override fun setupBinding() {
         super.setupBinding()
-        rootViewModel=bindViewModel(RootViewModel::class.java)
+        rootViewModel = bindViewModel(RootViewModel::class.java)
+        rootViewModel.activeGroup.sub { groupItem ->
+            if (groupItem.client != null) {
+                viewModel.onReceiveData(groupItem.ownerUUid, groupItem.client!!.name)
+            }
+        }
         binding.ivSend.setOnClickListener {
             viewModel.onPostMessageClicked()
         }
@@ -37,7 +42,6 @@ class ChatFragment : BaseListFragment<ChatViewModel, FragmentChatBinding, ItemMe
     override fun getItemLayoutId(): Int = R.layout.item_message
 
     override fun handleProgress(isProgress: Boolean) {}
-
 
 
 }

@@ -7,6 +7,7 @@ import com.google.firebase.database.ValueEventListener
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.models.MessageItem
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
+import com.roix.mapchat.data.repositories.firebase.models.FirebaseMessage
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseUser
 import com.roix.mapchat.toothpick.common.ApplicationScope
 import io.reactivex.*
@@ -100,12 +101,31 @@ class FirebaseRepository : IFirebaseRepository {
     }
 
     override fun postMessagesInGroupChat(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
-                                         , location: Pair<Double, Double>): Completable = Completable.create { e ->
-
+                                         , location: Pair<Double, Double>?): Completable = Completable.create { e ->
+        val message = FirebaseMessage(message, author, unixTimeStamp, location)
+        database.getReference("groups").child(ownerUuid.toString()).child("messages").push().setValue(message, { databaseError, databaseReference ->
+            if (databaseError == null) {
+                e.onComplete()
+            } else {
+                e.onError(databaseError.toException())
+            }
+        })
     }
 
-    override fun getMessagesInGroupChat(ownerUuid: Long): Flowable<List<MessageItem>> =Flowable.create({ e ->
+    override fun getMessagesInGroupChat(ownerUuid: Long): Flowable<List<MessageItem>> = Flowable.create({ e ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError?) {}
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val list = ArrayList<MessageItem>()
+                dataSnapshot.children
+                        .mapNotNull { it.getValue(FirebaseMessage::class.java) }
+                        .filter { it.isValid() }
+                        .mapTo(list) { it.parse() }
+                e.onNext(list)
+            }
+        }
+            database.getReference("groups").child(ownerUuid.toString()).child("messages").orderByKey().addValueEventListener(listener)
 
-    },BackpressureStrategy.BUFFER)
+    }, BackpressureStrategy.BUFFER)
 
 }

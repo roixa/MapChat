@@ -19,7 +19,7 @@ interface IFirebaseRepository {
     fun getGroups(lastUUid: Long): Single<List<GroupItem>>
     fun getGroupByOwnerUuid(uid: Long, status: GroupItem.Status): Maybe<GroupItem>
     fun postMessagesInGroupChat(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
-                                , location: Pair<Double, Double>): Completable
+                                , location: Pair<Double, Double>?): Completable
 
     fun getMessagesInGroupChat(ownerUuid: Long): Flowable<List<MessageItem>>
 }

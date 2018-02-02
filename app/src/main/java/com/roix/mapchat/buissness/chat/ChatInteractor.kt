@@ -21,9 +21,7 @@ class ChatInteractor : IChatInteractor {
     override fun loadItems(page: Long): Single<List<MessageItem>> = Single.create { e -> e.onSuccess(emptyList()) }
 
     override fun postMessage(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
-                             , location: Pair<Double, Double>): Completable= Completable.create{e ->
-
-    }
+                             , location: Pair<Double, Double>?): Completable= firebaseRepository.postMessagesInGroupChat(ownerUuid,message,author,unixTimeStamp,location)
 
     override fun getMessages(ownerUuid: Long): Flowable<List<MessageItem>> = firebaseRepository.getMessagesInGroupChat(ownerUuid)
 

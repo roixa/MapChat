@@ -102,4 +102,7 @@ abstract class BaseViewModel : ViewModel() {
     }
 
     fun <T> Single<T>.sub(function: (T) -> Unit) = this.toObservable().sub { T -> function.invoke(T) }
+
+    fun Completable.sub(function: (Boolean) -> Unit) = this.toObservable<Boolean>().sub { T -> function.invoke(true) }
+
 }

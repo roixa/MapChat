@@ -12,7 +12,7 @@ import io.reactivex.Flowable
  */
 interface IChatInteractor : IBaseListInteractor<MessageItem> {
     fun postMessage(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
-                    , location: Pair<Double, Double>): Completable
+                    , location: Pair<Double, Double>?): Completable
 
     fun getMessages(ownerUuid: Long): Flowable<List<MessageItem>>
 }
