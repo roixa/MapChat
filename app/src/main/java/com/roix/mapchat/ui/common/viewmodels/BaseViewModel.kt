@@ -59,6 +59,7 @@ abstract class BaseViewModel : ViewModel() {
     @CallSuper
     override fun onCleared() {
         super.onCleared()
+        Log.d("boux","fragment onCleared "+javaClass)
         subscription.dispose()
         Toothpick.closeScope(viewModelScope)
     }

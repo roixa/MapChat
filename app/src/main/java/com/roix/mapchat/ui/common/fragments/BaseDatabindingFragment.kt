@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.annotation.IdRes
 import android.support.v4.app.FragmentActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,10 +44,13 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("boux","fragment onCreate "+javaClass)
         viewModel = bindViewModel(getViewModelJavaClass())
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        Log.d("boux","fragment onCreateView "+javaClass)
+
         binding = DataBindingUtil.inflate(inflater!!, getLayoutId(), container, false)
         setupUi()
         setupBinding()

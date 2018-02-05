@@ -78,8 +78,14 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+
+
     compile "com.google.firebase:firebase-database:$firebaseVersion"
     compile "com.google.firebase:firebase-core:$firebaseVersion"
+    compile "com.google.android.gms:play-services-maps:$firebaseVersion"
 
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"

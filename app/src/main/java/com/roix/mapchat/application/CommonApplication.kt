@@ -7,6 +7,7 @@ import com.roix.mapchat.FactoryRegistry
 import com.roix.mapchat.MemberInjectorRegistry
 import com.roix.mapchat.toothpick.common.ApplicationModule
 import com.roix.mapchat.toothpick.common.ApplicationScope
+import com.squareup.leakcanary.LeakCanary
 import toothpick.Toothpick
 import toothpick.Toothpick.setConfiguration
 import toothpick.configuration.Configuration.forDevelopment
@@ -24,6 +25,14 @@ class CommonApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return
+        }
+        LeakCanary.install(this)
+
         FirebaseApp.initializeApp(this)
 
         val configuration = if (BuildConfig.DEBUG) forDevelopment() else forProduction()
