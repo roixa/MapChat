@@ -19,11 +19,11 @@ class IconsRepository : IIconsRepository {
     override fun getMarkersIcons(): Single<List<IconItem>> = Single.create { e ->
         e.onSuccess(
                 arrayListOf(
+                        IconItem("flag", R.drawable.ic_flag_black, 4),
                         IconItem("plus", R.drawable.ic_add_black, 0),
                         IconItem("trash", R.drawable.ic_delete_black, 1),
                         IconItem("heart", R.drawable.ic_favorite_black, 2),
                         IconItem("hand", R.drawable.ic_pan_tool_black, 3),
-                        IconItem("flag", R.drawable.ic_flag_black, 4),
                         IconItem("pet", R.drawable.ic_pets_black, 5),
                         IconItem("send", R.drawable.ic_send_black, 6),
                         IconItem("shop", R.drawable.ic_shopping_cart_black, 7)

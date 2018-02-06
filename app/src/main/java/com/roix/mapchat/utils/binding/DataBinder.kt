@@ -6,11 +6,13 @@ import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.roix.mapchat.R
 import com.roix.mapchat.data.models.GroupItem
+import com.roix.mapchat.data.repositories.icons.models.IconItem
 import com.roix.mapchat.ui.common.viewmodels.BaseListViewModel
 
 /**
@@ -24,8 +26,18 @@ fun convertBooleanToVisibility(visible: Boolean): Int {
 
 @BindingAdapter("bind:srcVector")
 fun setSrcVector(imageView: ImageView, @DrawableRes res: Int) {
+    Log.d("boux","setSrcVector "+res)
     imageView.setImageResource(res)
+    imageView.refreshDrawableState()
 }
+
+@BindingAdapter("bind:icon")
+fun setIcon(imageView: ImageView, icon:IconItem) {
+    Log.d("boux","setIcon "+icon.resId)
+    imageView.setImageResource(icon.resId)
+    imageView.refreshDrawableState()
+}
+
 
 @BindingAdapter("bind:imageUrl")
 fun setImageUrl(imageView: ImageView, url: String) {
