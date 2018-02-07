@@ -5,8 +5,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.roix.mapchat.data.models.GroupItem
+import com.roix.mapchat.data.models.Marker
 import com.roix.mapchat.data.models.MessageItem
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
+import com.roix.mapchat.data.repositories.firebase.models.FirebaseMarker
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseMessage
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseUser
 import com.roix.mapchat.toothpick.common.ApplicationScope
@@ -20,7 +22,6 @@ import javax.inject.Inject
  */
 @ApplicationScope
 class FirebaseRepository : IFirebaseRepository {
-
     val database = FirebaseDatabase.getInstance()
 
     val PAGE_ITEMS_SIZE = 10
@@ -130,5 +131,35 @@ class FirebaseRepository : IFirebaseRepository {
             database.getReference("groups").child(ownerUuid.toString()).child("messages").addValueEventListener(listener)
 
     }, BackpressureStrategy.BUFFER)
+
+    override fun addMarkerIToGroup(ownerUuid: Long, marker: Marker): Completable = Completable.create{e ->
+        database.getReference("groups")
+                .child(ownerUuid.toString())
+                .child("markers")
+                .child(marker.uuid.toString())
+                .setValue(FirebaseMarker(marker),{databaseError, databaseReference ->
+                    e.onComplete()
+        })
+    }
+
+    override fun getMarkers(ownerUuid: Long): Flowable<List<Marker>> = Flowable.create({e ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError?) {}
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val list = ArrayList<Marker>()
+                dataSnapshot.children
+                        .mapNotNull { it.getValue(FirebaseMarker::class.java) }
+                        .filter { it.isValid() }
+                        .mapTo(list) { it.parse() }
+                e.onNext(list)
+            }
+        }
+        database.getReference("groups")
+                .child(ownerUuid.toString())
+                .child("markers")
+                .addValueEventListener(listener)
+
+    },BackpressureStrategy.BUFFER)
+
 
 }

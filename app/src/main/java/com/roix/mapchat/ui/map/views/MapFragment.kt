@@ -19,6 +19,7 @@ import com.roix.mapchat.databinding.IconItemBinding
 import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
 import com.roix.mapchat.ui.map.viewmodels.MapViewModel
+import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.utils.ui.ItemClickSupport
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
@@ -37,6 +38,22 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
 
     override fun getLayoutId(): Int = R.layout.fragment_map
 
+    override fun setupUi() {
+        super.setupUi()
+        val rootViewModel = bindViewModel(RootViewModel::class.java)
+        rootViewModel.activeGroup.sub {
+            viewModel.onGetCurrentGroup(it)
+        }
+        viewModel.touchMarkerPos.sub {
+            if(it==null)return@sub
+            if (touchMarker == null) {
+                touchMarker = map?.addMarker(MarkerOptions().position(it))
+            } else {
+                touchMarker?.setPosition(it)
+            }
+        }
+    }
+
     override fun setupBinding() {
         super.setupBinding()
         binding.fab.setOnClickListener {
@@ -53,31 +70,40 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
 
     }
 
+    override fun onMapClick(latLng: LatLng?) {
+        viewModel.touchMarkerPos.value = latLng
+    }
+
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        return true
+    }
+
     private fun showCreateMarkerDialog() {
         val dialogBinding = DialogCreateMarkerBinding.inflate(LayoutInflater.from(activity),
                 null,
                 false)
         dialogBinding.viewmodel = viewModel
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        dialogBinding.rv.layoutManager = layoutManager
-        dialogBinding.rv.adapter = BaseObservableAdapter<IconItem, IconItemBinding>(viewModel.icons, R
-                .layout.icon_item)
+        dialogBinding.rv.apply {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = BaseObservableAdapter<IconItem, IconItemBinding>(viewModel.icons, R
+                    .layout.icon_item)
+        }
         ItemClickSupport.addTo(dialogBinding.rv).setOnItemClickListener { recyclerView, i, view ->
             viewModel.onClickedIconInCreateDialog(i)
-
             //TODO very strange bug
             dialogBinding.ivIcon.setImageResource(viewModel.choosenIcon.value!!.resId)
         }
         AlertDialog.Builder(activity).setView(dialogBinding.root).setTitle(R.string
                 .create_marker_dialog_title).setPositiveButton(R.string.text_dialog_ok,
                 { d, i ->
-                    viewModel.onClickedCreateMarker(touchMarker!!.position)
+                    viewModel.onClickedCreateMarker()
                 }).show()
 
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        MapFragmentPermissionsDispatcher.setupLocationWithCheck(this, googleMap)
+        map = googleMap
+        MapFragmentPermissionsDispatcher.setupLocationWithCheck(this, map)
         googleMap.setOnMarkerClickListener(this)
         googleMap.setOnMapClickListener(this)
         googleMap.setOnMyLocationClickListener { location ->
@@ -91,20 +117,6 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     fun setupLocation(googleMap: GoogleMap) {
         googleMap.setMyLocationEnabled(true)
-        map = googleMap
-    }
-
-    override fun onMapClick(latLng: LatLng?) {
-        if (touchMarker == null) {
-            touchMarker = map!!.addMarker(MarkerOptions().position(latLng!!))
-        } else
-            touchMarker!!.setPosition(latLng!!)
-
-
-    }
-
-    override fun onMarkerClick(p0: Marker?): Boolean {
-        return true
     }
 
 
@@ -117,12 +129,12 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     }
 
 
-    //TODO maybe remove this code
     override fun onResume() {
         super.onResume()
         binding.mapView.onResume()
     }
 
+    //TODO maybe remove this code
     override fun onPause() {
         super.onPause()
         binding.mapView.onPause()
@@ -139,6 +151,7 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         MapFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults)
     }
 
+    override fun handleProgress(isProgress: Boolean) {}
 
 }
 

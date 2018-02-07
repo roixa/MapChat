@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="toolbar_title_invintation">Create a new account for group</string>
+    <string name="title_user_icon">Your icon in the group</string>
+
 </resources>

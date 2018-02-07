@@ -1,6 +1,7 @@
 package com.roix.mapchat.data.repositories.firebase
 
 import com.roix.mapchat.data.models.GroupItem
+import com.roix.mapchat.data.models.Marker
 import com.roix.mapchat.data.models.MessageItem
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseUser
@@ -22,4 +23,6 @@ interface IFirebaseRepository {
                                 , location: Pair<Double, Double>?): Completable
 
     fun getMessagesInGroupChat(ownerUuid: Long): Flowable<List<MessageItem>>
+    fun addMarkerIToGroup(ownerUuid: Long, marker: Marker): Completable
+    fun getMarkers(ownerUuid: Long):Flowable<List<Marker>>
 }
