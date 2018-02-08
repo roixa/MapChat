@@ -1,7 +1,7 @@
 package com.roix.mapchat.buissness.map
 
 import com.google.android.gms.maps.model.LatLng
-import com.roix.mapchat.data.models.Marker
+import com.roix.mapchat.data.models.MarkerItem
 import com.roix.mapchat.data.repositories.icons.models.IconItem
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -19,5 +19,5 @@ interface IMapInteractor {
                   userName: String, userUuid: Long)
             : Completable
 
-    fun getMarkers(groupOwnerUuid: Long): Flowable<List<Marker>>
+    fun getMarkers(groupOwnerUuid: Long): Flowable<List<MarkerItem>>
 }

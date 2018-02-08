@@ -9,7 +9,6 @@ import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
 import com.roix.mapchat.ui.invitiation.viewmodels.InvitiationViewModel
 import com.roix.mapchat.ui.root.models.NavigationAction
-import com.roix.mapchat.ui.root.models.NavigationState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.utils.ui.ItemClickSupport
 
@@ -46,7 +45,7 @@ class InvitiationFragment : BaseDatabindingFragment<InvitiationViewModel, Fragme
         rootViewModel.toolbarAction.sub { navigationAction ->
             if (navigationAction == NavigationAction.ON_CLICKED_INVITE) {
                 viewModel.enterToGroup(rootViewModel.activeGroup.value!!.ownerUUid).sub {
-                    rootViewModel.gotoChatScreen(it)
+                    if (it != null) rootViewModel.gotoChatScreen(it)
                 }
             }
         }

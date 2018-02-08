@@ -27,7 +27,7 @@ class NewGroupFragment : BaseDatabindingFragment<NewGroupViewModel, FragmentNewG
         rootViewModel.toolbarAction.sub { action ->
             if (action == NavigationAction.ON_CLICKED_ADD_GROUP) {
                 viewModel.createGroup().sub {
-                    rootViewModel.gotoChatScreen(it)
+                    if(it!=null) rootViewModel.gotoChatScreen(it)
                 }
             }
         }

@@ -1,7 +1,8 @@
 package com.roix.mapchat.data.repositories.firebase
 
+import com.google.android.gms.maps.model.LatLng
 import com.roix.mapchat.data.models.GroupItem
-import com.roix.mapchat.data.models.Marker
+import com.roix.mapchat.data.models.MarkerItem
 import com.roix.mapchat.data.models.MessageItem
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseUser
@@ -20,9 +21,9 @@ interface IFirebaseRepository {
     fun getGroups(lastUUid: Long): Single<List<GroupItem>>
     fun getGroupByOwnerUuid(uid: Long, status: GroupItem.Status): Maybe<GroupItem>
     fun postMessagesInGroupChat(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
-                                , location: Pair<Double, Double>?): Completable
+                                , location: LatLng?): Completable
 
     fun getMessagesInGroupChat(ownerUuid: Long): Flowable<List<MessageItem>>
-    fun addMarkerIToGroup(ownerUuid: Long, marker: Marker): Completable
-    fun getMarkers(ownerUuid: Long):Flowable<List<Marker>>
+    fun addMarkerToGroup(ownerUuid: Long, marker: MarkerItem): Completable
+    fun getMarkers(ownerUuid: Long):Flowable<List<MarkerItem>>
 }

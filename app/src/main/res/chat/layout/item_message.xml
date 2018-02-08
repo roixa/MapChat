@@ -57,6 +57,15 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text='"message"' />
 
+                <ImageView
+                    android:visibility="@{item.location!=null}"
+                    android:id="@+id/iv_to_map_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_message"
+                    app:srcCompat="@drawable/ic_send_black" />
                 <TextView
                     android:id="@+id/tv_time"
 
@@ -64,10 +73,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/nano"
-                    android:layout_marginEnd="8dp"
                     android:layout_marginTop="8dp"
                     android:text='@{DateTimeUtils.INSTANCE.convertToDateFormat(item.unixTimeStamp)}'
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_to_map_arrow"
                     app:layout_constraintTop_toBottomOf="@+id/tv_message"
                     tools:text="time" />
 

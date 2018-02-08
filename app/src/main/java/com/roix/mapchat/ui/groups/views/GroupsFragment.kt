@@ -42,7 +42,7 @@ class GroupsFragment : BaseListFragment<GroupsViewModel, FragmentGroupsBinding, 
             rootViewModel.gotoNewGroupScreen()
         }
         viewModel.stateList.sub { stateList ->
-            Log.d("boux", "statelist " + stateList.name)
+            Log.d("boux", "statelist " + stateList?.name)
         }
         ItemClickSupport.addTo(getRecyclerView())
                 .setOnItemClickListener{recyclerView, i, view ->

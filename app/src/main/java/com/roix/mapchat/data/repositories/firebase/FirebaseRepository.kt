@@ -1,11 +1,12 @@
 package com.roix.mapchat.data.repositories.firebase
 
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.roix.mapchat.data.models.GroupItem
-import com.roix.mapchat.data.models.Marker
+import com.roix.mapchat.data.models.MarkerItem
 import com.roix.mapchat.data.models.MessageItem
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseMarker
@@ -51,7 +52,7 @@ class FirebaseRepository : IFirebaseRepository {
                     group.users!!.add(user)
                     snap.child("group").ref.setValue(group)
                     e.onSuccess(group.parse())
-                }else{
+                } else {
                     e.onError(Throwable("invintation failed"))
                 }
             }
@@ -104,8 +105,9 @@ class FirebaseRepository : IFirebaseRepository {
     }
 
     override fun postMessagesInGroupChat(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
-                                         , location: Pair<Double, Double>?): Completable = Completable.create { e ->
-        val message = FirebaseMessage(message, author, unixTimeStamp, location)
+                                         , location: LatLng?): Completable = Completable.create { e ->
+        val message = FirebaseMessage(message, author, unixTimeStamp, location?.longitude,
+                location?.latitude)
         database.getReference("groups").child(ownerUuid.toString()).child("messages").push().setValue(message, { databaseError, databaseReference ->
             if (databaseError == null) {
                 e.onComplete()
@@ -128,25 +130,24 @@ class FirebaseRepository : IFirebaseRepository {
                 e.onNext(list)
             }
         }
-            database.getReference("groups").child(ownerUuid.toString()).child("messages").addValueEventListener(listener)
-
+        database.getReference("groups").child(ownerUuid.toString()).child("messages").addValueEventListener(listener)
     }, BackpressureStrategy.BUFFER)
 
-    override fun addMarkerIToGroup(ownerUuid: Long, marker: Marker): Completable = Completable.create{e ->
+    override fun addMarkerToGroup(ownerUuid: Long, marker: MarkerItem): Completable = Completable.create { e ->
         database.getReference("groups")
                 .child(ownerUuid.toString())
                 .child("markers")
                 .child(marker.uuid.toString())
-                .setValue(FirebaseMarker(marker),{databaseError, databaseReference ->
+                .setValue(FirebaseMarker(marker), { databaseError, databaseReference ->
                     e.onComplete()
-        })
+                })
     }
 
-    override fun getMarkers(ownerUuid: Long): Flowable<List<Marker>> = Flowable.create({e ->
+    override fun getMarkers(ownerUuid: Long): Flowable<List<MarkerItem>> = Flowable.create({ e ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val list = ArrayList<Marker>()
+                val list = ArrayList<MarkerItem>()
                 dataSnapshot.children
                         .mapNotNull { it.getValue(FirebaseMarker::class.java) }
                         .filter { it.isValid() }
@@ -159,7 +160,7 @@ class FirebaseRepository : IFirebaseRepository {
                 .child("markers")
                 .addValueEventListener(listener)
 
-    },BackpressureStrategy.BUFFER)
+    }, BackpressureStrategy.BUFFER)
 
 
 }

@@ -40,6 +40,7 @@ class RootViewModel : BaseLifecycleViewModel() {
             NavigationState.NEW_GROUP -> navigation.value = NavigationState.GROUP_LIST
             NavigationState.INVITATION -> navigation.value = NavigationState.GROUP_LIST
             NavigationState.CHAT -> navigation.value = NavigationState.GROUP_LIST
+            NavigationState.MAP -> navigation.value = NavigationState.CHAT
         }
     }
 
@@ -47,7 +48,7 @@ class RootViewModel : BaseLifecycleViewModel() {
         navigation.value = NavigationState.NEW_GROUP
     }
 
-    fun gotoChatScreen(groupItem: GroupItem){
+    fun gotoChatScreen(groupItem: GroupItem) {
         activeGroup.value = groupItem
         navigation.value = NavigationState.CHAT
         toolbarTitle.value = groupItem.name

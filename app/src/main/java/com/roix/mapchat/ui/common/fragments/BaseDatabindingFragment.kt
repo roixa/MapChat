@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.android.databinding.library.baseAdapters.BR
 import com.roix.mapchat.R
 import com.roix.mapchat.application.CommonApplication
@@ -44,12 +43,12 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("boux","fragment onCreate "+javaClass)
+        Log.d("boux", "fragment onCreate " + javaClass)
         viewModel = bindViewModel(getViewModelJavaClass())
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        Log.d("boux","fragment onCreateView "+javaClass)
+        Log.d("boux", "fragment onCreateView " + javaClass)
 
         binding = DataBindingUtil.inflate(inflater!!, getLayoutId(), container, false)
         setupUi()
@@ -87,9 +86,9 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
     @CallSuper
     protected open fun <T : BaseLifecycleViewModel> bindViewModel(clazz: Class<T>): T {
         val viewModel = ViewModelProviders.of(activity as FragmentActivity).get(clazz)
-        viewModel.loadingLiveData.sub { b -> handleProgress(b) }
-        viewModel.showMessageDialogLiveData.sub { s -> this.showMessageDialog(s) }
-        viewModel.errorLiveData.sub { t -> handleError(t) }
+        viewModel.loadingLiveData.sub { b -> if (b != null) handleProgress(b) }
+        viewModel.showMessageDialogLiveData.sub { s -> if (s != null) this.showMessageDialog(s) }
+        viewModel.errorLiveData.sub { t -> if (t != null) handleError(t) }
         viewModel.onBindView(activity.application as CommonApplication)
         return viewModel
     }
@@ -111,23 +110,23 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
         //Toast.makeText(activity, throwable.message, Toast.LENGTH_LONG).show()
     }
 
-    protected fun <T> LiveData<T>.sub(func: (T) -> Unit) {
-        observe(activity as FragmentActivity, Observer { T -> if (T != null) func.invoke(T) })
+    protected fun <T> LiveData<T>.sub(func: (T?) -> Unit) {
+        observe(activity as FragmentActivity, Observer { T -> func.invoke(T) })
     }
 
-    protected fun <T> Observable<T>.sub(func: (T) -> Unit) {
+    protected fun <T> Observable<T>.sub(func: (T?) -> Unit) {
         viewModel.toLiveDataFun(this).sub(func)
     }
 
-    protected fun <T> Single<T>.sub(func: (T) -> Unit) {
+    protected fun <T> Single<T>.sub(func: (T?) -> Unit) {
         viewModel.toLiveDataFun(this.toObservable()).sub(func)
     }
 
-    protected fun Completable.sub(func: (Boolean) -> Unit) {
+    protected fun Completable.sub(func: (Boolean?) -> Unit) {
         viewModel.toLiveDataFun(this).sub(func)
     }
 
-    protected fun <T> Flowable<T>.sub(func: (T) -> Unit) {
+    protected fun <T> Flowable<T>.sub(func: (T?) -> Unit) {
         viewModel.toLiveDataFun(this.toObservable()).sub(func)
     }
 

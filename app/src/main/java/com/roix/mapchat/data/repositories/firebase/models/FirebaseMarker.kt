@@ -2,12 +2,12 @@ package com.roix.mapchat.data.repositories.firebase.models
 
 import com.google.android.gms.maps.model.LatLng
 import com.roix.mapchat.data.common.Parseble
-import com.roix.mapchat.data.models.Marker
+import com.roix.mapchat.data.models.MarkerItem
 
 /**
  * Created by belyalov on 07.02.2018.
  */
-class FirebaseMarker() : Parseble<Marker> {
+class FirebaseMarker() : Parseble<MarkerItem> {
 
     var uuid: Long? = null
     var longitude: Double? = null
@@ -19,7 +19,7 @@ class FirebaseMarker() : Parseble<Marker> {
     var userUuid: Long? = null
     var time: Long? = null
 
-    constructor(marker: Marker) : this() {
+    constructor(marker: MarkerItem) : this() {
         uuid = marker.uuid
         lattitude = marker.latLng.latitude
         longitude = marker.latLng.longitude
@@ -36,7 +36,7 @@ class FirebaseMarker() : Parseble<Marker> {
                     && iconPos != null && userName != null
                     && userUuid != null && time != null
 
-    override fun parse(): Marker = Marker(uuid!!, LatLng(lattitude!!, longitude!!),
+    override fun parse(): MarkerItem = MarkerItem(uuid!!, LatLng(lattitude!!, longitude!!),
             name!!, iconPos!!,
             userName!!, userUuid!!, time!!)
 

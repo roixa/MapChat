@@ -11,8 +11,7 @@ import io.reactivex.Flowable
  * https://github.com/roixa/RoixArchitectureTemplates
  */
 interface IChatInteractor : IBaseListInteractor<MessageItem> {
-    fun postMessage(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
-                    , location: Pair<Double, Double>?): Completable
+    fun postMessage(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long): Completable
 
     fun getMessages(ownerUuid: Long): Flowable<List<MessageItem>>
 }
