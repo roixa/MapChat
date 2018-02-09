@@ -31,12 +31,11 @@ class InvitiationFragment : BaseDatabindingFragment<InvitiationViewModel, Fragme
 
     override fun setupBinding() {
         super.setupBinding()
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        binding.rv.layoutManager = layoutManager
+        binding.rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         binding.rv.adapter = BaseObservableAdapter<IconItem, IconItemBinding>(viewModel.icons, R
                 .layout.icon_item)
         ItemClickSupport.addTo(binding.rv).setOnItemClickListener { recyclerView, i, view ->
-            viewModel.onClickedIconInCreateDialog(i)
+            viewModel.onClickedIcon(i)
 
             //TODO very strange bug 2
             binding.ivIcon.setImageResource(viewModel.choosenIcon.value!!.resId)

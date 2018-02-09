@@ -39,7 +39,7 @@ class InvitiationViewModel : BaseLifecycleViewModel() {
     fun enterToGroup(groupUuid:Long ):Single<GroupItem> = interactor.enterToGroup(groupUuid,UUID
             .randomUUID().mostSignificantBits,ownerName.value!!,choosenIcon.value!!.pos)
 
-    fun onClickedIconInCreateDialog(pos: Int) {
+    fun onClickedIcon(pos: Int) {
         choosenIcon.value = icons[pos]
     }
 

@@ -5,11 +5,11 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.Point
+import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -51,8 +51,14 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         rootViewModel.activeGroup.sub {
             if (it != null) viewModel.onGetCurrentGroup(it)
         }
+        if (viewModel.touchMarkerPos.value != null) {
+            handleTouchMarker(viewModel.touchMarkerPos.value)
+        }
         viewModel.touchMarkerPos.sub {
             handleTouchMarker(it)
+        }
+        if (viewModel.markers.value != null) {
+            showMarkers(viewModel.markers.value!!)
         }
         viewModel.markers.sub {
             if (it != null) showMarkers(it)
@@ -69,22 +75,17 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
                 onClickedMarkerFabAndAnimationEnd()
             })
         }
-
-        binding.mapView.onCreate(arguments)
-        try {
-            MapsInitializer.initialize(activity.applicationContext)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        binding.mapView.onCreate(null)
         binding.mapView.getMapAsync(this)
-
     }
+
 
     override fun onMapClick(latLng: LatLng?) {
         viewModel.touchMarkerPos.value = latLng
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
+        viewModel.onMarkerClick()
         return false
     }
 
@@ -180,8 +181,14 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         map?.clear()
         map = null
         touchMarker = null
+        markerPairs.clear()
         binding.mapView.onDestroy()
         super.onDestroyView()
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onResume() {

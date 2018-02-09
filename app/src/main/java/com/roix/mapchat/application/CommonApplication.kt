@@ -1,6 +1,7 @@
 package com.roix.mapchat.application
 
 import android.app.Application
+import com.google.android.gms.maps.MapsInitializer
 import com.google.firebase.FirebaseApp
 import com.roix.mapchat.BuildConfig
 import com.roix.mapchat.FactoryRegistry
@@ -46,5 +47,11 @@ class CommonApplication : Application() {
                 ApplicationModule(this)
         )
         appScope.bindScopeAnnotation(ApplicationScope::class.java)
+        try {
+            MapsInitializer.initialize(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
     }
 }

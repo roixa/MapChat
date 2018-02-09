@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/tools">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -45,12 +45,24 @@
                 android:text="@={viewmodel.groupDescription}" />
         </android.support.design.widget.TextInputLayout>
 
+        <Switch
+            android:id="@+id/sw_is_private_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/micro"
+            android:layout_weight="1"
+            android:checked="@={viewmodel.isPrivateGroup}"
+            android:text="@string/swich_is_private_group"
+            app:layout_constraintTop_toBottomOf="@id/et_descr" />
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/et_owner_name"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/micro"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_descr">
+            app:layout_constraintTop_toBottomOf="@+id/sw_is_private_group">
 
             <android.support.design.widget.TextInputEditText
                 android:layout_width="match_parent"
@@ -59,6 +71,32 @@
                 android:text="@={viewmodel.ownerName}" />
         </android.support.design.widget.TextInputLayout>
 
+        <TextView
+            android:id="@+id/tv_owner_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/micro"
+            android:text="@string/title_user_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_owner_name" />
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="@dimen/small_view_height"
+            android:layout_height="@dimen/small_view_height"
+            android:layout_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_owner_icon"
+            app:srcVector="@{viewmodel.choosenIcon.resId}" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/micro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_icon" />
 
     </android.support.constraint.ConstraintLayout>
 

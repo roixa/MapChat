@@ -7,17 +7,18 @@ import com.roix.mapchat.data.models.User
 /**
  * Created by roix on 22.01.2018.
  */
-data class FirebaseGroup(var name: String, var descr: String, var users: MutableList<FirebaseUser>?) :
+data class FirebaseGroup(var name: String?, var descr: String?, var users:
+    MutableList<FirebaseUser>?, var private: Boolean?) :
         Parseble<GroupItem> {
 
-    var ownerUUid: Long = -1
-    var ownerName: String = ""
 
-    constructor() : this("", "", null)
+    constructor() : this("", "", null, false)
 
     override fun isValid(): Boolean = name != null && descr != null && users != null
 
     override fun parse(): GroupItem {
+        var ownerUUid: Long = -1
+        var ownerName: String = ""
         val retList = ArrayList<User>()
         for (user in users!!) {
             if (user.isValid()) {
@@ -28,7 +29,7 @@ data class FirebaseGroup(var name: String, var descr: String, var users: Mutable
                 ownerName = user.name!!
             }
         }
-        return GroupItem(name, descr, retList, ownerUUid, ownerName)
+        return GroupItem(name!!, descr!!, retList, ownerUUid, ownerName)
     }
 
 }

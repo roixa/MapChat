@@ -68,8 +68,8 @@ class FirebaseRepository : IFirebaseRepository {
                 val list = ArrayList<GroupItem>()
                 for (snap in dataSnapshot.children) {
                     val group = snap.child("group").getValue(FirebaseGroup::class.java)
-                    if (group != null && group.isValid()) {
-                        group.ownerUUid = snap.key.toLong()
+                    if (group != null && group.isValid() && group.private != true) {
+                        //group.ownerUUid = snap.key.toLong()
                         list.add(group.parse())
                     }
                 }
@@ -79,6 +79,7 @@ class FirebaseRepository : IFirebaseRepository {
         if (lastUUid != -1L) {
             database.getReference("groups").orderByKey().limitToFirst(PAGE_ITEMS_SIZE)
                     .startAt(lastUUid.toString())
+
                     .addListenerForSingleValueEvent(listener)
         } else {
             database.getReference("groups").orderByKey().limitToFirst(PAGE_ITEMS_SIZE)
@@ -94,7 +95,7 @@ class FirebaseRepository : IFirebaseRepository {
                 val group = snap.child("group").getValue(FirebaseGroup::class.java)
                 if (group != null && group.isValid()) {
                     val ret = group.parse()
-                    ret.mStatus = status
+                    ret.status = status
                     e.onSuccess(ret)
                 } else {
                     e.onComplete()

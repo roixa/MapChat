@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView
 import com.roix.mapchat.buissness.common.IBaseListInteractor
 import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.view.SpaceItemDecoration
-import io.reactivex.Completable
 import io.reactivex.Single
 
 /**
@@ -32,19 +31,6 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
     val stateList = MutableLiveData<StateList>()
 
     protected abstract fun getInteractor(): IBaseListInteractor<Item>
-
-    open fun <ItemDataBinding : ViewDataBinding> setupRecyclerView(recyclerView: RecyclerView,
-                                                                   baseAdapter: BaseObservableAdapter<Item, ItemDataBinding>,
-                                                                   swipeToRefreshLayout: SwipeRefreshLayout?) {
-        recyclerView.apply {
-            val manager = LinearLayoutManager(context)
-            layoutManager = manager
-            adapter = baseAdapter
-            addItemDecoration(SpaceItemDecoration(context))
-            addOnScrollListener(PaginationScrollListener(manager))
-            swipeToRefreshLayout?.setOnRefreshListener(SwipeToRefreshListListener())
-        }
-    }
 
     override fun onBindFirstView() {
         super.onBindFirstView()
@@ -137,44 +123,29 @@ abstract class BaseListViewModel<Item> : BaseLifecycleViewModel() {
         }
     }
 
-    private inner class PaginationScrollListener(val layoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
+    fun onScrolledToEnd() {
+        if (!isLoading() && !isLastPage()) {
 
-        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            val visibleItemCount = layoutManager.childCount
-            val totalItemCount = layoutManager.itemCount
-            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-            if (!isLoading() && !isLastPage()) {
-                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                        && firstVisibleItemPosition >= 0) {
-                    if (stateList.value != StateList.ALL_DATA) {
-                        if (items.isEmpty()) {
-                            stateList.value = StateList.EMPTY_PROGRESS
+            if (stateList.value != StateList.ALL_DATA) {
+                if (items.isEmpty()) {
+                    stateList.value = StateList.EMPTY_PROGRESS
+                } else {
+                    stateList.value = StateList.PAGE_PROGRESS
+                }
+                loadNextItems().subList { list ->
+                    items.addAll(list)
+                    if (items.isEmpty()) {
+                        stateList.value = StateList.EMPTY_DATA
+                    } else {
+                        if (list.isEmpty()) {
+                            stateList.value = StateList.ALL_DATA
                         } else {
-                            stateList.value = StateList.PAGE_PROGRESS
-                        }
-                        loadNextItems().subList { list ->
-                            items.addAll(list)
-                            if (items.isEmpty()) {
-                                stateList.value = StateList.EMPTY_DATA
-                            } else {
-                                if (list.isEmpty()) {
-                                    stateList.value = StateList.ALL_DATA
-                                } else {
-                                    stateList.value = StateList.DATA
-                                }
-                            }
+                            stateList.value = StateList.DATA
                         }
                     }
                 }
             }
-
         }
     }
 
-    private inner class SwipeToRefreshListListener : SwipeRefreshLayout.OnRefreshListener {
-        override fun onRefresh() {
-            refresh()
-        }
-    }
 }

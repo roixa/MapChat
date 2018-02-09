@@ -40,7 +40,6 @@ class ChatViewModel : BaseListViewModel<MessageItem>() {
     fun onPostMessageClicked() {
         if (ownerUuid != null && author != null) {
             interactor.postMessage(ownerUuid!!, message.value!!, author!!, System.currentTimeMillis()).sub {
-                Log.d("boux","on postMessage")
                 message.value = ""
             }
         }

@@ -4,5 +4,6 @@
     <string name="new_group_name">Group name</string>
     <string name="new_group_descr">Description</string>
     <string name="new_user_name">Your name in the group</string>
+    <string name="swich_is_private_group">Is private group</string>
 
 </resources>

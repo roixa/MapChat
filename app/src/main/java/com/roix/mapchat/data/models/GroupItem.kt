@@ -19,5 +19,5 @@ data class GroupItem(val name: String, val descr: String, val users: List<User>,
         fun createInfoItem(): GroupItem = GroupItem("hello", "", emptyList(), 0, "")
     }
 
-    var mStatus: Status = Status.NOT_MEMBER
+    var status: Status = Status.NOT_MEMBER
 }

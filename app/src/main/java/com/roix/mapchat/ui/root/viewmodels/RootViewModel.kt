@@ -55,10 +55,10 @@ class RootViewModel : BaseLifecycleViewModel() {
     }
 
     fun onClickedGroupItem(group: GroupItem) {
-        if (group.mStatus == GroupItem.Status.NOT_MEMBER) {
+        if (group.status == GroupItem.Status.NOT_MEMBER) {
             navigation.value = NavigationState.INVITATION
             activeGroup.value = group
-        } else if (group.mStatus != GroupItem.Status.INFO) {
+        } else if (group.status != GroupItem.Status.INFO) {
             gotoChatScreen(group)
         }
     }

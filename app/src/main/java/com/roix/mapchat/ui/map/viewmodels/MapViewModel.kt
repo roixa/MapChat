@@ -26,6 +26,7 @@ class MapViewModel : BaseLifecycleViewModel() {
     //touch marker data
     val touchMarkerPos = MutableLiveData<LatLng>()
 
+
     //markers data
     val markers = MutableLiveData<List<MarkerItem>>()
 
@@ -62,9 +63,14 @@ class MapViewModel : BaseLifecycleViewModel() {
 
     fun onClickedCreateMarkerAndAnimatedToMap() {
         interactor.addMarker(currentGroup.ownerUUid, markerText.value!!, touchMarkerPos.value!!,
-                            choosenIcon.value!!.pos, currentGroup.client!!.name, currentGroup.client!!.uid).sub {
+                            choosenIcon.value?.pos?:1, currentGroup.client!!.name, currentGroup
+                .client!!.uid).sub {
                     touchMarkerPos.value = null
                 }
+    }
+
+    fun onMarkerClick(){
+        touchMarkerPos.value=null
     }
 
     fun onClickedIconInCreateDialog(pos: Int) {
