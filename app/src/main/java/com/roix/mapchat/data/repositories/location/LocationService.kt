@@ -1,5 +1,7 @@
 package com.roix.mapchat.data.repositories.location
 
+import android.app.Notification
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -8,13 +10,23 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import com.roix.mapchat.R
+import com.roix.mapchat.data.models.GroupItem
+import com.roix.mapchat.data.repositories.firebase.FirebaseRepository
+import com.roix.mapchat.ui.root.views.RootActivity
+import toothpick.Toothpick
+import javax.inject.Inject
 
 
 /**
  * Created by belyalov on 09.02.2018.
  */
 class LocationService : Service() {
-    private var mLocationManager: LocationManager? = null
+    @Inject lateinit var mLocationManager: LocationManager
+
+    @Inject lateinit var firebaseRepository: FirebaseRepository
+
+    private lateinit var currentGroup: GroupItem
 
     private var mLocationListeners = arrayOf(LocationListener(LocationManager.GPS_PROVIDER),
             LocationListener(LocationManager.NETWORK_PROVIDER))
@@ -52,14 +64,20 @@ class LocationService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.e(TAG, "onStartCommand")
         super.onStartCommand(intent, flags, startId)
+        val group = intent.getSerializableExtra(TAG_GROUP_INTENT)
+        if (group != null) {
+            currentGroup = group as GroupItem
+            startForeground(OUTGOING_NOTIFICATION_ID, buildPendingNotification(currentGroup))
+        }
         return START_STICKY
     }
 
     override fun onCreate() {
         Log.e(TAG, "onCreate")
-        initializeLocationManager()
+        val scope = Toothpick.openScope(application)
+        Toothpick.inject(this, scope)
         try {
-            mLocationManager!!.requestLocationUpdates(
+            mLocationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL.toLong(), LOCATION_DISTANCE,
                     mLocationListeners[1])
         } catch (ex: java.lang.SecurityException) {
@@ -95,16 +113,23 @@ class LocationService : Service() {
         }
     }
 
-    private fun initializeLocationManager() {
-        Log.e(TAG, "initializeLocationManager")
-        if (mLocationManager == null) {
-            mLocationManager = getApplicationContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        }
+    private fun buildPendingNotification(groupItem: GroupItem): Notification {
+        val notificationIntent = Intent(applicationContext, RootActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0)
+
+        val notification = Notification.Builder(applicationContext)
+                .setContentTitle(applicationContext.getString(R.string.app_name))
+                .setContentText(groupItem.name)
+                .build()
+        notification.contentIntent = pendingIntent
+        return notification
     }
 
     companion object {
         val TAG = "BOOMBOOMTESTGPS"
-        private val LOCATION_INTERVAL = 1000
+        val TAG_GROUP_INTENT="roix_group"
+        private val OUTGOING_NOTIFICATION_ID = 1
+        private val LOCATION_INTERVAL = 10
         private val LOCATION_DISTANCE = 10f
     }
 }

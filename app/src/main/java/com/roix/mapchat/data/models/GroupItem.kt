@@ -1,10 +1,12 @@
 package com.roix.mapchat.data.models
 
+import java.io.Serializable
+
 /**
  * Created by roix template
  * https://github.com/roixa/RoixArchitectureTemplates
  */
-data class GroupItem(val name: String, val descr: String, val users: List<User>, val ownerUUid: Long, val ownerName: String) {
+data class GroupItem(val name: String, val descr: String, val users: List<User>, val ownerUUid: Long, val ownerName: String) : Serializable {
 
     var client: User? = null
 

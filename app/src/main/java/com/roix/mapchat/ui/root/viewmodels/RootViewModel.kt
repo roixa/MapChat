@@ -50,6 +50,9 @@ class RootViewModel : BaseLifecycleViewModel() {
 
     fun gotoChatScreen(groupItem: GroupItem) {
         activeGroup.value = groupItem
+        rootInteractor.enterToGroup(groupItem).sub {
+
+        }
         navigation.value = NavigationState.CHAT
         toolbarTitle.value = groupItem.name
     }
