@@ -12,6 +12,9 @@ import android.app.PendingIntent
 import android.os.Build
 import com.roix.mapchat.R
 import com.roix.mapchat.ui.root.views.RootActivity
+import android.os.Bundle
+
+
 
 
 /**
@@ -31,7 +34,11 @@ class LocationRepository : ILocationRepository {
         Log.e(LocationService.TAG, "onStart service")
 
         val intent=Intent(context, LocationService::class.java)
-        intent.putExtra(LocationService.TAG_GROUP_INTENT,groupItem)
+        val bundle = Bundle()
+        bundle.putParcelable(LocationService.TAG_GROUP_INTENT,groupItem)
+        intent.putExtras(bundle)
+        intent.putExtra("test","test1")
+        //intent.putExtra(LocationService.TAG_GROUP_INTENT,groupItem)
         context.startService(intent)
         e.onComplete()
     }

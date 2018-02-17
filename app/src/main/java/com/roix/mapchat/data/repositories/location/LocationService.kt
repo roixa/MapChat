@@ -61,12 +61,14 @@ class LocationService : Service() {
         return null
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e(TAG, "onStartCommand")
         super.onStartCommand(intent, flags, startId)
-        val group = intent.getSerializableExtra(TAG_GROUP_INTENT)
+        val group = intent?.extras?.getParcelable<GroupItem>(TAG_GROUP_INTENT)
+        Log.e(TAG, "on receive intent " + intent?.getStringExtra("test"))
+
         if (group != null) {
-            currentGroup = group as GroupItem
+            currentGroup = group
             startForeground(OUTGOING_NOTIFICATION_ID, buildPendingNotification(currentGroup))
         }
         return START_STICKY
@@ -77,7 +79,7 @@ class LocationService : Service() {
         val scope = Toothpick.openScope(application)
         Toothpick.inject(this, scope)
         try {
-            mLocationManager.requestLocationUpdates(
+            mLocationManager!!.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL.toLong(), LOCATION_DISTANCE,
                     mLocationListeners[1])
         } catch (ex: java.lang.SecurityException) {
@@ -114,6 +116,7 @@ class LocationService : Service() {
     }
 
     private fun buildPendingNotification(groupItem: GroupItem): Notification {
+        /*
         val notificationIntent = Intent(applicationContext, RootActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0)
 
@@ -121,13 +124,20 @@ class LocationService : Service() {
                 .setContentTitle(applicationContext.getString(R.string.app_name))
                 .setContentText(groupItem.name)
                 .build()
+
         notification.contentIntent = pendingIntent
+        */
+        val notification = Notification(R.drawable.ic_add_white, "dadad",
+                System.currentTimeMillis())
+        val notificationIntent = Intent(this, RootActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+
         return notification
     }
 
     companion object {
         val TAG = "BOOMBOOMTESTGPS"
-        val TAG_GROUP_INTENT="roix_group"
+        val TAG_GROUP_INTENT = "roix_group"
         private val OUTGOING_NOTIFICATION_ID = 1
         private val LOCATION_INTERVAL = 10
         private val LOCATION_DISTANCE = 10f
