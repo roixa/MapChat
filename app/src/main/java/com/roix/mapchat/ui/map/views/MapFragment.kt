@@ -39,6 +39,7 @@ import permissions.dispatcher.RuntimePermissions
 class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
+//TODO fix this variables init when reuse map
     var touchMarker: Marker? = null
     var map: GoogleMap? = null
     val markerPairs: MutableList<Pair<MarkerItem, Marker>> = mutableListOf()

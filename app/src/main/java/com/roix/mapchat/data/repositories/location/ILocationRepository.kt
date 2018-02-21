@@ -4,5 +4,5 @@ import com.roix.mapchat.data.models.GroupItem
 import io.reactivex.Completable
 
 interface ILocationRepository {
-    fun sendLocationToGroup(groupItem: GroupItem):Completable
+    fun requestLocationsToGroup(groupItem: GroupItem):Completable
 }
