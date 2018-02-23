@@ -1,6 +1,7 @@
 package com.roix.mapchat.ui.root.viewmodels
 
 import android.arch.lifecycle.MutableLiveData
+import android.content.Context
 import com.roix.mapchat.buissness.root.IRootInteractor
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.toothpick.root.RootModule
@@ -50,9 +51,7 @@ class RootViewModel : BaseLifecycleViewModel() {
 
     fun gotoChatScreen(groupItem: GroupItem) {
         activeGroup.value = groupItem
-        rootInteractor.enterToGroup(groupItem).sub {
-
-        }
+        rootInteractor.enterToGroup(groupItem)
         navigation.value = NavigationState.CHAT
         toolbarTitle.value = groupItem.name
     }

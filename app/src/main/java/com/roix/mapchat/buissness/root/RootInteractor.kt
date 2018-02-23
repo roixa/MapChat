@@ -1,5 +1,6 @@
 package com.roix.mapchat.buissness.root
 
+import android.content.Context
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.repositories.firebase.FirebaseRepository
 import com.roix.mapchat.data.repositories.location.LocationRepository
@@ -17,7 +18,7 @@ class RootInteractor : IRootInteractor {
     @Inject lateinit var firebaseRepository: FirebaseRepository
     @Inject lateinit var locationRepository: LocationRepository
 
-    override fun enterToGroup(groupItem: GroupItem): Completable = locationRepository.requestLocationsToGroup(groupItem)
+    override fun enterToGroup(groupItem: GroupItem) = locationRepository.requestLocationsToGroup(groupItem)
 
 
 }

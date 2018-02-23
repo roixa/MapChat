@@ -23,6 +23,7 @@ import javax.inject.Inject
  */
 @ApplicationScope
 class FirebaseRepository : IFirebaseRepository {
+
     val database = FirebaseDatabase.getInstance()
 
     val PAGE_ITEMS_SIZE = 10
@@ -118,7 +119,7 @@ class FirebaseRepository : IFirebaseRepository {
         })
     }
 
-    override fun getMessagesInGroupChat(ownerUuid: Long): Flowable<List<MessageItem>> = Flowable.create({ e ->
+    override fun listenMessagesInGroupChat(ownerUuid: Long): Flowable<List<MessageItem>> = Flowable.create({ e ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -144,7 +145,7 @@ class FirebaseRepository : IFirebaseRepository {
                 })
     }
 
-    override fun getMarkers(ownerUuid: Long): Flowable<List<MarkerItem>> = Flowable.create({ e ->
+    override fun listenMarkers(ownerUuid: Long): Flowable<List<MarkerItem>> = Flowable.create({ e ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -163,5 +164,12 @@ class FirebaseRepository : IFirebaseRepository {
 
     }, BackpressureStrategy.BUFFER)
 
+    override fun updateUserPosition(groupItem: GroupItem, location: LatLng): Completable = Completable.create {
+        TODO("not implemented") //inmpliment users marker firebase logic
+    }
+
+    override fun listenUsersPositions(groupItem: GroupItem): Flowable<List<MarkerItem>> = Flowable.create({
+        TODO("not implemented") //inmpliment users marker firebase logic
+    }, BackpressureStrategy.BUFFER)
 
 }

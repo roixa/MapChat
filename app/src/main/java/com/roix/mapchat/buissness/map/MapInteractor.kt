@@ -37,5 +37,5 @@ class MapInteractor : IMapInteractor {
     }
 
     override fun getMarkers(groupOwnerUuid: Long): Flowable<List<MarkerItem>> =
-            firebaseRepository.getMarkers(groupOwnerUuid)
+            firebaseRepository.listenMarkers(groupOwnerUuid)
 }

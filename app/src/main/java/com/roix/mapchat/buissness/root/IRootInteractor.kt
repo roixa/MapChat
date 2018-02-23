@@ -1,5 +1,6 @@
 package com.roix.mapchat.buissness.root
 
+import android.content.Context
 import com.roix.mapchat.data.models.GroupItem
 import io.reactivex.Completable
 
@@ -9,5 +10,5 @@ import io.reactivex.Completable
  */
 
 interface IRootInteractor{
-    fun enterToGroup(groupItem: GroupItem):Completable
+    fun enterToGroup(groupItem: GroupItem)
 }

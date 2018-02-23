@@ -25,21 +25,17 @@ import com.roix.mapchat.data.repositories.firebase.FirebaseRepository
  * https://github.com/roixa/RoixArchitectureTemplates
  */
 @ApplicationScope
-class LocationRepository : ILocationRepository {
+class LocationRepository : ILocationRepository, LocationListener {
 
 
     @Inject lateinit var firebaseRepository: FirebaseRepository
 
+    @Inject lateinit var context: Context
+
     private lateinit var currentGroup: GroupItem
 
-    @Inject lateinit var context:Context
+    @Inject constructor()
 
-    val locationListener= LocationListener()
-
-    @Inject constructor(context:Context){
-        this.context=context
-        requestLocationUpdate()
-    }
 
     companion object {
         private val LOCATION_INTERVAL = 10000
@@ -47,26 +43,25 @@ class LocationRepository : ILocationRepository {
     }
 
 
-    override fun requestLocationsToGroup(groupItem: GroupItem): Completable = Completable.create{ e ->
-        //requestLocationUpdate()
-        currentGroup=groupItem
-        e.onComplete()
+    override fun requestLocationsToGroup(groupItem: GroupItem) {
+        requestLocationUpdate(context)
+        currentGroup = groupItem
     }
 
-    private fun requestLocationUpdate(){
+    private fun requestLocationUpdate(context: Context) {
         try {
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
                     LOCATION_INTERVAL.toLong(),
                     LOCATION_DISTANCE,
-                    locationListener
+                    this
             )
             locationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
                     LOCATION_INTERVAL.toLong(),
                     LOCATION_DISTANCE,
-                    locationListener
+                    this
             )
 
         } catch (ex: java.lang.SecurityException) {
@@ -76,22 +71,21 @@ class LocationRepository : ILocationRepository {
         }
 
     }
-     class LocationListener() : android.location.LocationListener {
-        override fun onLocationChanged(location: Location) {
-            Log.e(LocationService.TAG, "onLocationChanged: " + location)
-        }
 
-        override fun onProviderDisabled(provider: String) {
-            Log.e(LocationService.TAG, "onProviderDisabled: " + provider)
-        }
+    override fun onLocationChanged(location: Location) {
+        Log.e(LocationService.TAG, "onLocationChanged: " + location)
+    }
 
-        override fun onProviderEnabled(provider: String) {
-            Log.e(LocationService.TAG, "onProviderEnabled: " + provider)
-        }
+    override fun onProviderDisabled(provider: String) {
+        Log.e(LocationService.TAG, "onProviderDisabled: " + provider)
+    }
 
-        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
-            Log.e(LocationService.TAG, "onStatusChanged: " + provider)
-        }
+    override fun onProviderEnabled(provider: String) {
+        Log.e(LocationService.TAG, "onProviderEnabled: " + provider)
+    }
+
+    override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
+        Log.e(LocationService.TAG, "onStatusChanged: " + provider)
     }
 
 
