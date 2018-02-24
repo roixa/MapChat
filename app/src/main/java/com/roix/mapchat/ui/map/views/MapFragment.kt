@@ -5,8 +5,8 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.Point
-import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -39,15 +39,15 @@ import permissions.dispatcher.RuntimePermissions
 class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
-//TODO fix this variables init when reuse map
+    //TODO fix this variables init when reuse map
     var touchMarker: Marker? = null
     var map: GoogleMap? = null
-    val markerPairs: MutableList<Pair<MarkerItem, Marker>> = mutableListOf()
 
     override fun getLayoutId(): Int = R.layout.fragment_map
 
     override fun setupUi() {
         super.setupUi()
+        Log.d("boux","setupUi")
         val rootViewModel = bindViewModel(RootViewModel::class.java)
         rootViewModel.activeGroup.sub {
             if (it != null) viewModel.onGetCurrentGroup(it)
@@ -58,11 +58,13 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         viewModel.touchMarkerPos.sub {
             handleTouchMarker(it)
         }
-        if (viewModel.markers.value != null) {
-            showMarkers(viewModel.markers.value!!)
-        }
         viewModel.markers.sub {
-            if (it != null) showMarkers(it)
+            map?.clear()
+            Log.d("boux","viewModel.markers.sub "+it.toString())
+            if (it != null){
+                showMarkers(it.first,viewModel.usersMarkerIcons)
+                showMarkers(it.second,viewModel.markerIcons)
+            }
         }
         viewModel.focusLocation.sub {
             if (it != null) moveMapToLocation(it, {})
@@ -113,21 +115,17 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
 
     }
 
-    private fun showMarkers(markers: List<MarkerItem>) {
+    private fun showMarkers(markers: List<MarkerItem>,icons:List<IconItem>) {
+        Log.d("boux","showMarkers "+markers.size)
         for (marker in markers) {
-            val found = markerPairs.find { pair -> pair.first == marker }
-            if (found == null) {
-                val iconRes = viewModel.markerIcons.find { it.pos == marker.iconPos }!!.resId
-                val descriptor = GeneralUtils.vectorToBitmap(activity, iconRes, Color.BLACK)
-                val mapMarker = map?.addMarker(MarkerOptions()
-                        .position(marker.latLng)
-                        .title(marker.name)
-                        .icon(descriptor)
-                        .snippet(DateTimeUtils.convertToDateFormat(marker.time)))
-                val pair = Pair(marker, mapMarker!!)
-                markerPairs.add(pair)
+            val iconRes = (icons.find { it.pos == marker.iconPos }?:icons[0]).resId
+            val descriptor = GeneralUtils.vectorToBitmap(activity, iconRes, Color.BLACK)
+            val mapMarker = map?.addMarker(MarkerOptions()
+                    .position(marker.latLng)
+                    .title(marker.name)
+                    .icon(descriptor)
+                    .snippet(DateTimeUtils.convertToDateFormat(marker.time)))
 
-            }
         }
 
     }
@@ -161,6 +159,8 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        Log.d("boux","onMapReady")
+
         MapFragmentPermissionsDispatcher.setupLocationWithCheck(this, map)
         googleMap.setOnMarkerClickListener(this)
         googleMap.setOnMapClickListener(this)
@@ -179,18 +179,11 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     }
 
     override fun onDestroyView() {
-        viewModel.clearState()
-        map?.clear()
-        map = null
-        touchMarker = null
-        markerPairs.clear()
+        //map?.clear()
+        //map = null
+        //touchMarker = null
         binding.mapView.onDestroy()
         super.onDestroyView()
-
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onResume() {
