@@ -39,14 +39,15 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                     setFragment(ShareFragment::class.java)
                     viewModel.toolbarTitle.value = getString(R.string.title_toolbar_share)
                     clearToolbarItems()
-                    addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
+                    addToolbarItem(R.drawable.ic_share_white, View.OnClickListener {
                         viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_PROCEED_SHARE)
                     })
 
                 }
-                NavigationState.CHAT -> {
-                    setFragment(GroupFragment::class.java)
 
+                NavigationState.CHAT  -> {
+                    setFragment(GroupFragment::class.java)
+                    viewModel.toolbarTitle.value=viewModel.activeGroup.value?.name
                     if (viewModel.activeGroup.value?.status == GroupItem.Status.OWNER) {
                         Log.d("boux","add toolbar item  ")
                         //TODO dont show toolbar item
@@ -56,6 +57,20 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                         })
                     }
                 }
+
+                NavigationState.MAP  -> {
+                    setFragment(GroupFragment::class.java)
+                    viewModel.toolbarTitle.value=viewModel.activeGroup.value?.name
+                    if (viewModel.activeGroup.value?.status == GroupItem.Status.OWNER) {
+                        Log.d("boux","add toolbar item  ")
+                        //TODO dont show toolbar item
+                        clearToolbarItems()
+                        addToolbarItem(R.drawable.ic_share_white, View.OnClickListener {
+                            viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_SHARE)
+                        })
+                    }
+                }
+
 
                 NavigationState.INVITATION -> {
                     setFragment(InvitiationFragment::class.java)

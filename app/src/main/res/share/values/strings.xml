@@ -1,3 +1,7 @@
 <resources>
    <string name="title_toolbar_share">Share group</string>
+   <string name="title_is_invite">Create invite link (or sharable link)</string>
+   <string name="title_is_determ_person_info">Predeterine new member info</string>
+   <string name="title_new_member_name">New member name</string>
+   <string name="title_new_member_icon">Icon</string>
 </resources>
