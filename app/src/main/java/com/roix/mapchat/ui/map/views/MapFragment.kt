@@ -176,6 +176,7 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     fun setupLocation(googleMap: GoogleMap) {
         googleMap.isMyLocationEnabled = true
+        viewModel.onAcceptedMyLocation()
     }
 
     override fun onDestroyView() {

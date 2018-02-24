@@ -1,8 +1,10 @@
 package com.roix.mapchat.ui.root.views
 
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.View
 import com.roix.mapchat.R
+import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.databinding.ActivityRootBinding
 import com.roix.mapchat.ui.common.activities.BaseSingleFragmentActivity
 import com.roix.mapchat.ui.common.view.ToolbarType
@@ -13,6 +15,7 @@ import com.roix.mapchat.ui.new_group.views.NewGroupFragment
 import com.roix.mapchat.ui.root.models.NavigationAction
 import com.roix.mapchat.ui.root.models.NavigationState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
+import com.roix.mapchat.ui.share.views.ShareFragment
 
 /**
  * Created by roix template
@@ -30,11 +33,31 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
     override fun setupUi() {
         super.setupUi()
         viewModel.navigation.sub { state ->
+
             when (state) {
+                NavigationState.SHARE -> {
+                    setFragment(ShareFragment::class.java)
+                    viewModel.toolbarTitle.value = getString(R.string.title_toolbar_share)
+                    clearToolbarItems()
+                    addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
+                        viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_PROCEED_SHARE)
+                    })
+
+                }
                 NavigationState.CHAT -> {
                     setFragment(GroupFragment::class.java)
+
+                    if (viewModel.activeGroup.value?.status == GroupItem.Status.OWNER) {
+                        Log.d("boux","add toolbar item  ")
+                        //TODO dont show toolbar item
+                        clearToolbarItems()
+                        addToolbarItem(R.drawable.ic_share_white, View.OnClickListener {
+                            viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_SHARE)
+                        })
+                    }
                 }
-                NavigationState.INVITATION->{
+
+                NavigationState.INVITATION -> {
                     setFragment(InvitiationFragment::class.java)
                     viewModel.toolbarTitle.value = getString(R.string.toolbar_title_invintation)
                     clearToolbarItems()
@@ -56,6 +79,11 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                     setFragment(GroupsFragment::class.java)
                 }
                 NavigationState.FINISHED -> supportFinishAfterTransition()
+            }
+        }
+        viewModel.toolbarAction.sub {
+            when (it) {
+                NavigationAction.ON_CLICKED_SHARE -> viewModel.navigation.value = NavigationState.SHARE
             }
         }
         viewModel.toolbarTitle.sub { s ->

@@ -9,5 +9,6 @@ enum class NavigationState {
     NEW_GROUP,
     INVITATION,
     CHAT,
-    MAP
+    MAP,
+    SHARE
 }

@@ -6,6 +6,7 @@ import com.roix.mapchat.data.models.MarkerItem
 import com.roix.mapchat.data.repositories.firebase.FirebaseRepository
 import com.roix.mapchat.data.repositories.icons.IconsRepository
 import com.roix.mapchat.data.repositories.icons.models.IconItem
+import com.roix.mapchat.data.repositories.location.LocationRepository
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -23,6 +24,7 @@ class MapInteractor : IMapInteractor {
 
     @Inject lateinit var iconsRepository: IconsRepository
     @Inject lateinit var firebaseRepository: FirebaseRepository
+    @Inject lateinit var locationRepository: LocationRepository
 
 
     override fun getIcons(): Single<List<IconItem>> = iconsRepository.getMarkersIcons()
@@ -44,5 +46,7 @@ class MapInteractor : IMapInteractor {
 
     override fun listenUsersMarkers(groupItem: GroupItem): Flowable<List<MarkerItem>> =
             firebaseRepository.listenUsersPositions(groupItem)
+
+    override fun updateClientPosition(groupItem: GroupItem) = locationRepository.requestLocationsToGroup(groupItem)
 
 }

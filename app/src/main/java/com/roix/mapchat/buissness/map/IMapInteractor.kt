@@ -25,4 +25,7 @@ interface IMapInteractor {
     fun listenMarkers(groupOwnerUuid: Long): Flowable<List<MarkerItem>>
 
     fun listenUsersMarkers(groupItem: GroupItem): Flowable<List<MarkerItem>>
+
+    fun updateClientPosition(groupItem: GroupItem)
+
 }

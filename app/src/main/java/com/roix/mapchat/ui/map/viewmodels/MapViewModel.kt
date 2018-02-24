@@ -67,8 +67,10 @@ class MapViewModel : BaseLifecycleViewModel() {
                 .sub {
                     markers.value = it
                 }
+    }
 
-
+    fun onAcceptedMyLocation(){
+        interactor.updateClientPosition(currentGroup)
     }
 
     fun onClickedCreateMarkerAndAnimatedToMap() {
