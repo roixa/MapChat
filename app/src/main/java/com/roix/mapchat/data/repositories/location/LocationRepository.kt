@@ -17,7 +17,9 @@ import android.os.Build
 import com.roix.mapchat.R
 import com.roix.mapchat.ui.root.views.RootActivity
 import android.os.Bundle
+import com.google.android.gms.maps.model.LatLng
 import com.roix.mapchat.data.repositories.firebase.FirebaseRepository
+import com.roix.mapchat.utils.rx.general.RxSchedulersAbs
 
 
 /**
@@ -31,6 +33,7 @@ class LocationRepository : ILocationRepository, LocationListener {
     @Inject lateinit var firebaseRepository: FirebaseRepository
 
     @Inject lateinit var context: Context
+    @Inject lateinit var rxScheduler: RxSchedulersAbs
 
     private lateinit var currentGroup: GroupItem
 
@@ -74,6 +77,11 @@ class LocationRepository : ILocationRepository, LocationListener {
 
     override fun onLocationChanged(location: Location) {
         Log.e(LocationService.TAG, "onLocationChanged: " + location)
+        firebaseRepository.updateUserPosition(currentGroup, LatLng(location.latitude,location.longitude))
+                .compose(rxScheduler.getIoToMainTransformerCompletable())
+                .subscribe {
+
+                }
     }
 
     override fun onProviderDisabled(provider: String) {

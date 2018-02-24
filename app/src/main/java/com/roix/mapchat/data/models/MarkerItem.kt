@@ -11,4 +11,5 @@ data class MarkerItem(val uuid: Long,
                       val iconPos: Int,
                       val userName: String,
                       val userUuid: Long,
-                      val time: Long)
+                      val time: Long,
+                      val isUser:Boolean)

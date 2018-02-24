@@ -19,6 +19,8 @@ class FirebaseMarker() : Parseble<MarkerItem> {
     var userUuid: Long? = null
     var time: Long? = null
 
+    var userIs:Boolean? = false
+
     constructor(marker: MarkerItem) : this() {
         uuid = marker.uuid
         lattitude = marker.latLng.latitude
@@ -36,8 +38,11 @@ class FirebaseMarker() : Parseble<MarkerItem> {
                     && iconPos != null && userName != null
                     && userUuid != null && time != null
 
-    override fun parse(): MarkerItem = MarkerItem(uuid!!, LatLng(lattitude!!, longitude!!),
-            name!!, iconPos!!,
-            userName!!, userUuid!!, time!!)
+    override fun parse(): MarkerItem =
+            MarkerItem(uuid!!,
+                    LatLng(lattitude!!, longitude!!),
+                    name!!, iconPos!!,
+                    userName!!, userUuid!!,
+                    time!!,userIs?:false)
 
 }

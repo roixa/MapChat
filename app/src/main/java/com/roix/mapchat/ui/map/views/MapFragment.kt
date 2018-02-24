@@ -132,6 +132,7 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
 
     }
 
+
     private fun handleTouchMarker(location: LatLng?) {
         if (location == null) {
             hideFab()

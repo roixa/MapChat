@@ -3,6 +3,7 @@ package com.roix.mapchat.ui.map.viewmodels
 import android.arch.lifecycle.MutableLiveData
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableList
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.roix.mapchat.buissness.map.IMapInteractor
 import com.roix.mapchat.data.models.GroupItem
@@ -10,6 +11,8 @@ import com.roix.mapchat.data.models.MarkerItem
 import com.roix.mapchat.data.repositories.icons.models.IconItem
 import com.roix.mapchat.toothpick.map.MapModule
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
+import io.reactivex.Observable
+import io.reactivex.functions.BiFunction
 import toothpick.config.Module
 import javax.inject.Inject
 
@@ -28,12 +31,17 @@ class MapViewModel : BaseLifecycleViewModel() {
 
 
     //markers data
+    val usersAndMarkers = MutableLiveData<Pair<List<MarkerItem>, List<MarkerItem>>>()
+
     val markers = MutableLiveData<List<MarkerItem>>()
+    val markerIcons: ObservableList<IconItem> = ObservableArrayList<IconItem>()
+
+    val usersMarkers = MutableLiveData<List<MarkerItem>>()
+    val usersMarkerIcons: ObservableList<IconItem> = ObservableArrayList<IconItem>()
 
     //new marker dialog data
     val markerText = MutableLiveData<String>()
     val choosenIcon = MutableLiveData<IconItem>()
-    val markerIcons: ObservableList<IconItem> = ObservableArrayList<IconItem>()
 
 
     //from root viewmodel need for interactor
@@ -48,39 +56,58 @@ class MapViewModel : BaseLifecycleViewModel() {
             choosenIcon.value = it[0]
             markerIcons.addAll(it)
         }
+        interactor.getUserIcons().sub {
+            usersMarkerIcons.addAll(it)
+        }
+
+
     }
 
     fun onGetCurrentGroup(groupItem: GroupItem) {
         currentGroup = groupItem
-        interactor.getMarkers(currentGroup.ownerUUid).toObservable().sub {
+        interactor.listenMarkers(currentGroup.ownerUUid).toObservable().sub {
             if (!it.isEmpty() && markers.value == null) {
                 focusLocation.value = it.last().latLng
             }
             markers.value = it
         }
+        interactor.listenUsersMarkers(currentGroup).toObservable().sub {
+            usersMarkers.value = it
+
+        }
+
+        Observable.combineLatest<List<MarkerItem>, List<MarkerItem>,
+                Pair<List<MarkerItem>, List<MarkerItem>>>(
+                interactor.listenUsersMarkers(currentGroup).toObservable(),
+                interactor.listenMarkers(currentGroup.ownerUUid).toObservable(),
+                BiFunction { t1, t2 -> Pair(t1, t2) })
+                .sub {
+                    usersAndMarkers.value=it
+                }
+
 
     }
 
     fun onClickedCreateMarkerAndAnimatedToMap() {
         interactor.addMarker(currentGroup.ownerUUid, markerText.value!!, touchMarkerPos.value!!,
-                            choosenIcon.value?.pos?:1, currentGroup.client!!.name, currentGroup
+                choosenIcon.value?.pos ?: 1, currentGroup.client!!.name, currentGroup
                 .client!!.uid).sub {
-                    touchMarkerPos.value = null
-                }
+            touchMarkerPos.value = null
+        }
     }
 
-    fun onMarkerClick(){
-        touchMarkerPos.value=null
+    fun onMarkerClick() {
+        touchMarkerPos.value = null
     }
 
     fun onClickedIconInCreateDialog(pos: Int) {
         choosenIcon.value = markerIcons[pos]
     }
 
-    fun clearState(){
-        focusLocation.value=null
-        touchMarkerPos.value=null
-        markers.value=null
-        markerText.value=null
+    fun clearState() {
+        focusLocation.value = null
+        touchMarkerPos.value = null
+        markers.value = null
+        markerText.value = null
     }
 }

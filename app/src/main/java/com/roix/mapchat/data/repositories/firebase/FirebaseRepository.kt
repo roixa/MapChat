@@ -165,11 +165,38 @@ class FirebaseRepository : IFirebaseRepository {
     }, BackpressureStrategy.BUFFER)
 
     override fun updateUserPosition(groupItem: GroupItem, location: LatLng): Completable = Completable.create {
-        TODO("not implemented") //inmpliment users marker firebase logic
+        val client=groupItem.client
+        if(client==null){
+            it.onError(Throwable("client in group not found"))
+            return@create
+        }
+        val marker=MarkerItem(groupItem.ownerUUid,location,client.name,client.iconPos,client.name,client.uid,System.currentTimeMillis(),true)
+        database.getReference("groups")
+                .child(groupItem.ownerUUid.toString())
+                .child("usersMarkers")
+                .child(groupItem.client?.uid.toString())
+                .setValue(FirebaseMarker(marker), { databaseError, databaseReference ->
+                    it.onComplete()
+                })
     }
 
     override fun listenUsersPositions(groupItem: GroupItem): Flowable<List<MarkerItem>> = Flowable.create({
-        TODO("not implemented") //inmpliment users marker firebase logic
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError?) {}
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val list = ArrayList<MarkerItem>()
+                dataSnapshot.children
+                        .mapNotNull { it.getValue(FirebaseMarker::class.java) }
+                        .filter { it.isValid() }
+                        .mapTo(list) { it.parse() }
+                it.onNext(list)
+            }
+        }
+        database.getReference("groups")
+                .child(groupItem.ownerUUid.toString())
+                .child("usersMarkers")
+                .addValueEventListener(listener)
+
     }, BackpressureStrategy.BUFFER)
 
 }
