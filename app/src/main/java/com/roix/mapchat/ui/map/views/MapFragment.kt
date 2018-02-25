@@ -52,9 +52,6 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         rootViewModel.activeGroup.sub {
             if (it != null) viewModel.onGetCurrentGroup(it)
         }
-        if (viewModel.touchMarkerPos.value != null) {
-            handleTouchMarker(viewModel.touchMarkerPos.value)
-        }
         viewModel.touchMarkerPos.sub {
             handleTouchMarker(it)
         }
@@ -74,9 +71,11 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     override fun setupBinding() {
         super.setupBinding()
         binding.fab.setOnClickListener {
-            moveMapToLocation(touchMarker?.position!!, {
-                onClickedMarkerFabAndAnimationEnd()
-            })
+            if(touchMarker?.position!=null){
+                moveMapToLocation(touchMarker?.position!!, {
+                    onClickedMarkerFabAndAnimationEnd()
+                })
+            }
         }
         binding.mapView.onCreate(null)
         binding.mapView.getMapAsync(this)
@@ -180,9 +179,10 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     }
 
     override fun onDestroyView() {
-        //map?.clear()
-        //map = null
-        //touchMarker = null
+        map?.clear()
+        map = null
+        touchMarker = null
+        viewModel.touchMarkerPos.value=null
         binding.mapView.onDestroy()
         super.onDestroyView()
     }

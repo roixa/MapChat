@@ -3,6 +3,7 @@ package com.roix.mapchat.ui.root.views
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.roix.mapchat.R
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.databinding.ActivityRootBinding
@@ -16,6 +17,7 @@ import com.roix.mapchat.ui.root.models.NavigationAction
 import com.roix.mapchat.ui.root.models.NavigationState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.ui.share.views.ShareFragment
+
 
 /**
  * Created by roix template
@@ -32,8 +34,8 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
 
     override fun setupUi() {
         super.setupUi()
+        listenDynamicLinks()
         viewModel.navigation.sub { state ->
-
             when (state) {
                 NavigationState.SHARE -> {
                     setFragment(ShareFragment::class.java)
@@ -113,6 +115,22 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
 
     override fun goBack() {
         viewModel.goBack()
+    }
+
+    private fun listenDynamicLinks(){
+        //TODO maybe inject this
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(intent)
+                .addOnSuccessListener(this) { pendingDynamicLinkData ->
+                    if (pendingDynamicLinkData != null) {
+                        val deepLink = pendingDynamicLinkData.link
+                        Log.d("boux", "getDynamicLink: deepLink"+ deepLink)
+
+                    }
+
+                }
+                .addOnFailureListener(this) { e -> Log.w("boux", "getDynamicLink:onFailure", e) }
+
     }
 
 }

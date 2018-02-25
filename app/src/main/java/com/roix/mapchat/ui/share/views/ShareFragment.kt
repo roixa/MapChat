@@ -1,5 +1,6 @@
 package com.roix.mapchat.ui.share.views
 
+import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import com.roix.mapchat.R
@@ -12,6 +13,7 @@ import com.roix.mapchat.ui.root.models.NavigationAction
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.ui.share.viewmodels.ShareViewModel
 import com.roix.mapchat.utils.ui.ItemClickSupport
+
 
 /**
  * Created by roix template
@@ -46,12 +48,21 @@ class ShareFragment : BaseDatabindingFragment<ShareViewModel, FragmentShareBindi
                 NavigationAction.ON_CLICKED_PROCEED_SHARE->
                     viewModel.shareClickEvent.sub { s ->
                         Log.d("boux"," shareClickEvent " +s)
+                        if(s!=null){
+                            sendShareIntent(s)
+                        }
                     }
             }
         }
-
-
     }
 
+    private fun sendShareIntent(link:String){
+        val sendIntent = Intent()
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.putExtra(Intent.EXTRA_TEXT, link)
+        sendIntent.type = "text/plain"
+        startActivity(sendIntent)
+
+    }
 }
 
