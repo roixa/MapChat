@@ -83,6 +83,7 @@ dependencies {
     compile "com.google.firebase:firebase-database:$firebaseVersion"
     compile "com.google.firebase:firebase-core:$firebaseVersion"
     compile "com.google.android.gms:play-services-maps:$firebaseVersion"
+    compile "com.google.firebase:firebase-invites:$firebaseVersion"
 
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"

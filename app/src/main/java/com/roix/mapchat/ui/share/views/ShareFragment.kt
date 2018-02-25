@@ -1,12 +1,15 @@
 package com.roix.mapchat.ui.share.views
 
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import com.roix.mapchat.R
 import com.roix.mapchat.data.repositories.icons.models.IconItem
 import com.roix.mapchat.databinding.FragmentShareBinding
 import com.roix.mapchat.databinding.IconItemBinding
 import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
+import com.roix.mapchat.ui.root.models.NavigationAction
+import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.ui.share.viewmodels.ShareViewModel
 import com.roix.mapchat.utils.ui.ItemClickSupport
 
@@ -17,7 +20,14 @@ import com.roix.mapchat.utils.ui.ItemClickSupport
 
 class ShareFragment : BaseDatabindingFragment<ShareViewModel, FragmentShareBinding>() {
 
+    lateinit var rootViewModel: RootViewModel
+
     override fun getLayoutId(): Int = R.layout.fragment_share
+
+    override fun setupUi() {
+        super.setupUi()
+        rootViewModel = bindViewModel(RootViewModel::class.java)
+    }
 
     override fun setupBinding() {
         super.setupBinding()
@@ -26,9 +36,18 @@ class ShareFragment : BaseDatabindingFragment<ShareViewModel, FragmentShareBindi
                 .layout.icon_item)
         ItemClickSupport.addTo(binding.rv).setOnItemClickListener { recyclerView, i, view ->
             viewModel.onClickedIcon(i)
-
             //TODO very strange bug 4
             binding.ivIcon.setImageResource(viewModel.choosenIcon.value!!.resId)
+        }
+
+        viewModel.receiveCurrentGroup( rootViewModel.activeGroup.value!!)
+        rootViewModel.toolbarAction.sub {
+            when(it){
+                NavigationAction.ON_CLICKED_PROCEED_SHARE->
+                    viewModel.shareClickEvent.sub { s ->
+                        Log.d("boux"," shareClickEvent " +s)
+                    }
+            }
         }
 
 

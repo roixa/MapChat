@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.models.MarkerItem
 import com.roix.mapchat.data.models.MessageItem
-import com.roix.mapchat.data.models.User
+import com.roix.mapchat.data.models.ShareConfig
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseUser
 import io.reactivex.Completable
@@ -29,5 +29,9 @@ interface IFirebaseRepository {
     fun listenMarkers(ownerUuid: Long): Flowable<List<MarkerItem>>
 
     fun updateUserPosition(groupItem: GroupItem, location: LatLng): Completable
-    fun listenUsersPositions(groupItem: GroupItem):Flowable<List<MarkerItem>>
+    fun listenUsersPositions(groupItem: GroupItem): Flowable<List<MarkerItem>>
+
+    fun postShareConfig(shareConfig: ShareConfig): Completable
+    fun removeShareConfig(shareConfig: ShareConfig): Completable
+    fun getShareConfig(configUuid: Long): Single<ShareConfig>
 }

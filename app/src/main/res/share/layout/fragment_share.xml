@@ -24,22 +24,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:text="@string/title_is_invite"
-            android:checked="@={viewmodel.isInvite}"
+            android:checked="@={viewmodel.invite}"
             tools:text="Create invite" />
 
         <CheckBox
-            android:visibility="@{viewmodel.isInvite}"
+            android:visibility="@{viewmodel.invite}"
             android:id="@+id/cb_determ_user_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cb_create_invite"
             android:text="@string/title_is_determ_person_info"
-            android:checked="@={viewmodel.isDetermPerson}"
+            android:checked="@={viewmodel.determPerson}"
             tools:text="determ user info" />
 
         <android.support.design.widget.TextInputLayout
-            android:visibility="@{viewmodel.isDetermPerson}"
+            android:visibility="@{viewmodel.determPerson}"
 
             android:id="@+id/et_owner_name"
             android:layout_width="match_parent"
@@ -55,7 +55,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <TextView
-            android:visibility="@{viewmodel.isDetermPerson}"
+            android:visibility="@{viewmodel.determPerson}"
 
             android:id="@+id/tv_owner_icon"
             android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
             app:layout_constraintTop_toBottomOf="@+id/et_owner_name" />
         <ImageView
             android:id="@+id/iv_icon"
-            android:visibility="@{viewmodel.isDetermPerson}"
+            android:visibility="@{viewmodel.determPerson}"
 
             android:layout_width="@dimen/small_view_height"
             android:layout_height="@dimen/small_view_height"
@@ -79,7 +79,7 @@
             app:srcVector="@{viewmodel.choosenIcon.resId}" />
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv"
-            android:visibility="@{viewmodel.isDetermPerson}"
+            android:visibility="@{viewmodel.determPerson}"
 
             android:layout_width="0dp"
             android:layout_height="wrap_content"

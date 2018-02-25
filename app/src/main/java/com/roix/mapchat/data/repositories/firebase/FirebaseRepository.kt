@@ -8,10 +8,8 @@ import com.google.firebase.database.ValueEventListener
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.models.MarkerItem
 import com.roix.mapchat.data.models.MessageItem
-import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
-import com.roix.mapchat.data.repositories.firebase.models.FirebaseMarker
-import com.roix.mapchat.data.repositories.firebase.models.FirebaseMessage
-import com.roix.mapchat.data.repositories.firebase.models.FirebaseUser
+import com.roix.mapchat.data.models.ShareConfig
+import com.roix.mapchat.data.repositories.firebase.models.*
 import com.roix.mapchat.toothpick.common.ApplicationScope
 import io.reactivex.*
 import javax.inject.Inject
@@ -27,13 +25,14 @@ class FirebaseRepository : IFirebaseRepository {
     val database = FirebaseDatabase.getInstance()
 
     val PAGE_ITEMS_SIZE = 10
+    val PREFIX_GROUP = "group_"
+    val PREFIX_INVITE = "invite_"
 
     @Inject constructor() {}
 
     override fun createGroup(group: FirebaseGroup): Single<GroupItem> = Single.create { e ->
         val ownerUuid = group.users!![0].uid
-        database.getReference("groups")
-                .child(ownerUuid!!.toString())
+        database.getReference(PREFIX_GROUP+ownerUuid!!.toString())
                 .child("group")
                 .setValue(group, { databaseError, databaseReference ->
                     if (databaseError == null) {
@@ -58,7 +57,7 @@ class FirebaseRepository : IFirebaseRepository {
                 }
             }
         }
-        database.getReference("groups").child(groupUuid.toString()).addListenerForSingleValueEvent(listener)
+        database.getReference(PREFIX_GROUP+groupUuid.toString()).addListenerForSingleValueEvent(listener)
 
     }
 
@@ -78,12 +77,12 @@ class FirebaseRepository : IFirebaseRepository {
             }
         }
         if (lastUUid != -1L) {
-            database.getReference("groups").orderByKey().limitToFirst(PAGE_ITEMS_SIZE)
+            database.reference.orderByKey().limitToFirst(PAGE_ITEMS_SIZE)
                     .startAt(lastUUid.toString())
 
                     .addListenerForSingleValueEvent(listener)
         } else {
-            database.getReference("groups").orderByKey().limitToFirst(PAGE_ITEMS_SIZE)
+            database.reference.orderByKey().limitToFirst(PAGE_ITEMS_SIZE)
                     .addListenerForSingleValueEvent(listener)
         }
 
@@ -103,14 +102,15 @@ class FirebaseRepository : IFirebaseRepository {
                 }
             }
         }
-        database.getReference("groups").child(uid.toString()).addListenerForSingleValueEvent(listener)
+        database.getReference(PREFIX_GROUP+uid.toString()).addListenerForSingleValueEvent(listener)
     }
 
     override fun postMessagesInGroupChat(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
                                          , location: LatLng?): Completable = Completable.create { e ->
         val message = FirebaseMessage(message, author, unixTimeStamp, location?.longitude,
                 location?.latitude)
-        database.getReference("groups").child(ownerUuid.toString()).child("messages").push().setValue(message, { databaseError, databaseReference ->
+        database.getReference(PREFIX_GROUP+ownerUuid.toString())
+                .child("messages").push().setValue(message, { databaseError, databaseReference ->
             if (databaseError == null) {
                 e.onComplete()
             } else {
@@ -132,12 +132,11 @@ class FirebaseRepository : IFirebaseRepository {
                 e.onNext(list)
             }
         }
-        database.getReference("groups").child(ownerUuid.toString()).child("messages").addValueEventListener(listener)
+        database.getReference(PREFIX_GROUP+ownerUuid.toString()).child("messages").addValueEventListener(listener)
     }, BackpressureStrategy.BUFFER)
 
     override fun addMarkerToGroup(ownerUuid: Long, marker: MarkerItem): Completable = Completable.create { e ->
-        database.getReference("groups")
-                .child(ownerUuid.toString())
+        database.getReference(PREFIX_GROUP+ownerUuid.toString())
                 .child("markers")
                 .child(marker.uuid.toString())
                 .setValue(FirebaseMarker(marker), { databaseError, databaseReference ->
@@ -157,8 +156,7 @@ class FirebaseRepository : IFirebaseRepository {
                 e.onNext(list)
             }
         }
-        database.getReference("groups")
-                .child(ownerUuid.toString())
+        database.getReference(PREFIX_GROUP+ownerUuid.toString())
                 .child("markers")
                 .addValueEventListener(listener)
 
@@ -171,8 +169,7 @@ class FirebaseRepository : IFirebaseRepository {
             return@create
         }
         val marker=MarkerItem(groupItem.ownerUUid,location,client.name,client.iconPos,client.name,client.uid,System.currentTimeMillis(),true)
-        database.getReference("groups")
-                .child(groupItem.ownerUUid.toString())
+        database.getReference(PREFIX_GROUP+groupItem.ownerUUid.toString())
                 .child("usersMarkers")
                 .child(groupItem.client?.uid.toString())
                 .setValue(FirebaseMarker(marker), { databaseError, databaseReference ->
@@ -192,11 +189,39 @@ class FirebaseRepository : IFirebaseRepository {
                 it.onNext(list)
             }
         }
-        database.getReference("groups")
-                .child(groupItem.ownerUUid.toString())
+        database.getReference(PREFIX_GROUP+groupItem.ownerUUid.toString())
                 .child("usersMarkers")
                 .addValueEventListener(listener)
-
     }, BackpressureStrategy.BUFFER)
+
+
+    override fun postShareConfig(shareConfig: ShareConfig): Completable = Completable.create{e ->
+        database.getReference(PREFIX_INVITE+shareConfig.uuid)
+                .setValue(FirebaseShareConfig.from(shareConfig), { databaseError, databaseReference ->
+                    e.onComplete()
+                })
+    }
+
+    override fun removeShareConfig(shareConfig: ShareConfig): Completable = Completable.create{ e ->
+        database.getReference(PREFIX_INVITE+shareConfig.uuid)
+                .removeValue{databaseError, databaseReference ->
+                    e.onComplete()
+        }
+    }
+
+    override fun getShareConfig(configUuid: Long): Single<ShareConfig> = Single.create{e ->
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError?) {}
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val config =dataSnapshot.getValue(FirebaseShareConfig::class.java)
+                if(config!=null&&config.isValid()){
+                    e.onSuccess(config.parse())
+                }else{
+                    e.onError(Throwable("config_not_found"))
+                }
+            }
+        }
+        database.getReference(PREFIX_INVITE+configUuid).addListenerForSingleValueEvent(listener)
+    }
 
 }

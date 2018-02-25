@@ -1,5 +1,6 @@
 package com.roix.mapchat.buissness.share
 
+import com.roix.mapchat.data.models.ShareConfig
 import com.roix.mapchat.data.repositories.icons.models.IconItem
 import io.reactivex.Single
 
@@ -14,4 +15,5 @@ import io.reactivex.Single
  */
 interface IShareInteractor{
     fun getItems(): Single<List<IconItem>>
+    fun postShareConfig(shareConfig: ShareConfig):Single<String>
 }
