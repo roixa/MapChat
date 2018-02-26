@@ -46,7 +46,7 @@ class ShareFragment : BaseDatabindingFragment<ShareViewModel, FragmentShareBindi
         rootViewModel.toolbarAction.sub {
             when(it){
                 NavigationAction.ON_CLICKED_PROCEED_SHARE->
-                    viewModel.shareClickEvent.sub { s ->
+                    viewModel.shareClickEvent().sub { s ->
                         Log.d("boux"," shareClickEvent " +s)
                         if(s!=null){
                             sendShareIntent(s)

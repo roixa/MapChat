@@ -21,7 +21,7 @@ class DynamicLinksRepository : IDynamicLinksRepository {
 
     override fun buildDynamicInviteLink(uuid: Long): Single<String> = Single.create { e ->
         val url = dynamicLink.createDynamicLink()
-                .setLink(Uri.parse("https://mapchat.com/"))
+                .setLink(Uri.parse("https://mapchat.com/query?q="+uuid))
                 .setDynamicLinkDomain("z9695.app.goo.gl")
                 .setAndroidParameters(DynamicLink.AndroidParameters.Builder().build())
                 .buildDynamicLink().uri

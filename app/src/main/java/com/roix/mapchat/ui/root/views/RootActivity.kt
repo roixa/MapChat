@@ -47,11 +47,11 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
 
                 }
 
-                NavigationState.CHAT  -> {
+                NavigationState.CHAT -> {
                     setFragment(GroupFragment::class.java)
-                    viewModel.toolbarTitle.value=viewModel.activeGroup.value?.name
+                    viewModel.toolbarTitle.value = viewModel.activeGroup.value?.name
                     if (viewModel.activeGroup.value?.status == GroupItem.Status.OWNER) {
-                        Log.d("boux","add toolbar item  ")
+                        Log.d("boux", "add toolbar item  ")
                         //TODO dont show toolbar item
                         clearToolbarItems()
                         addToolbarItem(R.drawable.ic_share_white, View.OnClickListener {
@@ -60,11 +60,11 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                     }
                 }
 
-                NavigationState.MAP  -> {
+                NavigationState.MAP -> {
                     setFragment(GroupFragment::class.java)
-                    viewModel.toolbarTitle.value=viewModel.activeGroup.value?.name
+                    viewModel.toolbarTitle.value = viewModel.activeGroup.value?.name
                     if (viewModel.activeGroup.value?.status == GroupItem.Status.OWNER) {
-                        Log.d("boux","add toolbar item  ")
+                        Log.d("boux", "add toolbar item  ")
                         //TODO dont show toolbar item
                         clearToolbarItems()
                         addToolbarItem(R.drawable.ic_share_white, View.OnClickListener {
@@ -100,7 +100,7 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
         }
         viewModel.toolbarAction.sub {
             when (it) {
-                NavigationAction.ON_CLICKED_SHARE -> viewModel.navigation.value = NavigationState.SHARE
+                NavigationAction.ON_CLICKED_SHARE -> viewModel.gotoShareScreen()
             }
         }
         viewModel.toolbarTitle.sub { s ->
@@ -117,15 +117,16 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
         viewModel.goBack()
     }
 
-    private fun listenDynamicLinks(){
+    private fun listenDynamicLinks() {
         //TODO maybe inject this
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(intent)
                 .addOnSuccessListener(this) { pendingDynamicLinkData ->
                     if (pendingDynamicLinkData != null) {
                         val deepLink = pendingDynamicLinkData.link
-                        Log.d("boux", "getDynamicLink: deepLink"+ deepLink)
-
+                        val uuid = deepLink.getQueryParameter("q")
+                        Log.d("boux", "getDynamicLink: deepLink" + deepLink + " query " + uuid)
+                        viewModel.onReceiveDeepLink(uuid.toLong())
                     }
 
                 }

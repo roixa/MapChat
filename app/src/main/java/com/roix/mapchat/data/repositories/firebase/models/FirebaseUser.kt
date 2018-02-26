@@ -6,7 +6,7 @@ import com.roix.mapchat.data.models.User
 /**
  * Created by roix on 22.01.2018.
  */
-data class FirebaseUser(val uid: Long?, val groupOwnerUuid: Long?, val name: String?, val iconPos: Int?) : Parseble<User> {
+data class FirebaseUser(var uid: Long?, var groupOwnerUuid: Long?, var name: String?, var iconPos: Int?) : Parseble<User> {
     constructor() : this(null, null, null, null)
 
     override fun isValid(): Boolean = uid != null && name != null && iconPos != null && groupOwnerUuid != null

@@ -60,7 +60,7 @@ android {
                     , "src/main/res/chat"
                     , "src/main/res/invitiation"
                     , "src/main/res/test_architecture"
-                    , "src/main/res/share"]
+                    , "src/main/res/share", "src/main/res/splash"]
         }
     }
 }

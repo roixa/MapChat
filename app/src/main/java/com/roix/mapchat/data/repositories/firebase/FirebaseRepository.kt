@@ -1,5 +1,6 @@
 package com.roix.mapchat.data.repositories.firebase
 
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -196,6 +197,7 @@ class FirebaseRepository : IFirebaseRepository {
 
 
     override fun postShareConfig(shareConfig: ShareConfig): Completable = Completable.create{e ->
+        Log.d("data_boux",shareConfig.toString())
         database.getReference(PREFIX_INVITE+shareConfig.uuid)
                 .setValue(FirebaseShareConfig.from(shareConfig), { databaseError, databaseReference ->
                     e.onComplete()

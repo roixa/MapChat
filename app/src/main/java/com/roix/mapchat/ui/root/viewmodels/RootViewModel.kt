@@ -55,12 +55,30 @@ class RootViewModel : BaseLifecycleViewModel() {
         toolbarTitle.value = groupItem.name
     }
 
+    fun gotoInviteScreen(group: GroupItem){
+        navigation.value = NavigationState.INVITATION
+        activeGroup.value = group
+    }
+
+    fun gotoShareScreen(){
+        navigation.value = NavigationState.SHARE
+    }
+
     fun onClickedGroupItem(group: GroupItem) {
         if (group.status == GroupItem.Status.NOT_MEMBER) {
-            navigation.value = NavigationState.INVITATION
-            activeGroup.value = group
+            gotoInviteScreen(group)
         } else if (group.status != GroupItem.Status.INFO) {
             gotoChatScreen(group)
+        }
+    }
+
+    fun onReceiveDeepLink(qroupUuid:Long){
+        rootInteractor.proceedReceiveDeepLink(qroupUuid).sub { pair ->
+            if(!pair.first){
+                gotoChatScreen(pair.second)
+            }else{
+                gotoInviteScreen(pair.second)
+            }
         }
     }
 }

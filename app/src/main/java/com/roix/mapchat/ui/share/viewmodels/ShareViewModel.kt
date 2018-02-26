@@ -31,7 +31,8 @@ class ShareViewModel : BaseLifecycleViewModel() {
     @Inject
     protected lateinit var interactor: IShareInteractor
 
-    lateinit var shareClickEvent : Single<String>
+    fun shareClickEvent(): Single<String> = interactor.postShareConfig(ShareConfig(UUID.randomUUID().mostSignificantBits, currentGroup!!.ownerUUid,
+            invite.value == true, determPerson.value == true, name.value, choosenIcon.value?.pos))
 
     override fun getModule(): Module = ShareModule()
 
@@ -48,10 +49,9 @@ class ShareViewModel : BaseLifecycleViewModel() {
         choosenIcon.value = icons[pos]
     }
 
-    fun receiveCurrentGroup(groupItem: GroupItem){
-        shareClickEvent  = interactor.postShareConfig(ShareConfig(UUID.randomUUID().mostSignificantBits, groupItem.ownerUUid,
-                invite.value ?: false, determPerson.value ?: false, name.value, choosenIcon.value?.pos))
+    fun receiveCurrentGroup(groupItem: GroupItem) {
 
+        currentGroup = groupItem
     }
 
 
