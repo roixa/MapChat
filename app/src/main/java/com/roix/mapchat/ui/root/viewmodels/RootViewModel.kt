@@ -1,6 +1,7 @@
 package com.roix.mapchat.ui.root.viewmodels
 
 import android.arch.lifecycle.MutableLiveData
+import android.util.Log
 import com.roix.mapchat.buissness.root.IRootInteractor
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.toothpick.root.RootModule
@@ -74,7 +75,9 @@ class RootViewModel : BaseLifecycleViewModel() {
 
     fun onReceiveDeepLink(qroupUuid:Long){
         rootInteractor.proceedReceiveDeepLink(qroupUuid).sub { pair ->
-            if(!pair.first){
+            Log.d("data_boux","proceedReceiveDeepLink sub isdetermpersoninfo"+pair.first)
+
+            if(pair.first){
                 gotoChatScreen(pair.second)
             }else{
                 gotoInviteScreen(pair.second)

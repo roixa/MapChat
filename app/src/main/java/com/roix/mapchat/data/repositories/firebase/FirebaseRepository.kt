@@ -32,12 +32,15 @@ class FirebaseRepository : IFirebaseRepository {
     @Inject constructor() {}
 
     override fun createGroup(group: FirebaseGroup): Single<GroupItem> = Single.create { e ->
-        val ownerUuid = group.users!![0].uid
+        val owner= group.users!![0]
+        val ownerUuid = owner.uid
         database.getReference(PREFIX_GROUP+ownerUuid!!.toString())
                 .child("group")
                 .setValue(group, { databaseError, databaseReference ->
                     if (databaseError == null) {
-                        e.onSuccess(group.parse())
+                        val ret= group.parse()
+                        ret.client=owner.parse()
+                        e.onSuccess(ret)
                     } else {
                         e.onError(databaseError.toException())
                     }
@@ -45,10 +48,14 @@ class FirebaseRepository : IFirebaseRepository {
     }
 
     override fun enterToGroup(user: FirebaseUser, groupUuid: Long): Single<GroupItem> = Single.create { e ->
+        Log.d("data_boux","FirebaseRepository enterToGroup start "+user.toString())
+
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(snap: DataSnapshot) {
                 val group = snap.child("group").getValue(FirebaseGroup::class.java)
+                Log.d("data_boux","FirebaseRepository enterToGroup "+group.toString())
+
                 if (group != null) {
                     group.users!!.add(user)
                     snap.child("group").ref.setValue(group)
@@ -164,6 +171,8 @@ class FirebaseRepository : IFirebaseRepository {
     }, BackpressureStrategy.BUFFER)
 
     override fun updateUserPosition(groupItem: GroupItem, location: LatLng): Completable = Completable.create {
+        Log.d("data_boux","FirebaseRepository updateUserPosition groupItem "+groupItem.toString())
+
         val client=groupItem.client
         if(client==null){
             it.onError(Throwable("client in group not found"))
@@ -197,7 +206,7 @@ class FirebaseRepository : IFirebaseRepository {
 
 
     override fun postShareConfig(shareConfig: ShareConfig): Completable = Completable.create{e ->
-        Log.d("data_boux",shareConfig.toString())
+        Log.d("data_boux","postShareConfig "+shareConfig.toString())
         database.getReference(PREFIX_INVITE+shareConfig.uuid)
                 .setValue(FirebaseShareConfig.from(shareConfig), { databaseError, databaseReference ->
                     e.onComplete()
@@ -205,6 +214,8 @@ class FirebaseRepository : IFirebaseRepository {
     }
 
     override fun removeShareConfig(shareConfig: ShareConfig): Completable = Completable.create{ e ->
+        Log.d("data_boux","removeShareConfig "+shareConfig.toString())
+
         database.getReference(PREFIX_INVITE+shareConfig.uuid)
                 .removeValue{databaseError, databaseReference ->
                     e.onComplete()
@@ -212,11 +223,14 @@ class FirebaseRepository : IFirebaseRepository {
     }
 
     override fun getShareConfig(configUuid: Long): Single<ShareConfig> = Single.create{e ->
+
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val config =dataSnapshot.getValue(FirebaseShareConfig::class.java)
                 if(config!=null&&config.isValid()){
+                    Log.d("data_boux","getShareConfig "+config.toString())
+
                     e.onSuccess(config.parse())
                 }else{
                     e.onError(Throwable("config_not_found"))

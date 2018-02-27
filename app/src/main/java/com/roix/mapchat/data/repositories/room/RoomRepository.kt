@@ -1,14 +1,14 @@
 package com.roix.mapchat.data.repositories.room
 
-import android.content.Context
-import com.roix.mapchat.toothpick.common.ApplicationScope
-import javax.inject.Inject
 import android.arch.persistence.room.Room
+import android.content.Context
 import android.util.Log
 import com.roix.mapchat.data.models.User
 import com.roix.mapchat.data.repositories.room.models.RoomUser
+import com.roix.mapchat.toothpick.common.ApplicationScope
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
 
 /**
@@ -25,13 +25,17 @@ class RoomRepository : IRoomRepository {
                 AppDatabase::class.java, "database-name").build()
     }
 
-    override fun saveUser(user: RoomUser): Completable = Completable.create{e ->
+    override fun saveUser(user: RoomUser): Completable = Completable.create{
+        Log.d("data_boux","RoomRepository saveUser "+user.toString()+ it.toString())
+
         db.userDao().insertAll(user)
-        e.onComplete()
+        it.onComplete()
     }
 
     override fun getSavedUsers(): Single<List<User>> = Single.create{e ->
+
         val users = db.userDao().getAll()
+        Log.d("data_boux","RoomRepository getSavedUsers "+users.toString())
         val ret= ArrayList<User>()
         for(user in users){
             if(user.isValid()){
