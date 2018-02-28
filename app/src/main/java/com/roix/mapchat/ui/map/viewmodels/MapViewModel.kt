@@ -1,5 +1,6 @@
 package com.roix.mapchat.ui.map.viewmodels
 
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableList
@@ -14,6 +15,7 @@ import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import toothpick.config.Module
 import javax.inject.Inject
+
 
 /**
  * Created by roix on 06.01.2018.
@@ -38,6 +40,7 @@ class MapViewModel : BaseLifecycleViewModel() {
     val markerText = MutableLiveData<String>()
     val choosenIcon = MutableLiveData<IconItem>()
 
+    val markerTextError = MediatorLiveData<String>()
 
     //from root viewmodel need for interactor
     lateinit var currentGroup: GroupItem
@@ -54,8 +57,12 @@ class MapViewModel : BaseLifecycleViewModel() {
         interactor.getUserIcons().sub {
             usersMarkerIcons.addAll(it)
         }
+        markerTextError.addSource(markerText,{t ->
+            isValid(t)
+        })
 
     }
+
 
     fun onGetCurrentGroup(groupItem: GroupItem) {
         currentGroup = groupItem
@@ -74,11 +81,14 @@ class MapViewModel : BaseLifecycleViewModel() {
     }
 
     fun onClickedCreateMarkerAndAnimatedToMap() {
-        interactor.addMarker(currentGroup.ownerUUid, markerText.value!!, touchMarkerPos.value!!,
-                choosenIcon.value?.pos ?: 1, currentGroup.client!!.name, currentGroup
-                .client!!.uid).sub {
-                    touchMarkerPos.value = null
-                }
+        if(isValid()){
+            interactor.addMarker(currentGroup.ownerUUid, markerText.value!!, touchMarkerPos.value!!,
+                    choosenIcon.value?.pos ?: 1, currentGroup.client!!.name, currentGroup
+                    .client!!.uid).sub {
+                touchMarkerPos.value = null
+            }
+
+        }
     }
 
     fun onMarkerClick() {
@@ -88,4 +98,25 @@ class MapViewModel : BaseLifecycleViewModel() {
     fun onClickedIconInCreateDialog(pos: Int) {
         choosenIcon.value = markerIcons[pos]
     }
+
+    private fun isValid():Boolean{
+        return if (markerText.value== null || markerText.value!!.length < 3) {
+            markerTextError.value="Too short!"
+            return false
+        } else {
+            return true
+        }
+
+    }
+
+    private fun isValid(t:String?):Boolean{
+        return if (t== null || t.length < 3) {
+            markerTextError.value="Too short!"
+            return false
+        } else {
+            return true
+        }
+
+    }
+
 }

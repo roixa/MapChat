@@ -36,8 +36,10 @@ class ChatFragment : BaseListFragment<ChatViewModel, FragmentChatBinding, ItemMe
             viewModel.onPostMessageClicked()
         }
         ItemClickSupport.addTo(binding.rv).setOnChildClickListener(R.id.iv_to_map_arrow, { recyclerView, i, view ->
-            mapViewModel.focusLocation.value = viewModel.items[i].location
-            rootViewModel.navigation.value = NavigationState.MAP
+            if(i>-1){
+                mapViewModel.focusLocation.value = viewModel.items[i].location
+                rootViewModel.navigation.value = NavigationState.MAP
+            }
             return@setOnChildClickListener false
         })
     }

@@ -83,6 +83,13 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (progressDialog != null && progressDialog.isShowing) {
+            progressDialog.cancel()
+        }
+    }
+
     @CallSuper
     protected open fun <T : BaseLifecycleViewModel> bindViewModel(clazz: Class<T>): T {
         val viewModel = ViewModelProviders.of(activity as FragmentActivity).get(clazz)
@@ -114,6 +121,33 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
         observe(activity as FragmentActivity, Observer { T -> func.invoke(T) })
     }
 
+    protected fun <T> LiveData<T>.subNoHistory(func: (T?) -> Unit) {
+        var isUsed = false
+        observe(activity as FragmentActivity, Observer { T ->
+            if (!isUsed) {
+                func.invoke(T)
+                isUsed = true
+            }
+        })
+    }
+
+
+    protected fun <T> Observable<T>.subNoHistory(func: (T?) -> Unit) {
+        viewModel.toLiveDataFun(this).subNoHistory(func)
+    }
+
+    protected fun <T> Single<T>.subNoHistory(func: (T?) -> Unit) {
+        viewModel.toLiveDataFun(this.toObservable()).subNoHistory(func)
+    }
+
+    protected fun Completable.subNoHistory(func: (Boolean?) -> Unit) {
+        viewModel.toLiveDataFun(this).subNoHistory(func)
+    }
+
+    protected fun <T> Flowable<T>.subNoHistory(func: (T?) -> Unit) {
+        viewModel.toLiveDataFun(this.toObservable()).subNoHistory(func)
+    }
+
     protected fun <T> Observable<T>.sub(func: (T?) -> Unit) {
         viewModel.toLiveDataFun(this).sub(func)
     }
@@ -129,6 +163,7 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
     protected fun <T> Flowable<T>.sub(func: (T?) -> Unit) {
         viewModel.toLiveDataFun(this.toObservable()).sub(func)
     }
+
 
     fun <T> MutableLiveData<T>.setValueNoHistory(t: T) {
         value = (t)

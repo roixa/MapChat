@@ -59,7 +59,9 @@ class FirebaseRepository : IFirebaseRepository {
                 if (group != null) {
                     group.users!!.add(user)
                     snap.child("group").ref.setValue(group)
-                    e.onSuccess(group.parse())
+                    var ret= group.parse()
+                    ret.client=user.parse()
+                    e.onSuccess(ret)
                 } else {
                     e.onError(Throwable("invintation failed"))
                 }

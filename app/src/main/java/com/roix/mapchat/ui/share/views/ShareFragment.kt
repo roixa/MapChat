@@ -2,7 +2,6 @@ package com.roix.mapchat.ui.share.views
 
 import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import com.roix.mapchat.R
 import com.roix.mapchat.data.repositories.icons.models.IconItem
 import com.roix.mapchat.databinding.FragmentShareBinding
@@ -46,8 +45,7 @@ class ShareFragment : BaseDatabindingFragment<ShareViewModel, FragmentShareBindi
         rootViewModel.toolbarAction.sub {
             when(it){
                 NavigationAction.ON_CLICKED_PROCEED_SHARE->
-                    viewModel.shareClickEvent().sub { s ->
-                        Log.d("boux"," shareClickEvent " +s)
+                    viewModel.shareClickEvent().subNoHistory { s ->
                         if(s!=null){
                             sendShareIntent(s)
                         }

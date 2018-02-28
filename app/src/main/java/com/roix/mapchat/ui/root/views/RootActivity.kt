@@ -54,10 +54,7 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                         Log.d("boux", "add toolbar item  ")
                         //TODO dont show toolbar item
                         clearToolbarItems()
-                        addToolbarItem(R.drawable.ic_share_white, View.OnClickListener {
-                            viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_SHARE)
-                        })
-                    }
+                        }
                 }
 
                 NavigationState.MAP -> {
