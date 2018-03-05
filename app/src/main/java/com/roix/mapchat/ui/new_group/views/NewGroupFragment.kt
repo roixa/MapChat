@@ -9,6 +9,7 @@ import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
 import com.roix.mapchat.ui.new_group.viewmodels.NewGroupViewModel
 import com.roix.mapchat.ui.root.models.NavigationAction
+import com.roix.mapchat.ui.root.models.ToolbarState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.utils.ui.ItemClickSupport
 
@@ -27,6 +28,7 @@ class NewGroupFragment : BaseDatabindingFragment<NewGroupViewModel, FragmentNewG
         super.setupUi()
         retainInstance = true
         rootViewModel = bindViewModel(RootViewModel::class.java)
+        rootViewModel.toolbarState.value=ToolbarState.NEW_GROUP
         rootViewModel.toolbarAction.sub { action ->
             if (action == NavigationAction.ON_CLICKED_ADD_GROUP) {
                 viewModel.createGroup().subNoHistory {

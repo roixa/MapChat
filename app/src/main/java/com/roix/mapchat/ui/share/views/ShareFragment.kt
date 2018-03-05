@@ -9,6 +9,7 @@ import com.roix.mapchat.databinding.IconItemBinding
 import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
 import com.roix.mapchat.ui.root.models.NavigationAction
+import com.roix.mapchat.ui.root.models.ToolbarState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.ui.share.viewmodels.ShareViewModel
 import com.roix.mapchat.utils.ui.ItemClickSupport
@@ -28,6 +29,7 @@ class ShareFragment : BaseDatabindingFragment<ShareViewModel, FragmentShareBindi
     override fun setupUi() {
         super.setupUi()
         rootViewModel = bindViewModel(RootViewModel::class.java)
+        rootViewModel.toolbarState.value = ToolbarState.SHARE
     }
 
     override fun setupBinding() {
@@ -41,12 +43,12 @@ class ShareFragment : BaseDatabindingFragment<ShareViewModel, FragmentShareBindi
             binding.ivIcon.setImageResource(viewModel.choosenIcon.value!!.resId)
         }
 
-        viewModel.receiveCurrentGroup( rootViewModel.activeGroup.value!!)
+        viewModel.receiveCurrentGroup(rootViewModel.activeGroup.value!!)
         rootViewModel.toolbarAction.sub {
-            when(it){
-                NavigationAction.ON_CLICKED_PROCEED_SHARE->
+            when (it) {
+                NavigationAction.ON_CLICKED_PROCEED_SHARE ->
                     viewModel.shareClickEvent().subNoHistory { s ->
-                        if(s!=null){
+                        if (s != null) {
                             sendShareIntent(s)
                         }
                     }
@@ -54,7 +56,7 @@ class ShareFragment : BaseDatabindingFragment<ShareViewModel, FragmentShareBindi
         }
     }
 
-    private fun sendShareIntent(link:String){
+    private fun sendShareIntent(link: String) {
         val sendIntent = Intent()
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.putExtra(Intent.EXTRA_TEXT, link)

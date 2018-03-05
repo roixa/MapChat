@@ -1,13 +1,15 @@
 package com.roix.mapchat.ui.group.views
 
 import android.support.design.widget.TabLayout
+import android.util.Log
 import com.roix.mapchat.R
 import com.roix.mapchat.databinding.FragmentGroupBinding
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
 import com.roix.mapchat.ui.group.adapters.GroupPagerAdapter
 import com.roix.mapchat.ui.group.viewmodels.GroupViewModel
-import com.roix.mapchat.ui.root.models.NavigationState
+import com.roix.mapchat.ui.root.models.ToolbarState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
+import ru.terrakok.cicerone.Navigator
 
 
 /**
@@ -24,17 +26,7 @@ class GroupFragment : BaseDatabindingFragment<GroupViewModel, FragmentGroupBindi
     override fun setupBinding() {
         super.setupBinding()
         rootViewModel = bindViewModel(RootViewModel::class.java)
-        rootViewModel.navigation.sub {
-            when(it){
-                NavigationState.CHAT->{
-                    binding.viewPager.currentItem=0
-                }
-                NavigationState.MAP ->{
-                    binding.viewPager.currentItem=1
-                }
-
-            }
-        }
+        rootViewModel.toolbarState.value=ToolbarState.GROUP
         retainInstance = true
         initViewPagerAndTabs()
     }
@@ -43,28 +35,66 @@ class GroupFragment : BaseDatabindingFragment<GroupViewModel, FragmentGroupBindi
         val pagerAdapter = GroupPagerAdapter(childFragmentManager, activity)
         binding.viewPager.adapter = pagerAdapter
         binding.tabLayout.setupWithViewPager(binding.viewPager)
-        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
-                if(tab.position==0){
-                    rootViewModel.navigation.value=NavigationState.CHAT
-                }else if(tab.position==1){
-                    rootViewModel.navigation.value=NavigationState.MAP
-                }
+                viewModel.onTabSelected(tab.position)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-                if(tab.position==0){
-                    rootViewModel.navigation.value=NavigationState.CHAT
-                }else if(tab.position==1){
-                    rootViewModel.navigation.value=NavigationState.MAP
-                }
+                viewModel.onTabSelected(tab.position)
             }
-
         })
+        viewModel.isMapSwitch.sub {
+            var page = 0
+            if (it == true) page = 1
+            binding.viewPager.currentItem = page
+        }
+
     }
+
+
+    fun setPage(page: Int) {
+        viewModel.isMapSwitch.value = page == 1
+    }
+
+    override fun goBack(): Boolean {
+        Log.d("boux","goback in fragment")
+        if (viewModel.isMapSwitch.value == true) {
+            setPage(0)
+            return true
+        }
+        return false
+    }
+
+    override fun getNavigator(): Navigator? = null
+    /*
+    object : Navigator {
+override fun applyCommands(commands: Array<out Command>?) {
+    val command = commands?.last()
+    if (command is Back || (command is Forward && command.screenKey == Screen.CHAT)) {
+        binding.viewPager.currentItem = 0
+    } else if (command is Forward && command.screenKey == Screen.MAP) {
+        binding.viewPager.currentItem = 1
+    }
+    Log.d("boux", "command in groupfragment " + command.toString())
+    /**
+     *
+     *             when (screenKey) {
+    Screen.CHAT ->{
+    binding.viewPager.currentItem = 0
+    }
+    Screen.MAP -> {
+    binding.viewPager.currentItem = 1
+    }
+     */
+}
+
+
+}
+*/
 
 }
 

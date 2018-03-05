@@ -8,7 +8,9 @@ import com.roix.mapchat.FactoryRegistry
 import com.roix.mapchat.MemberInjectorRegistry
 import com.roix.mapchat.toothpick.common.ApplicationModule
 import com.roix.mapchat.toothpick.common.ApplicationScope
+import com.roix.mapchat.toothpick.common.CiceroneModule
 import com.squareup.leakcanary.LeakCanary
+import ru.terrakok.cicerone.Cicerone
 import toothpick.Toothpick
 import toothpick.Toothpick.setConfiguration
 import toothpick.configuration.Configuration.forDevelopment
@@ -44,7 +46,8 @@ class CommonApplication : Application() {
         val appScope = Toothpick.openScope(this)
         appScope.installModules(
                 SmoothieApplicationModule(this),
-                ApplicationModule(this)
+                ApplicationModule(this),
+                CiceroneModule(Cicerone.create())
         )
         appScope.bindScopeAnnotation(ApplicationScope::class.java)
         try {

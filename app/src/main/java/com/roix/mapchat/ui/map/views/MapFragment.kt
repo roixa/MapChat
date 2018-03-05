@@ -2,7 +2,9 @@ package com.roix.mapchat.ui.map.views
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Point
 import android.support.v7.widget.LinearLayoutManager
@@ -43,6 +45,9 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     var touchMarker: Marker? = null
     var map: GoogleMap? = null
 
+    //TODO strange bug after cicerone
+    private lateinit var mActivity:Activity
+
     override fun getLayoutId(): Int = R.layout.fragment_map
 
     override fun setupUi() {
@@ -55,18 +60,12 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         viewModel.touchMarkerPos.sub {
             handleTouchMarker(it)
         }
-        viewModel.markers.sub {
-            map?.clear()
-            Log.d("boux","viewModel.markers.sub "+it.toString())
-            if (it != null){
-                showMarkers(it.first,viewModel.usersMarkerIcons)
-                showMarkers(it.second,viewModel.markerIcons)
-            }
-        }
         viewModel.focusLocation.sub {
             if (it != null) moveMapToLocation(it, {})
         }
+
     }
+
 
     override fun setupBinding() {
         super.setupBinding()
@@ -92,12 +91,12 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     }
 
     private fun onClickedMarkerFabAndAnimationEnd() {
-        val dialogBinding = DialogCreateMarkerBinding.inflate(LayoutInflater.from(activity),
+        val dialogBinding = DialogCreateMarkerBinding.inflate(LayoutInflater.from(mActivity),
                 null,
                 false)
         dialogBinding.viewmodel = viewModel
         dialogBinding.rv.apply {
-            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = BaseObservableAdapter<IconItem, IconItemBinding>(viewModel.markerIcons, R
                     .layout.icon_item)
         }
@@ -106,7 +105,7 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
             //TODO very strange bug
             dialogBinding.ivIcon.setImageResource(viewModel.choosenIcon.value!!.resId)
         }
-        AlertDialog.Builder(activity).setView(dialogBinding.root).setTitle(R.string
+        AlertDialog.Builder(mActivity).setView(dialogBinding.root).setTitle(R.string
                 .create_marker_dialog_title).setPositiveButton(R.string.text_dialog_ok,
                 { d, i ->
                     viewModel.onClickedCreateMarkerAndAnimatedToMap()
@@ -114,11 +113,16 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
 
     }
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        mActivity=context as Activity
+    }
+
     private fun showMarkers(markers: List<MarkerItem>,icons:List<IconItem>) {
         Log.d("boux","showMarkers "+markers.size)
         for (marker in markers) {
             val iconRes = (icons.find { it.pos == marker.iconPos }?:icons[0]).resId
-            val descriptor = GeneralUtils.vectorToBitmap(activity, iconRes, Color.BLACK)
+            val descriptor = GeneralUtils.vectorToBitmap(mActivity, iconRes, Color.BLACK)
             val mapMarker = map?.addMarker(MarkerOptions()
                     .position(marker.latLng)
                     .title(marker.name)
@@ -168,6 +172,15 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 LatLng(-31.90, 115.86), 4f))
+        viewModel.markers.sub {
+            map?.clear()
+            Log.d("boux","viewModel.markers.sub "+it.toString())
+            if (it != null){
+                showMarkers(it.first,viewModel.usersMarkerIcons)
+                showMarkers(it.second,viewModel.markerIcons)
+            }
+        }
+
 
     }
 
@@ -213,7 +226,7 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         if (isFabShowing) {
             isFabShowing = false
             val point = Point()
-            activity.getWindow().getWindowManager().getDefaultDisplay().getSize(point)
+            mActivity?.window?.windowManager?.defaultDisplay?.getSize(point)
             val translation = binding.fab.y - point.y
             binding.fab.animate().translationYBy(-translation).start()
         }

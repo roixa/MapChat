@@ -5,6 +5,9 @@ import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.MutableLiveData
 import com.roix.mapchat.ui.common.loading.LoadingLiveData
 import io.reactivex.*
+import ru.terrakok.cicerone.NavigatorHolder
+import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
 /**
  * Created by roix template
@@ -16,11 +19,14 @@ abstract class BaseLifecycleViewModel : BaseViewModel() {
     val errorLiveData: MutableLiveData<Throwable> = MutableLiveData()
     val showMessageDialogLiveData: MutableLiveData<String> = MutableLiveData()
 
+    @Inject lateinit var navigatorHolder: NavigatorHolder
+    @Inject lateinit var router: Router
+
     override fun <T> Observable<T>.withDefaultLoadingHandle(): Observable<T> {
         return withLoadingHandle(loadingLiveData)
     }
 
-    fun  Completable.withDefaultLoadingHandle(): Completable {
+    fun Completable.withDefaultLoadingHandle(): Completable {
         return withLoadingHandle(loadingLiveData)
     }
 
@@ -59,7 +65,7 @@ abstract class BaseLifecycleViewModel : BaseViewModel() {
         value = (null)
     }
 
-    fun Completable.sub(function: () -> Unit){
+    fun Completable.sub(function: () -> Unit) {
         subscription.add(
                 withDefaultLoadingHandle().
                         withDefaultShedulers().

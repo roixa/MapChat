@@ -2,7 +2,6 @@ package com.roix.mapchat.ui.common.fragments
 
 import android.annotation.SuppressLint
 import android.app.Fragment
-import android.app.ProgressDialog
 import android.arch.lifecycle.*
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
@@ -15,13 +14,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.databinding.library.baseAdapters.BR
-import com.roix.mapchat.R
 import com.roix.mapchat.application.CommonApplication
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
+import com.squareup.leakcanary.LeakCanary
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
+import ru.terrakok.cicerone.Navigator
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -34,8 +34,8 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
 
     protected lateinit var binding: DataBinding
 
-    //TODO: using global progressDialog design pattern is depricated
-    private lateinit var progressDialog: ProgressDialog
+
+    protected open fun getNavigator(): Navigator? = null
 
     @IdRes
     abstract fun getLayoutId(): Int
@@ -61,12 +61,8 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
         refresh()
     }
 
+
     protected open fun setupUi() {
-        progressDialog = ProgressDialog(activity)
-        progressDialog.run {
-            setMessage(getString(R.string.text_dialog_progress))
-            setCancelable(false)
-        }
     }
 
     @CallSuper
@@ -83,11 +79,30 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
 
     }
 
+    open fun goBack():Boolean{//return used in fragment
+        return false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val navigator = getNavigator()
+        if (navigator != null) {
+            viewModel.navigatorHolder.setNavigator(navigator)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val navigator = getNavigator()
+        if (navigator != null) {
+            viewModel.navigatorHolder.removeNavigator()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        if (progressDialog != null && progressDialog.isShowing) {
-            progressDialog.cancel()
-        }
+        //TODO maybe use di
+        LeakCanary.refWatcher(activity).buildAndInstall().watch(this)
     }
 
     @CallSuper
@@ -102,11 +117,7 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
 
 
     protected open fun handleProgress(isProgress: Boolean) {
-        if (isProgress) {
-            progressDialog.show()
-        } else {
-            progressDialog.hide()
-        }
+
     }
 
     protected open fun showMessageDialog(message: String) {

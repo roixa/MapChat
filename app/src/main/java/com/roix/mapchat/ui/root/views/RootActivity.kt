@@ -1,5 +1,10 @@
 package com.roix.mapchat.ui.root.views
 
+import android.annotation.SuppressLint
+import android.app.Fragment
+import android.app.FragmentTransaction
+import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
@@ -14,9 +19,13 @@ import com.roix.mapchat.ui.groups.views.GroupsFragment
 import com.roix.mapchat.ui.invitiation.views.InvitiationFragment
 import com.roix.mapchat.ui.new_group.views.NewGroupFragment
 import com.roix.mapchat.ui.root.models.NavigationAction
-import com.roix.mapchat.ui.root.models.NavigationState
+import com.roix.mapchat.ui.root.models.Screen
+import com.roix.mapchat.ui.root.models.ToolbarState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.ui.share.views.ShareFragment
+import ru.terrakok.cicerone.Navigator
+import ru.terrakok.cicerone.android.AppNavigator
+import ru.terrakok.cicerone.commands.Command
 
 
 /**
@@ -35,31 +44,28 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
     override fun setupUi() {
         super.setupUi()
         listenDynamicLinks()
-        viewModel.navigation.sub { state ->
-            when (state) {
-                NavigationState.SHARE -> {
-                    setFragment(ShareFragment::class.java)
-                    viewModel.toolbarTitle.value = getString(R.string.title_toolbar_share)
+        viewModel.toolbarState.value = ToolbarState.ROOT
+
+        viewModel.toolbarAction.sub {
+            when (it) {
+                NavigationAction.ON_CLICKED_SHARE -> viewModel.gotoShareScreen()
+            }
+        }
+        viewModel.toolbarState.sub {
+            when (it) {
+                ToolbarState.ROOT -> {
+                    setToolbarWithTitle(getString(R.string.app_name))
+                }
+                ToolbarState.NEW_GROUP -> {
+                    setToolbarWithTitle(getString(R.string.toolbar_title_new_group))
                     clearToolbarItems()
-                    addToolbarItem(R.drawable.ic_share_white, View.OnClickListener {
-                        viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_PROCEED_SHARE)
+                    addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
+                        viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_ADD_GROUP)
                     })
 
                 }
-
-                NavigationState.CHAT -> {
-                    setFragment(GroupFragment::class.java)
-                    viewModel.toolbarTitle.value = viewModel.activeGroup.value?.name
-                    if (viewModel.activeGroup.value?.status == GroupItem.Status.OWNER) {
-                        Log.d("boux", "add toolbar item  ")
-                        //TODO dont show toolbar item
-                        clearToolbarItems()
-                        }
-                }
-
-                NavigationState.MAP -> {
-                    setFragment(GroupFragment::class.java)
-                    viewModel.toolbarTitle.value = viewModel.activeGroup.value?.name
+                ToolbarState.GROUP -> {
+                    setToolbarWithTitle(viewModel.activeGroup.value?.name ?: "")
                     if (viewModel.activeGroup.value?.status == GroupItem.Status.OWNER) {
                         Log.d("boux", "add toolbar item  ")
                         //TODO dont show toolbar item
@@ -69,39 +75,23 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                         })
                     }
                 }
-
-
-                NavigationState.INVITATION -> {
-                    setFragment(InvitiationFragment::class.java)
-                    viewModel.toolbarTitle.value = getString(R.string.toolbar_title_invintation)
+                ToolbarState.SHARE -> {
+                    setToolbarWithTitle(getString(R.string.title_toolbar_share))
+                    clearToolbarItems()
+                    addToolbarItem(R.drawable.ic_share_white, View.OnClickListener {
+                        viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_PROCEED_SHARE)
+                    })
+                }
+                ToolbarState.ENTER_GROUP -> {
+                    setToolbarWithTitle(getString(R.string.toolbar_title_invintation))
                     clearToolbarItems()
                     addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
                         viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_INVITE)
                     })
 
                 }
-                NavigationState.NEW_GROUP -> {
-                    setFragment(NewGroupFragment::class.java)
-                    viewModel.toolbarTitle.value = getString(R.string.toolbar_title_new_group)
-                    clearToolbarItems()
-                    addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
-                        viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_ADD_GROUP)
-                    })
-                }
-                NavigationState.GROUP_LIST -> {
-                    viewModel.toolbarTitle.value = getString(R.string.app_name)
-                    setFragment(GroupsFragment::class.java)
-                }
-                NavigationState.FINISHED -> supportFinishAfterTransition()
+
             }
-        }
-        viewModel.toolbarAction.sub {
-            when (it) {
-                NavigationAction.ON_CLICKED_SHARE -> viewModel.gotoShareScreen()
-            }
-        }
-        viewModel.toolbarTitle.sub { s ->
-            setToolbarWithTitle(s)
         }
     }
 
@@ -110,8 +100,35 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
         setupToolbar(type.build())
     }
 
+    override fun getNavigator(): Navigator? = object : AppNavigator(this, R.id.container) {
+
+        override fun createActivityIntent(context: Context?, screenKey: String?, data: Any?): Intent? {
+            return null
+        }
+
+        @SuppressLint("ResourceType")
+        override fun setupFragmentTransactionAnimation(command: Command?, currentFragment: Fragment?, nextFragment: Fragment?, fragmentTransaction: FragmentTransaction?) {
+            fragmentTransaction?.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left);
+        }
+
+        override fun createFragment(screenKey: String, data: Any?): Fragment? {
+            Log.d("boux", "navigation screen " + screenKey)
+            when (screenKey) {
+                Screen.SHARE -> return ShareFragment()
+                Screen.GROUP -> return GroupFragment()
+                Screen.INVITATION -> return InvitiationFragment()
+                Screen.NEW_GROUP -> return NewGroupFragment()
+                Screen.GROUP_LIST -> return GroupsFragment()
+            }
+            return null
+        }
+    }
+
+
     override fun goBack() {
-        viewModel.goBack()
+        if (getCurrentFragment()?.goBack() != true) {
+            viewModel.goBack()
+        }
     }
 
     private fun listenDynamicLinks() {

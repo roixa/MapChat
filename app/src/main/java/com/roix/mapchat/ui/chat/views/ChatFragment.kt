@@ -8,8 +8,8 @@ import com.roix.mapchat.databinding.FragmentChatBinding
 import com.roix.mapchat.databinding.ItemMessageBinding
 import com.roix.mapchat.ui.chat.viewmodels.ChatViewModel
 import com.roix.mapchat.ui.common.fragments.BaseListFragment
+import com.roix.mapchat.ui.group.viewmodels.GroupViewModel
 import com.roix.mapchat.ui.map.viewmodels.MapViewModel
-import com.roix.mapchat.ui.root.models.NavigationState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.utils.ui.ItemClickSupport
 
@@ -22,11 +22,14 @@ class ChatFragment : BaseListFragment<ChatViewModel, FragmentChatBinding, ItemMe
 
     lateinit var rootViewModel: RootViewModel
     lateinit var mapViewModel: MapViewModel
+    lateinit var groupViewModel:GroupViewModel
 
     override fun setupBinding() {
         super.setupBinding()
         rootViewModel = bindViewModel(RootViewModel::class.java)
         mapViewModel = bindViewModel(MapViewModel::class.java)
+        groupViewModel = bindViewModel(GroupViewModel::class.java)
+
         rootViewModel.activeGroup.sub { groupItem ->
             if (groupItem?.client != null) {
                 viewModel.onReceiveData(groupItem.ownerUUid, groupItem.client!!.name)
@@ -38,7 +41,8 @@ class ChatFragment : BaseListFragment<ChatViewModel, FragmentChatBinding, ItemMe
         ItemClickSupport.addTo(binding.rv).setOnChildClickListener(R.id.iv_to_map_arrow, { recyclerView, i, view ->
             if(i>-1){
                 mapViewModel.focusLocation.value = viewModel.items[i].location
-                rootViewModel.navigation.value = NavigationState.MAP
+                //TODO refactor this
+                groupViewModel.isMapSwitch.value=true
             }
             return@setOnChildClickListener false
         })

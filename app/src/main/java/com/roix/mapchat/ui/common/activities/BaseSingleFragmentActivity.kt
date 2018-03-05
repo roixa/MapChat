@@ -1,12 +1,7 @@
 package com.roix.mapchat.ui.common.activities
 
-import android.annotation.SuppressLint
-import android.app.FragmentTransaction
 import android.databinding.ViewDataBinding
 import android.support.annotation.IdRes
-import android.transition.Transition
-import android.transition.TransitionSet
-import android.util.Log
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
 
@@ -19,36 +14,6 @@ import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
 abstract class BaseSingleFragmentActivity<ViewModel : BaseLifecycleViewModel, DataBinding : ViewDataBinding> : BaseToolbarActivity<ViewModel, DataBinding>() {
 
     @IdRes protected abstract fun getFragmentContainerId(): Int
-
-    @SuppressLint("ResourceType")
-    protected fun <T : BaseDatabindingFragment<*, *>> setFragment(newFragmentClazz: Class<T>) {
-        fragmentManager.executePendingTransactions()
-
-        val currentFragment = getCurrentFragment()
-        val reusedFragment = fragmentManager.findFragmentByTag(
-                newFragmentClazz
-                        .name)
-        val fragment: BaseDatabindingFragment<*, *>
-
-        if (null != reusedFragment && currentFragment === reusedFragment) {
-            return
-        }
-
-        val tr = fragmentManager.beginTransaction()
-        tr.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        if (null != currentFragment) {
-            tr.detach(currentFragment)
-        }
-
-        if (null == reusedFragment) {
-            fragment = newFragmentClazz.newInstance()
-            tr.add(getFragmentContainerId(), fragment, fragment.javaClass
-                    .name)
-        } else {
-            tr.attach(reusedFragment)
-        }
-        tr.commit()
-    }
 
     protected fun getCurrentFragment(): BaseDatabindingFragment<*, *>? {
         val ret = fragmentManager.findFragmentById(getFragmentContainerId()) ?: return null
@@ -69,15 +34,6 @@ abstract class BaseSingleFragmentActivity<ViewModel : BaseLifecycleViewModel, Da
         }
     }
 
-    override fun goBack() {
-        var count = fragmentManager.backStackEntryCount
-        Log.d("boux","goBack" +count)
-        if (count == 0) {
-            super.goBack()
-        } else {
-            popBackStack()
-        }
-    }
 
     override fun onBackPressed() {
         goBack()
