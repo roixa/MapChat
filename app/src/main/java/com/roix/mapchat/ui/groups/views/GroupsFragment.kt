@@ -9,6 +9,7 @@ import com.roix.mapchat.databinding.FragmentGroupsBinding
 import com.roix.mapchat.databinding.ItemGroupBinding
 import com.roix.mapchat.ui.common.fragments.BaseListFragment
 import com.roix.mapchat.ui.groups.viewmodels.GroupsViewModel
+import com.roix.mapchat.ui.root.models.ToolbarState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.utils.ui.ItemClickSupport
 
@@ -34,6 +35,7 @@ class GroupsFragment : BaseListFragment<GroupsViewModel, FragmentGroupsBinding, 
         super.setupUi()
         retainInstance=true
         rootViewModel = bindViewModel(RootViewModel::class.java)
+        rootViewModel.toolbarState.value = ToolbarState.ROOT
     }
 
     override fun setupBinding() {

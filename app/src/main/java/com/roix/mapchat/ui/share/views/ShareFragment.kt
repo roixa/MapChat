@@ -61,7 +61,7 @@ class ShareFragment : BaseDatabindingFragment<ShareViewModel, FragmentShareBindi
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.putExtra(Intent.EXTRA_TEXT, link)
         sendIntent.type = "text/plain"
-        startActivity(sendIntent)
+        mActivity.startActivity(sendIntent)
 
     }
 }

@@ -2,9 +2,7 @@ package com.roix.mapchat.ui.map.views
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.Point
 import android.support.v7.widget.LinearLayoutManager
@@ -45,8 +43,6 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     var touchMarker: Marker? = null
     var map: GoogleMap? = null
 
-    //TODO strange bug after cicerone
-    private lateinit var mActivity:Activity
 
     override fun getLayoutId(): Int = R.layout.fragment_map
 
@@ -111,11 +107,6 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
                     viewModel.onClickedCreateMarkerAndAnimatedToMap()
                 }).show()
 
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        mActivity=context as Activity
     }
 
     private fun showMarkers(markers: List<MarkerItem>,icons:List<IconItem>) {

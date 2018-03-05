@@ -9,7 +9,6 @@ import com.roix.mapchat.ui.group.adapters.GroupPagerAdapter
 import com.roix.mapchat.ui.group.viewmodels.GroupViewModel
 import com.roix.mapchat.ui.root.models.ToolbarState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
-import ru.terrakok.cicerone.Navigator
 
 
 /**
@@ -26,7 +25,7 @@ class GroupFragment : BaseDatabindingFragment<GroupViewModel, FragmentGroupBindi
     override fun setupBinding() {
         super.setupBinding()
         rootViewModel = bindViewModel(RootViewModel::class.java)
-        rootViewModel.toolbarState.value=ToolbarState.GROUP
+        rootViewModel.toolbarState.value = ToolbarState.GROUP
         retainInstance = true
         initViewPagerAndTabs()
     }
@@ -61,40 +60,12 @@ class GroupFragment : BaseDatabindingFragment<GroupViewModel, FragmentGroupBindi
     }
 
     override fun goBack(): Boolean {
-        Log.d("boux","goback in fragment")
+        Log.d("boux", "goback in fragment")
         if (viewModel.isMapSwitch.value == true) {
             setPage(0)
             return true
         }
         return false
     }
-
-    override fun getNavigator(): Navigator? = null
-    /*
-    object : Navigator {
-override fun applyCommands(commands: Array<out Command>?) {
-    val command = commands?.last()
-    if (command is Back || (command is Forward && command.screenKey == Screen.CHAT)) {
-        binding.viewPager.currentItem = 0
-    } else if (command is Forward && command.screenKey == Screen.MAP) {
-        binding.viewPager.currentItem = 1
-    }
-    Log.d("boux", "command in groupfragment " + command.toString())
-    /**
-     *
-     *             when (screenKey) {
-    Screen.CHAT ->{
-    binding.viewPager.currentItem = 0
-    }
-    Screen.MAP -> {
-    binding.viewPager.currentItem = 1
-    }
-     */
-}
-
-
-}
-*/
-
 }
 

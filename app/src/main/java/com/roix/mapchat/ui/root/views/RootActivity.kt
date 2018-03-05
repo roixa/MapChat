@@ -44,7 +44,6 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
     override fun setupUi() {
         super.setupUi()
         listenDynamicLinks()
-        viewModel.toolbarState.value = ToolbarState.ROOT
 
         viewModel.toolbarAction.sub {
             when (it) {

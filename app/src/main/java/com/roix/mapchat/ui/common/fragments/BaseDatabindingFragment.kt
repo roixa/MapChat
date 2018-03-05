@@ -1,8 +1,11 @@
 package com.roix.mapchat.ui.common.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Fragment
+import android.app.ProgressDialog
 import android.arch.lifecycle.*
+import android.content.Context
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
@@ -14,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.databinding.library.baseAdapters.BR
+import com.roix.mapchat.R
 import com.roix.mapchat.application.CommonApplication
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
 import com.squareup.leakcanary.LeakCanary
@@ -34,6 +38,12 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
 
     protected lateinit var binding: DataBinding
 
+    //TODO: using global progressDialog design pattern is depricated
+    private var progressDialog: ProgressDialog?=null
+
+
+    //TODO strange bug after cicerone
+    protected lateinit var mActivity: Activity
 
     protected open fun getNavigator(): Navigator? = null
 
@@ -56,6 +66,12 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
         return binding.root
     }
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        mActivity=context as Activity
+    }
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         refresh()
@@ -63,13 +79,19 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
 
 
     protected open fun setupUi() {
+        progressDialog = ProgressDialog(mActivity)
+        progressDialog?.run {
+            setMessage(getString(R.string.text_dialog_progress))
+            setCancelable(false)
+        }
+
     }
 
     @CallSuper
     protected open fun setupBinding() {
         with(binding) {
             setVariable(BR.viewmodel, viewModel)
-            setLifecycleOwner(activity as LifecycleOwner)
+            setLifecycleOwner(mActivity as LifecycleOwner)
         }
     }
 
@@ -79,7 +101,7 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
 
     }
 
-    open fun goBack():Boolean{//return used in fragment
+    open fun goBack(): Boolean {//return used in fragment
         return false
     }
 
@@ -101,23 +123,33 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
 
     override fun onDestroy() {
         super.onDestroy()
+        if (progressDialog != null && progressDialog?.isShowing==true) {
+            progressDialog?.cancel()
+        }
+
         //TODO maybe use di
-        LeakCanary.refWatcher(activity).buildAndInstall().watch(this)
+        LeakCanary.refWatcher(mActivity).buildAndInstall().watch(this)
     }
 
     @CallSuper
     protected open fun <T : BaseLifecycleViewModel> bindViewModel(clazz: Class<T>): T {
-        val viewModel = ViewModelProviders.of(activity as FragmentActivity).get(clazz)
+        val viewModel = ViewModelProviders.of(mActivity as FragmentActivity).get(clazz)
         viewModel.loadingLiveData.sub { b -> if (b != null) handleProgress(b) }
         viewModel.showMessageDialogLiveData.sub { s -> if (s != null) this.showMessageDialog(s) }
         viewModel.errorLiveData.sub { t -> if (t != null) handleError(t) }
-        viewModel.onBindView(activity.application as CommonApplication)
+        viewModel.onBindView(mActivity.application as CommonApplication)
         return viewModel
     }
 
 
     protected open fun handleProgress(isProgress: Boolean) {
-
+        if (progressDialog != null) {
+            if (isProgress) {
+                progressDialog?.show()
+            } else {
+                progressDialog?.hide()
+            }
+        }
     }
 
     protected open fun showMessageDialog(message: String) {
@@ -129,12 +161,12 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
     }
 
     protected fun <T> LiveData<T>.sub(func: (T?) -> Unit) {
-        observe(activity as FragmentActivity, Observer { T -> func.invoke(T) })
+        observe(mActivity as FragmentActivity, Observer { T -> func.invoke(T) })
     }
 
     protected fun <T> LiveData<T>.subNoHistory(func: (T?) -> Unit) {
         var isUsed = false
-        observe(activity as FragmentActivity, Observer { T ->
+        observe(mActivity as FragmentActivity, Observer { T ->
             if (!isUsed) {
                 func.invoke(T)
                 isUsed = true
