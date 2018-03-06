@@ -107,7 +107,7 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
 
         @SuppressLint("ResourceType")
         override fun setupFragmentTransactionAnimation(command: Command?, currentFragment: Fragment?, nextFragment: Fragment?, fragmentTransaction: FragmentTransaction?) {
-            fragmentTransaction?.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left);
+            fragmentTransaction?.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_left)
         }
 
         override fun createFragment(screenKey: String, data: Any?): Fragment? {

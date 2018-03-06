@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
 
     <data>
 
@@ -27,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/new_group_name"
+                bind:errorText="@{viewmodel.groupNameError}"
                 android:text="@={viewmodel.groupName}" />
         </android.support.design.widget.TextInputLayout>
 
@@ -42,6 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/new_group_descr"
+                bind:errorText="@{viewmodel.groupDescriptionError}"
                 android:text="@={viewmodel.groupDescription}" />
         </android.support.design.widget.TextInputLayout>
 
@@ -68,6 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/new_user_name"
+                bind:errorText="@{viewmodel.ownerNameError}"
                 android:text="@={viewmodel.ownerName}" />
         </android.support.design.widget.TextInputLayout>
 

@@ -9,6 +9,7 @@ import com.roix.mapchat.data.models.ShareConfig
 import com.roix.mapchat.data.repositories.icons.models.IconItem
 import com.roix.mapchat.toothpick.share.ShareModule
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
+import com.roix.mapchat.utils.binding.isValidTextCommon
 import io.reactivex.Single
 import toothpick.config.Module
 import java.util.*
@@ -24,7 +25,10 @@ class ShareViewModel : BaseLifecycleViewModel() {
 
     val invite = MutableLiveData<Boolean>()
     val determPerson = MutableLiveData<Boolean>()
+
     val name = MutableLiveData<String>()
+    val nameError = MutableLiveData<Boolean>()
+
     val choosenIcon = MutableLiveData<IconItem>()
     val icons: ObservableList<IconItem> = ObservableArrayList<IconItem>()
 
@@ -50,9 +54,16 @@ class ShareViewModel : BaseLifecycleViewModel() {
     }
 
     fun receiveCurrentGroup(groupItem: GroupItem) {
-
         currentGroup = groupItem
     }
 
+    fun isValid(): Boolean {
+        var ret = true
+        isValidTextCommon(name.value).apply {
+            nameError.value = !this
+            ret = this
+        }
+        return ret
+    }
 
 }

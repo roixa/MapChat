@@ -51,6 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title_new_member_name"
+                app:errorText="@{viewmodel.nameError}"
                 android:text="@={viewmodel.name}" />
         </android.support.design.widget.TextInputLayout>
 

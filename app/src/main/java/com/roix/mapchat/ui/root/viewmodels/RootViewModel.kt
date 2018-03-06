@@ -31,7 +31,7 @@ class RootViewModel : BaseLifecycleViewModel() {
 
     override fun onBindFirstView() {
         super.onBindFirstView()
-        router.navigateTo(Screen.GROUP_LIST)
+        router.newRootScreen(Screen.GROUP_LIST)
     }
 
     fun goBack() {
@@ -42,9 +42,13 @@ class RootViewModel : BaseLifecycleViewModel() {
         router.navigateTo(Screen.NEW_GROUP)
     }
 
-    fun gotoChatScreen(groupItem: GroupItem) {
+    fun gotoChatScreen(groupItem: GroupItem, isFromReplasedScreen: Boolean) {
         activeGroup.value = groupItem
-        router.navigateTo(Screen.GROUP)
+        if(isFromReplasedScreen){
+            router.replaceScreen(Screen.GROUP)
+        }else{
+            router.navigateTo(Screen.GROUP)
+        }
     }
 
     fun gotoInviteScreen(group: GroupItem) {
@@ -60,7 +64,7 @@ class RootViewModel : BaseLifecycleViewModel() {
         if (group.status == GroupItem.Status.NOT_MEMBER) {
             gotoInviteScreen(group)
         } else if (group.status != GroupItem.Status.INFO) {
-            gotoChatScreen(group)
+            gotoChatScreen(group,false)
         }
     }
 
@@ -69,7 +73,7 @@ class RootViewModel : BaseLifecycleViewModel() {
             Log.d("data_boux", "proceedReceiveDeepLink sub isdetermpersoninfo" + pair.first)
 
             if (pair.first) {
-                gotoChatScreen(pair.second)
+                gotoChatScreen(pair.second,false)
             } else {
                 gotoInviteScreen(pair.second)
             }

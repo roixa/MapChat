@@ -3,5 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="text_dialog_progress">Загружается, пожалуйста подождите…</string>
     <string name="text_dialog_ok">OK</string>
+    <string name="error_edit_text_common">Too short!</string>
 
 </resources>

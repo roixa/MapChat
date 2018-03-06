@@ -27,8 +27,12 @@ import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.utils.ui.DateTimeUtils
 import com.roix.mapchat.utils.ui.GeneralUtils
 import com.roix.mapchat.utils.ui.ItemClickSupport
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -42,13 +46,14 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     //TODO fix this variables init when reuse map
     var touchMarker: Marker? = null
     var map: GoogleMap? = null
+    val subscription = CompositeDisposable()
 
 
     override fun getLayoutId(): Int = R.layout.fragment_map
 
     override fun setupUi() {
         super.setupUi()
-        Log.d("boux","setupUi")
+        Log.d("boux", "setupUi")
         val rootViewModel = bindViewModel(RootViewModel::class.java)
         rootViewModel.activeGroup.sub {
             if (it != null) viewModel.onGetCurrentGroup(it)
@@ -66,7 +71,7 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
     override fun setupBinding() {
         super.setupBinding()
         binding.fab.setOnClickListener {
-            if(touchMarker?.position!=null){
+            if (touchMarker?.position != null) {
                 moveMapToLocation(touchMarker?.position!!, {
                     onClickedMarkerFabAndAnimationEnd()
                 })
@@ -109,18 +114,23 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
 
     }
 
-    private fun showMarkers(markers: List<MarkerItem>,icons:List<IconItem>) {
-        Log.d("boux","showMarkers "+markers.size)
-        for (marker in markers) {
-            val iconRes = (icons.find { it.pos == marker.iconPos }?:icons[0]).resId
-            val descriptor = GeneralUtils.vectorToBitmap(mActivity, iconRes, Color.BLACK)
-            val mapMarker = map?.addMarker(MarkerOptions()
-                    .position(marker.latLng)
-                    .title(marker.name)
-                    .icon(descriptor)
-                    .snippet(DateTimeUtils.convertToDateFormat(marker.time)))
-
-        }
+    private fun showMarkers(markers: List<MarkerItem>, icons: List<IconItem>) {
+        Log.d("boux", "showMarkers " + markers.size)
+        subscription.add(
+                Single.just(markers)
+                        .flattenAsObservable { it }
+                        .delay(50, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { marker ->
+                            val iconRes = (icons.find { it.pos == marker.iconPos } ?: icons[0]).resId
+                            val descriptor = GeneralUtils.vectorToBitmap(mActivity, iconRes, Color.BLACK)
+                            val mapMarker = map?.addMarker(MarkerOptions()
+                                    .position(marker.latLng)
+                                    .title(marker.name)
+                                    .icon(descriptor)
+                                    .snippet(DateTimeUtils.convertToDateFormat(marker.time)))
+                        }
+        )
 
     }
 
@@ -153,7 +163,7 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        Log.d("boux","onMapReady")
+        Log.d("boux", "onMapReady")
 
         MapFragmentPermissionsDispatcher.setupLocationWithCheck(this, map)
         googleMap.setOnMarkerClickListener(this)
@@ -165,10 +175,10 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
                 LatLng(-31.90, 115.86), 4f))
         viewModel.markers.sub {
             map?.clear()
-            Log.d("boux","viewModel.markers.sub "+it.toString())
-            if (it != null){
-                showMarkers(it.first,viewModel.usersMarkerIcons)
-                showMarkers(it.second,viewModel.markerIcons)
+            Log.d("boux", "viewModel.markers.sub " + it.toString())
+            if (it != null) {
+                showMarkers(it.first, viewModel.usersMarkerIcons)
+                showMarkers(it.second, viewModel.markerIcons)
             }
         }
 
@@ -186,8 +196,9 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         map?.clear()
         map = null
         touchMarker = null
-        viewModel.touchMarkerPos.value=null
+        viewModel.touchMarkerPos.value = null
         binding.mapView.onDestroy()
+        subscription.dispose()
         super.onDestroyView()
     }
 
