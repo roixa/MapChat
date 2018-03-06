@@ -39,7 +39,8 @@
         </activity>
         <activity android:name=".ui.test_architecture.views.TestArchitectureActivity" />
 
-        <service android:name=".data.repositories.location.LocationService" />
+        <service android:name=".data.repositories.location.LocationService"
+            android:exported="false"/>
 
         <activity android:name=".ui.splash.views.SplashActivity"
             android:theme="@style/SplashTheme"
