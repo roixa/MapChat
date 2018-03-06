@@ -1,12 +1,15 @@
 package com.roix.mapchat.ui.chat.views
 
+import android.databinding.ViewDataBinding
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.roix.mapchat.R
 import com.roix.mapchat.data.models.MessageItem
 import com.roix.mapchat.databinding.FragmentChatBinding
 import com.roix.mapchat.databinding.ItemMessageBinding
 import com.roix.mapchat.ui.chat.viewmodels.ChatViewModel
+import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.fragments.BaseListFragment
 import com.roix.mapchat.ui.group.viewmodels.GroupViewModel
 import com.roix.mapchat.ui.map.viewmodels.MapViewModel
@@ -46,6 +49,16 @@ class ChatFragment : BaseListFragment<ChatViewModel, FragmentChatBinding, ItemMe
             }
             return@setOnChildClickListener false
         })
+    }
+
+    override fun <ItemDataBinding : ViewDataBinding> setupRecyclerView(recyclerView: RecyclerView, baseAdapter: BaseObservableAdapter<MessageItem, ItemDataBinding>, swipeToRefreshLayout: SwipeRefreshLayout?) {
+        super.setupRecyclerView(recyclerView, baseAdapter, swipeToRefreshLayout)
+        val manager=LinearLayoutManager(activity)
+        manager.apply {
+            reverseLayout=false
+            stackFromEnd=true
+        }
+        recyclerView.layoutManager= manager
     }
 
     override fun getRecyclerView(): RecyclerView = binding.rv

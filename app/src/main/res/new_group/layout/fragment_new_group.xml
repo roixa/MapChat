@@ -14,7 +14,8 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/milli">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/et_groupname"
@@ -27,8 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/new_group_name"
-                bind:errorText="@{viewmodel.groupNameError}"
-                android:text="@={viewmodel.groupName}" />
+                android:text="@={viewmodel.groupName}"
+                bind:errorText="@{viewmodel.groupNameError}" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -43,8 +44,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/new_group_descr"
-                bind:errorText="@{viewmodel.groupDescriptionError}"
-                android:text="@={viewmodel.groupDescription}" />
+                android:text="@={viewmodel.groupDescription}"
+                bind:errorText="@{viewmodel.groupDescriptionError}" />
         </android.support.design.widget.TextInputLayout>
 
         <Switch
@@ -55,7 +56,9 @@
             android:layout_weight="1"
             android:checked="@={viewmodel.isPrivateGroup}"
             android:text="@string/swich_is_private_group"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_descr" />
+
         <android.support.design.widget.TextInputLayout
             android:id="@+id/et_owner_name"
 
@@ -70,8 +73,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/new_user_name"
-                bind:errorText="@{viewmodel.ownerNameError}"
-                android:text="@={viewmodel.ownerName}" />
+                android:text="@={viewmodel.ownerName}"
+                bind:errorText="@{viewmodel.ownerNameError}" />
         </android.support.design.widget.TextInputLayout>
 
         <TextView
@@ -83,6 +86,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_owner_name" />
+
         <ImageView
             android:id="@+id/iv_icon"
             android:layout_width="@dimen/small_view_height"
@@ -92,6 +96,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_owner_icon"
             app:srcVector="@{viewmodel.choosenIcon.resId}" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="0dp"

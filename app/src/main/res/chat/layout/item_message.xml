@@ -27,35 +27,38 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/tv_author"
+                    android:id="@+id/tv_message"
 
-                    style="@style/Text.Bold.Medium"
+                    style="@style/Text.Regular.Medium"
+
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/nano"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="@{item.author}"
+                    android:text="@{item.message}"
+
                     app:layout_constraintEnd_toStartOf="@+id/tv_time"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_message"
-                    tools:text='"author"' />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_user"
+                    tools:text='"message"' />
 
                 <TextView
-                    android:id="@+id/tv_message"
+                    android:id="@+id/tv_user"
 
-                    style="@style/Text.Regular.Medium"
+                    style="@style/Text.Bold.Medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/nano"
                     android:layout_marginEnd="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="@{item.message}"
+                    android:text="@{item.author}"
+
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text='"message"' />
+                    tools:text='"user"' />x
 
                 <ImageView
                     android:visibility="@{item.location!=null}"
@@ -64,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_message"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_user"
                     app:srcCompat="@drawable/ic_send_black" />
                 <TextView
                     android:id="@+id/tv_time"
@@ -75,7 +78,7 @@
                     android:layout_marginTop="8dp"
                     android:text='@{DateTimeUtils.INSTANCE.convertToDateFormat(item.unixTimeStamp)}'
                     app:layout_constraintEnd_toStartOf="@+id/iv_to_map_arrow"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_message"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_user"
                     tools:text="time" />
 
 

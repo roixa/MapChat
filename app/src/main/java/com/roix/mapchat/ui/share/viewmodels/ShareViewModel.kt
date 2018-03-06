@@ -35,8 +35,14 @@ class ShareViewModel : BaseLifecycleViewModel() {
     @Inject
     protected lateinit var interactor: IShareInteractor
 
-    fun shareClickEvent(): Single<String> = interactor.postShareConfig(ShareConfig(UUID.randomUUID().mostSignificantBits, currentGroup!!.ownerUUid,
-            invite.value == true, determPerson.value == true, name.value, choosenIcon.value?.pos))
+    fun shareClickEvent(): Single<String> {
+        return if (isValid()) {
+            interactor.postShareConfig(ShareConfig(UUID.randomUUID().mostSignificantBits, currentGroup!!.ownerUUid,
+                    invite.value == true, determPerson.value == true, name.value, choosenIcon.value?.pos))
+        } else {
+            Single.create { it.onError(Throwable("is not valid data")) }
+        }
+    }
 
     override fun getModule(): Module = ShareModule()
 
@@ -61,7 +67,7 @@ class ShareViewModel : BaseLifecycleViewModel() {
         var ret = true
         isValidTextCommon(name.value).apply {
             nameError.value = !this
-            ret = this
+            ret = this || determPerson.value ?: false
         }
         return ret
     }

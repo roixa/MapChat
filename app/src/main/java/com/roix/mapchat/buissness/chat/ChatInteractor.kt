@@ -1,11 +1,11 @@
 package com.roix.mapchat.buissness.chat
 
-import com.roix.mapchat.data.repositories.firebase.FirebaseRepository
-import javax.inject.Inject
 import com.roix.mapchat.data.models.MessageItem
+import com.roix.mapchat.data.repositories.firebase.FirebaseRepository
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import javax.inject.Inject
 
 /**
  * Created by roix template
@@ -22,6 +22,8 @@ class ChatInteractor : IChatInteractor {
     override fun postMessage(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long): Completable= firebaseRepository
             .postMessagesInGroupChat(ownerUuid,message,author,unixTimeStamp,null)
 
-    override fun getMessages(ownerUuid: Long): Flowable<List<MessageItem>> = firebaseRepository.listenMessagesInGroupChat(ownerUuid)
+    override fun getMessages(ownerUuid: Long): Flowable<List<MessageItem>> = firebaseRepository.listenMessagesInGroupChat(ownerUuid).map {
+        it.asReversed()
+    }
 
 }
