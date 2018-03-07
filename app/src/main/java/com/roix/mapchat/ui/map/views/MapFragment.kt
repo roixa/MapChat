@@ -23,6 +23,7 @@ import com.roix.mapchat.databinding.IconItemBinding
 import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.fragments.BaseDatabindingFragment
 import com.roix.mapchat.ui.map.viewmodels.MapViewModel
+import com.roix.mapchat.ui.root.models.ToolbarState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
 import com.roix.mapchat.utils.ui.DateTimeUtils
 import com.roix.mapchat.utils.ui.GeneralUtils
@@ -57,6 +58,11 @@ class MapFragment : BaseDatabindingFragment<MapViewModel, FragmentMapBinding>(),
         val rootViewModel = bindViewModel(RootViewModel::class.java)
         rootViewModel.activeGroup.sub {
             if (it != null) viewModel.onGetCurrentGroup(it)
+        }
+        rootViewModel.toolbarState.sub {
+            if (it != ToolbarState.GROUP) {
+                viewModel.stopUpdatingPosition()
+            }
         }
         viewModel.touchMarkerPos.sub {
             handleTouchMarker(it)

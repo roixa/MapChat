@@ -2,12 +2,6 @@ package com.roix.mapchat.data.repositories.location
 
 import android.content.Context
 import android.content.Intent
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.os.Bundle
-import android.util.Log
-import com.google.android.gms.maps.model.LatLng
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.repositories.firebase.FirebaseRepository
 import com.roix.mapchat.toothpick.common.ApplicationScope
@@ -20,7 +14,7 @@ import javax.inject.Inject
  * https://github.com/roixa/RoixArchitectureTemplates
  */
 @ApplicationScope
-class LocationRepository : ILocationRepository, LocationListener {
+class LocationRepository : ILocationRepository {
 
     @Inject lateinit var firebaseRepository: FirebaseRepository
 
@@ -31,65 +25,27 @@ class LocationRepository : ILocationRepository, LocationListener {
 
     @Inject constructor(context:Context){
         this.context=context
-        context.startService(Intent(context,LocationService::class.java))
+        sendCommandToService(null)
     }
-
-
-    companion object {
-        private val LOCATION_INTERVAL = 10000
-        private val LOCATION_DISTANCE = 10f
-    }
-
 
     override fun requestLocationsToGroup(groupItem: GroupItem) {
-        requestLocationUpdate(context)
+        sendCommandToService(groupItem)
         currentGroup = groupItem
     }
 
-    private fun requestLocationUpdate(context: Context) {
-        try {
-            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    LOCATION_INTERVAL.toLong(),
-                    LOCATION_DISTANCE,
-                    this
-            )
-            locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER,
-                    LOCATION_INTERVAL.toLong(),
-                    LOCATION_DISTANCE,
-                    this
-            )
+    override fun stopRequestingLocations() {
+        sendCommandToService(null)
+    }
 
-        } catch (ex: java.lang.SecurityException) {
-            Log.i(LocationService.TAG, "fail to request location update, ignore", ex)
-        } catch (ex: IllegalArgumentException) {
-            Log.d(LocationService.TAG, "gps provider does not exist " + ex.message)
+    private fun sendCommandToService(groupItem: GroupItem?){
+        val intent=Intent(context,LocationService::class.java)
+        if(groupItem!=null){
+            intent.putExtra("group",groupItem)
         }
-
+        context.startService(intent)
     }
 
-    override fun onLocationChanged(location: Location) {
-        Log.e(LocationService.TAG, "onLocationChanged: " + location)
-        firebaseRepository.updateUserPosition(currentGroup, LatLng(location.latitude,location.longitude))
-                .compose(rxScheduler.getIoToMainTransformerCompletable())
-                .subscribe {
 
-                }
-    }
-
-    override fun onProviderDisabled(provider: String) {
-        Log.e(LocationService.TAG, "onProviderDisabled: " + provider)
-    }
-
-    override fun onProviderEnabled(provider: String) {
-        Log.e(LocationService.TAG, "onProviderEnabled: " + provider)
-    }
-
-    override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
-        Log.e(LocationService.TAG, "onStatusChanged: " + provider)
-    }
 
 
 }

@@ -119,4 +119,7 @@ class MapViewModel : BaseLifecycleViewModel() {
 
     }
 
+    fun stopUpdatingPosition(){
+        interactor.stopUpdationPosition()
+    }
 }

@@ -49,4 +49,5 @@ class MapInteractor : IMapInteractor {
 
     override fun updateClientPosition(groupItem: GroupItem) = locationRepository.requestLocationsToGroup(groupItem)
 
+    override fun stopUpdationPosition() = locationRepository.stopRequestingLocations()
 }
