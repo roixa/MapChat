@@ -9,7 +9,6 @@ import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseUser
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 import io.reactivex.Single
 
 /**
@@ -20,7 +19,7 @@ interface IFirebaseRepository {
     fun createGroup(group: FirebaseGroup): Single<GroupItem>
     fun enterToGroup(user: FirebaseUser, groupUuid: Long): Single<GroupItem>
     fun getGroups(lastUUid: Long): Single<List<GroupItem>>
-    fun getGroupByOwnerUuid(uid: Long, status: GroupItem.Status): Maybe<GroupItem>
+    fun getGroupByOwnerUuid(uid: Long, status: GroupItem.Status): Single<GroupItem>
     fun postMessagesInGroupChat(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
                                 , location: LatLng?): Completable
 

@@ -63,7 +63,7 @@ class LocationService : Service(), LocationListener {
     private fun buildPendingNotification(groupItem: GroupItem): Notification {
         val mBuilder = NotificationCompat.Builder(this, "6")
                 .setSmallIcon(R.drawable.ic_directions_walk_black)
-                .setContentTitle(applicationContext.getString(R.string.app_name))
+                .setContentTitle(applicationContext.getString(R.string.title_notification))
                 .setContentText(groupItem.name)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 

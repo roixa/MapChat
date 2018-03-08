@@ -4,5 +4,6 @@
     <string name="text_dialog_progress">Загружается, пожалуйста подождите…</string>
     <string name="text_dialog_ok">OK</string>
     <string name="error_edit_text_common">Too short!</string>
+    <string name="title_notification">Sharing location in group</string>
 
 </resources>

@@ -12,7 +12,10 @@ import com.roix.mapchat.data.models.MessageItem
 import com.roix.mapchat.data.models.ShareConfig
 import com.roix.mapchat.data.repositories.firebase.models.*
 import com.roix.mapchat.toothpick.common.ApplicationScope
-import io.reactivex.*
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
 import javax.inject.Inject
 
 
@@ -98,7 +101,7 @@ class FirebaseRepository : IFirebaseRepository {
 
     }
 
-    override fun getGroupByOwnerUuid(uid: Long, status: GroupItem.Status): Maybe<GroupItem> = Maybe.create { e ->
+    override fun getGroupByOwnerUuid(uid: Long, status: GroupItem.Status): Single<GroupItem> = Single.create { e ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
             override fun onDataChange(snap: DataSnapshot) {
@@ -108,7 +111,7 @@ class FirebaseRepository : IFirebaseRepository {
                     ret.status = status
                     e.onSuccess(ret)
                 } else {
-                    e.onComplete()
+                    e.onSuccess(GroupItem.createEmptyItem())
                 }
             }
         }

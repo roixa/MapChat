@@ -28,7 +28,7 @@ class RootInteractor : IRootInteractor {
             .flatMap { t ->
                 Log.d("data_boux","proceedReceiveDeepLink getShareConfig "+t.toString())
 
-                firebaseRepository.getGroupByOwnerUuid(t.groupUuid, GroupItem.Status.NOT_MEMBER).toSingle()
+                firebaseRepository.getGroupByOwnerUuid(t.groupUuid, GroupItem.Status.NOT_MEMBER)
                         .flatMap { group ->
                             Log.d("data_boux","proceedReceiveDeepLink getGroupByOwnerUuid "+group.toString())
 
