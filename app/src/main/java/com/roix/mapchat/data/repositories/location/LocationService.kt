@@ -1,6 +1,7 @@
 package com.roix.mapchat.data.repositories.location
 
 import android.app.Notification
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,11 +11,13 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
+import android.support.v4.app.TaskStackBuilder
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.roix.mapchat.R
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.repositories.firebase.FirebaseRepository
+import com.roix.mapchat.ui.root.views.RootActivity
 import com.roix.mapchat.utils.rx.general.RxSchedulersAbs
 import toothpick.Toothpick
 import javax.inject.Inject
@@ -44,9 +47,10 @@ class LocationService : Service(), LocationListener {
                 startForeground(6,buildPendingNotification(this as GroupItem))
             }else{
                 stopForeground(true)
+                stopSelf()
             }
         }
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onCreate() {
@@ -66,6 +70,17 @@ class LocationService : Service(), LocationListener {
                 .setContentTitle(applicationContext.getString(R.string.title_notification))
                 .setContentText(groupItem.name)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        val resultIntent = Intent(this, RootActivity::class.java)
+        resultIntent.putExtra("group",groupItem )
+
+        val stackBuilder = TaskStackBuilder.create(this)
+        stackBuilder.addParentStack(RootActivity::class.java)
+        stackBuilder.addNextIntent(resultIntent)
+        val resultPendingIntent = stackBuilder.getPendingIntent(
+                0,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        mBuilder.setContentIntent(resultPendingIntent)
 
         return mBuilder.build()
     }

@@ -79,4 +79,8 @@ class RootViewModel : BaseLifecycleViewModel() {
             }
         }
     }
+
+    fun onOpenFromGroupNotification(group: GroupItem){
+        gotoChatScreen(group,false)
+    }
 }

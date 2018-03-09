@@ -41,6 +41,17 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
 
     override fun getLayoutId(): Int = R.layout.activity_root
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent?.hasExtra("group") == true) {
+            val group = intent.getSerializableExtra("group") as GroupItem
+            if (group != null) {
+                viewModel.onOpenFromGroupNotification(group)
+            }
+
+        }
+    }
+
     override fun setupUi() {
         super.setupUi()
         listenDynamicLinks()
