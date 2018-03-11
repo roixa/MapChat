@@ -1,10 +1,7 @@
 package com.roix.mapchat.data.repositories.firebase
 
 import com.google.android.gms.maps.model.LatLng
-import com.roix.mapchat.data.models.GroupItem
-import com.roix.mapchat.data.models.MarkerItem
-import com.roix.mapchat.data.models.MessageItem
-import com.roix.mapchat.data.models.ShareConfig
+import com.roix.mapchat.data.models.*
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseGroup
 import com.roix.mapchat.data.repositories.firebase.models.FirebaseUser
 import io.reactivex.Completable
@@ -19,7 +16,9 @@ interface IFirebaseRepository {
     fun createGroup(group: FirebaseGroup): Single<GroupItem>
     fun enterToGroup(user: FirebaseUser, groupUuid: Long): Single<GroupItem>
     fun getGroups(lastUUid: Long): Single<List<GroupItem>>
+    fun getGroupBySavedUser(user: User, status: GroupItem.Status): Single<GroupItem>
     fun getGroupByOwnerUuid(uid: Long, status: GroupItem.Status): Single<GroupItem>
+
     fun postMessagesInGroupChat(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
                                 , location: LatLng?): Completable
 

@@ -19,7 +19,7 @@ data class GroupItem(val name: String, val descr: String, val users: List<User>,
 
     fun isEmpty() = ownerUUid==-1L
     companion object {
-        fun createInfoItem(): GroupItem = GroupItem("hello", "", emptyList(), 0, "")
+        fun createInfoItem(): GroupItem = GroupItem("hello", "Enter to a group or create new", emptyList(), 0, "")
         fun createEmptyItem(): GroupItem = GroupItem("", "", emptyList(), -1, "")
     }
 

@@ -8,9 +8,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.annotation.CallSuper
-import android.support.annotation.IdRes
 import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
 import com.roix.mapchat.R
 import com.roix.mapchat.application.CommonApplication
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
@@ -26,7 +24,6 @@ import java.lang.reflect.ParameterizedType
  */
 abstract class BaseLifecycleActivity<ViewModel : BaseLifecycleViewModel> : AppCompatActivity() {
 
-    @IdRes
     abstract fun getLayoutId(): Int
 
     protected lateinit var viewModel: ViewModel

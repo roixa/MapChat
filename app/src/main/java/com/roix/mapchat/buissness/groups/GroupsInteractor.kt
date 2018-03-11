@@ -25,6 +25,8 @@ class GroupsInteractor : IGroupsInteractor {
     val collisionableGroups: HashMap<Long, GroupItem> = hashMapOf()
 
     override fun loadItems(page: Long): Single<List<GroupItem>> {
+        Log.d("data_boux", "loadItems page " + page.toString())
+
         if (page == -2L) {
             return getOwnGroups()
         } else {
@@ -41,14 +43,7 @@ class GroupsInteractor : IGroupsInteractor {
                     users.add(it)
                     Log.d("data_boux", "getOwnGroups saved user" + it.toString())
                     val status = if (it.uid.equals(it.groupOwnerUuid)) GroupItem.Status.OWNER else GroupItem.Status.MEMBER
-                    firebaseRepository.getGroupByOwnerUuid(it.uid, status).toObservable()
-                }
-                .map {
-                    if (!it.isEmpty()) {
-                        it.client = users.find { user -> user.uid == it.ownerUUid }
-                    }
-                    Log.d("data_boux", "getOwnGroups group " + it.toString())
-                    return@map it
+                    firebaseRepository.getGroupBySavedUser(it, status).toObservable()
                 }
                 .filter {
                     val has = collisionableGroups.containsKey(it.ownerUUid)
@@ -78,6 +73,7 @@ class GroupsInteractor : IGroupsInteractor {
                     firebaseRepository.getGroups(page)
                 }
                 .flattenAsObservable { it }
+                /*
                 .map {
                     it.client = users
                             .zip(it.users)
@@ -87,6 +83,7 @@ class GroupsInteractor : IGroupsInteractor {
                             .last().first
                     return@map it
                 }
+                */
                 .filter {
                     val has = collisionableGroups.containsKey(it.ownerUUid)
                     if (!has) {
@@ -95,6 +92,11 @@ class GroupsInteractor : IGroupsInteractor {
                     return@filter !has
                 }
                 .toList()
+                .map {
+                    Log.d("data_boux", "getAllGroups groupInteractor result" + it.toString())
+
+                    return@map it
+                }
     }
 
 }

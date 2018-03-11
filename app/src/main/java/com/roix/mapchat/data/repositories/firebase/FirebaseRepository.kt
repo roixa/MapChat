@@ -6,10 +6,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.roix.mapchat.data.models.GroupItem
-import com.roix.mapchat.data.models.MarkerItem
-import com.roix.mapchat.data.models.MessageItem
-import com.roix.mapchat.data.models.ShareConfig
+import com.roix.mapchat.data.models.*
 import com.roix.mapchat.data.repositories.firebase.models.*
 import com.roix.mapchat.toothpick.common.ApplicationScope
 import io.reactivex.BackpressureStrategy
@@ -101,6 +98,28 @@ class FirebaseRepository : IFirebaseRepository {
 
     }
 
+    override fun getGroupBySavedUser(user: User, status: GroupItem.Status): Single<GroupItem> = Single.create { e ->
+        Log.d("data_boux", "in firebase repository getGroupByOwnerUuid uid: Long " + user.toString())
+
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError?) {}
+            override fun onDataChange(snap: DataSnapshot) {
+                val group = snap.child("group").getValue(FirebaseGroup::class.java)
+                Log.d("data_boux", "in firebase repository getGroupByOwnerUuid " + group.toString())
+
+                if (group != null && group.isValid()) {
+                    val ret = group.parse()
+                    ret.status = status
+                    ret.client=user
+                    e.onSuccess(ret)
+                } else {
+                    e.onSuccess(GroupItem.createEmptyItem())
+                }
+            }
+        }
+        database.getReference(PREFIX_GROUP+user.groupOwnerUuid.toString()).addListenerForSingleValueEvent(listener)
+    }
+
     override fun getGroupByOwnerUuid(uid: Long, status: GroupItem.Status): Single<GroupItem> = Single.create { e ->
         val listener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {}
@@ -117,6 +136,8 @@ class FirebaseRepository : IFirebaseRepository {
         }
         database.getReference(PREFIX_GROUP+uid.toString()).addListenerForSingleValueEvent(listener)
     }
+
+
 
     override fun postMessagesInGroupChat(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long
                                          , location: LatLng?): Completable = Completable.create { e ->

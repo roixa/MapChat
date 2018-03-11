@@ -10,7 +10,6 @@ import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
 import android.support.annotation.CallSuper
-import android.support.annotation.IdRes
 import android.support.v4.app.FragmentActivity
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,7 +19,6 @@ import com.android.databinding.library.baseAdapters.BR
 import com.roix.mapchat.R
 import com.roix.mapchat.application.CommonApplication
 import com.roix.mapchat.ui.common.viewmodels.BaseLifecycleViewModel
-import com.squareup.leakcanary.LeakCanary
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -47,7 +45,6 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
 
     protected open fun getNavigator(): Navigator? = null
 
-    @IdRes
     abstract fun getLayoutId(): Int
 
     @SuppressLint("ResourceType")
@@ -128,7 +125,9 @@ abstract class BaseDatabindingFragment<ViewModel : BaseLifecycleViewModel, DataB
         }
 
         //TODO maybe use di
-        LeakCanary.refWatcher(mActivity).buildAndInstall().watch(this)
+        if(BuildConfig.DEBUG){
+            //LeakCanary.refWatcher(mActivity).buildAndInstall().watch(this)
+        }
     }
 
     @CallSuper
