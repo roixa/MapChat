@@ -12,12 +12,10 @@ import com.roix.mapchat.toothpick.common.CiceroneModule
 import com.squareup.leakcanary.LeakCanary
 import ru.terrakok.cicerone.Cicerone
 import toothpick.Toothpick
-import toothpick.Toothpick.setConfiguration
 import toothpick.configuration.Configuration.forDevelopment
 import toothpick.configuration.Configuration.forProduction
 import toothpick.registries.FactoryRegistryLocator
 import toothpick.registries.MemberInjectorRegistryLocator
-import toothpick.smoothie.module.SmoothieApplicationModule
 
 /**
  * Created by roix template
@@ -39,13 +37,12 @@ class CommonApplication : Application() {
         FirebaseApp.initializeApp(this)
 
         val configuration = if (BuildConfig.DEBUG) forDevelopment() else forProduction()
-        setConfiguration(configuration.disableReflection())
+        Toothpick.setConfiguration(configuration.disableReflection())
         FactoryRegistryLocator.setRootRegistry(FactoryRegistry())
         MemberInjectorRegistryLocator.setRootRegistry(MemberInjectorRegistry())
 
         val appScope = Toothpick.openScope(this)
         appScope.installModules(
-                SmoothieApplicationModule(this),
                 ApplicationModule(this),
                 CiceroneModule(Cicerone.create())
         )

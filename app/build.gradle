@@ -10,7 +10,7 @@ android {
         applicationId "com.roix.mapchat"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 1
+        versionCode 3
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary true
@@ -71,7 +71,7 @@ dependencies {
     final def supportVersion = '26.1.0'
     final def architectureComponentsVersion = '1.0.0'
     final def permissionDispatcherVersion = '2.4.0'
-    final def toothpickVersion = '1.0.8'
+    final def toothpickVersion = '1.1.3'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -119,7 +119,6 @@ dependencies {
     kapt "com.github.hotchemi:permissionsdispatcher-processor:$permissionDispatcherVersion"
 
     implementation "com.github.stephanenicolas.toothpick:toothpick-runtime:$toothpickVersion"
-    implementation "com.github.stephanenicolas.toothpick:smoothie:$toothpickVersion"
     kapt "com.github.stephanenicolas.toothpick:toothpick-compiler:$toothpickVersion"
 
     testImplementation 'junit:junit:4.12'
@@ -132,7 +131,6 @@ kapt {
 
     arguments {
         arg("toothpick_registry_package_name", "com.roix.mapchat")
-        arg("toothpick_registry_children_package_names", "toothpick.smoothie")
     }
 }
 apply plugin: "kotlin-kapt"
