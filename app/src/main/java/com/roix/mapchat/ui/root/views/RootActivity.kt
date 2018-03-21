@@ -106,8 +106,8 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
     }
 
     private fun setToolbarWithTitle(title: String) {
-        val type = ToolbarType.Builder(this).default().setTitle(title)
-        setupToolbar(type.build())
+        val type = ToolbarType(this,title = title)
+        setupToolbar(type)
     }
 
     override fun getNavigator(): Navigator? = object : AppNavigator(this, R.id.container) {

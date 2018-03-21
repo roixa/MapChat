@@ -1,12 +1,12 @@
 package com.roix.mapchat.ui.chat.viewmodels
 
 import android.arch.lifecycle.MutableLiveData
-import android.util.Log
 import com.roix.mapchat.buissness.common.IBaseListInteractor
 import com.roix.mapchat.buissness.chat.ChatInteractor
 import com.roix.mapchat.toothpick.chat.ChatModule
 import com.roix.mapchat.data.models.MessageItem
 import com.roix.mapchat.ui.common.viewmodels.BaseListViewModel
+import com.roix.mapchat.ui.common.viewmodels.BasePaginationListViewModel
 import javax.inject.Inject
 import toothpick.config.Module
 
@@ -25,8 +25,6 @@ class ChatViewModel : BaseListViewModel<MessageItem>() {
 
     override fun getInteractor(): IBaseListInteractor<MessageItem> = ChatInteractor()
     override fun getModule(): Module = ChatModule()
-    override fun getMaxPage(): Long = 1
-    override fun getMinPage(): Long = 0
 
     fun onReceiveData(ownerUuid: Long, author: String) {
         this.ownerUuid = ownerUuid

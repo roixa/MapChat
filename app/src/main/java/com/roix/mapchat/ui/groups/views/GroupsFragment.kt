@@ -7,7 +7,7 @@ import com.roix.mapchat.R
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.databinding.FragmentGroupsBinding
 import com.roix.mapchat.databinding.ItemGroupBinding
-import com.roix.mapchat.ui.common.fragments.BaseListFragment
+import com.roix.mapchat.ui.common.fragments.BasePaginationListFragment
 import com.roix.mapchat.ui.groups.viewmodels.GroupsViewModel
 import com.roix.mapchat.ui.root.models.ToolbarState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
@@ -18,7 +18,7 @@ import com.roix.mapchat.utils.ui.ItemClickSupport
  * https://github.com/roixa/RoixArchitectureTemplates
  */
 
-class GroupsFragment : BaseListFragment<GroupsViewModel, FragmentGroupsBinding, ItemGroupBinding, GroupItem>() {
+class GroupsFragment : BasePaginationListFragment<GroupsViewModel, FragmentGroupsBinding, ItemGroupBinding, GroupItem>() {
 
 
     private lateinit var rootViewModel: RootViewModel

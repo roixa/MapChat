@@ -10,9 +10,9 @@ import com.roix.mapchat.ui.common.view.SpaceItemDecoration
 import com.roix.mapchat.ui.common.viewmodels.BaseListViewModel
 
 /**
- * Created by roix template
- * https://github.com/roixa/RoixArchitectureTemplates
+ * Created by bouxr on 21.03.2018.
  */
+
 abstract class BaseListActivity<ViewModel : BaseListViewModel<Item>, DataBinding : ViewDataBinding, ItemDataBinding : ViewDataBinding, Item>
     : BaseToolbarActivity<ViewModel, DataBinding>() {
 
@@ -40,26 +40,9 @@ abstract class BaseListActivity<ViewModel : BaseListViewModel<Item>, DataBinding
             layoutManager = manager
             adapter = baseAdapter
             addItemDecoration(SpaceItemDecoration(context))
-            addOnScrollListener(PaginationScrollListener(manager))
             swipeToRefreshLayout?.setOnRefreshListener(SwipeToRefreshListListener())
         }
     }
-
-    private inner class PaginationScrollListener(val layoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            val visibleItemCount = layoutManager.childCount
-            val totalItemCount = layoutManager.itemCount
-            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                    && firstVisibleItemPosition >= 0) {
-                viewModel.onScrolledToEnd()
-
-            }
-
-        }
-    }
-
 
     private inner class SwipeToRefreshListListener : SwipeRefreshLayout.OnRefreshListener {
         override fun onRefresh() {

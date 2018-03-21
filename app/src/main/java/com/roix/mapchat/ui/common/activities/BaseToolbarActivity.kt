@@ -26,11 +26,7 @@ abstract class BaseToolbarActivity<ViewModel : BaseLifecycleViewModel, DataBindi
     @CallSuper
     override fun setupUi() {
         super.setupUi()
-        setupToolbar(configureToolbar(ToolbarType.Builder(this).default()).build())
-    }
-
-    protected open fun configureToolbar(defaultToolbarType: ToolbarType.Builder): ToolbarType.Builder {
-        return defaultToolbarType
+        setupToolbar((ToolbarType(this)))
     }
 
     @CallSuper
@@ -68,7 +64,7 @@ abstract class BaseToolbarActivity<ViewModel : BaseLifecycleViewModel, DataBindi
         }
     }
 
-    fun addToolbarItem(view: View)  {
+    fun addToolbarItem(view: View) {
         val toolbar = getToolbar()
         if (toolbar != null) {
             val itemContainer = toolbar.ll_items as LinearLayout

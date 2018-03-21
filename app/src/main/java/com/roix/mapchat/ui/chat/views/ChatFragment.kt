@@ -11,6 +11,7 @@ import com.roix.mapchat.databinding.ItemMessageBinding
 import com.roix.mapchat.ui.chat.viewmodels.ChatViewModel
 import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.fragments.BaseListFragment
+import com.roix.mapchat.ui.common.fragments.BasePaginationListFragment
 import com.roix.mapchat.ui.group.viewmodels.GroupViewModel
 import com.roix.mapchat.ui.map.viewmodels.MapViewModel
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel

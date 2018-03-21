@@ -14,7 +14,7 @@
             name="viewmodel"
             type="com.roix.mapchat.ui.groups.viewmodels.GroupsViewModel" />
 
-        <import type="com.roix.mapchat.ui.common.viewmodels.BaseListViewModel.StateList"></import>
+        <import type="com.roix.mapchat.ui.common.viewmodels.BasePaginationListViewModel.StateList"></import>
 
     </data>
 

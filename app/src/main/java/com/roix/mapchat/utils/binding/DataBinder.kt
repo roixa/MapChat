@@ -16,7 +16,7 @@ import android.widget.TextView
 import com.roix.mapchat.R
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.data.repositories.icons.models.IconItem
-import com.roix.mapchat.ui.common.viewmodels.BaseListViewModel
+import com.roix.mapchat.ui.common.viewmodels.BasePaginationListViewModel
 
 /**
  * Created by roix template
@@ -47,8 +47,8 @@ fun setImageUrl(imageView: ImageView, url: String) {
 }
 
 @BindingAdapter("bind:refreshing")
-fun setSrcCompatRefreshing(layout: SwipeRefreshLayout, state: BaseListViewModel.StateList) {
-    layout.isRefreshing = state == BaseListViewModel.StateList.REFRESH
+fun setSrcCompatRefreshing(layout: SwipeRefreshLayout, state: BasePaginationListViewModel.StateList) {
+    layout.isRefreshing = state == BasePaginationListViewModel.StateList.REFRESH
 }
 
 

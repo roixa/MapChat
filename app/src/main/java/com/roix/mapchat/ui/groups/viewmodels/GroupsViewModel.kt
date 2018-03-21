@@ -4,7 +4,7 @@ import com.roix.mapchat.buissness.common.IBaseListInteractor
 import com.roix.mapchat.buissness.groups.GroupsInteractor
 import com.roix.mapchat.data.models.GroupItem
 import com.roix.mapchat.toothpick.groups.GroupsModule
-import com.roix.mapchat.ui.common.viewmodels.BaseListViewModel
+import com.roix.mapchat.ui.common.viewmodels.BasePaginationListViewModel
 import toothpick.config.Module
 import javax.inject.Inject
 
@@ -12,7 +12,7 @@ import javax.inject.Inject
  * Created by roix template
  * https://github.com/roixa/RoixArchitectureTemplates
  */
-class GroupsViewModel : BaseListViewModel<GroupItem>() {
+class GroupsViewModel : BasePaginationListViewModel<GroupItem>() {
 
     @Inject lateinit var interactor: GroupsInteractor
 

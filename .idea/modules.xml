@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MapChat.iml" filepath="$PROJECT_DIR$/MapChat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/MapChat.iml" filepath="$PROJECT_DIR$/.idea/MapChat.iml" />
+      <module fileurl="file://C:\Users\bouxr\StudioProjects\MapChat\MapChat.iml" filepath="C:\Users\bouxr\StudioProjects\MapChat\MapChat.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

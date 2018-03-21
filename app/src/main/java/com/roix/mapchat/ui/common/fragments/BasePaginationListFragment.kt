@@ -7,12 +7,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.roix.mapchat.ui.common.adapters.BaseObservableAdapter
 import com.roix.mapchat.ui.common.view.SpaceItemDecoration
-import com.roix.mapchat.ui.common.viewmodels.BaseListViewModel
+import com.roix.mapchat.ui.common.viewmodels.BasePaginationListViewModel
 
 /**
- * Created by bouxr on 21.03.2018.
+ * Created by roix template
+ * https://github.com/roixa/RoixArchitectureTemplates
  */
-abstract class BaseListFragment <ViewModel : BaseListViewModel<Item>, DataBinding : ViewDataBinding, ItemDataBinding : ViewDataBinding, Item>
+abstract class BasePaginationListFragment<ViewModel : BasePaginationListViewModel<Item>, DataBinding : ViewDataBinding, ItemDataBinding : ViewDataBinding, Item>
     : BaseDatabindingFragment<ViewModel, DataBinding>() {
 
     @LayoutRes
@@ -38,9 +39,25 @@ abstract class BaseListFragment <ViewModel : BaseListViewModel<Item>, DataBindin
             layoutManager = manager
             adapter = baseAdapter
             addItemDecoration(SpaceItemDecoration(context))
+            addOnScrollListener(PaginationScrollListener(manager))
             swipeToRefreshLayout?.setOnRefreshListener(SwipeToRefreshListListener())
         }
     }
+
+    private inner class PaginationScrollListener(val layoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val visibleItemCount = layoutManager.childCount
+            val totalItemCount = layoutManager.itemCount
+            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                    && firstVisibleItemPosition >= 0) {
+                viewModel.onScrolledToEnd()
+            }
+
+        }
+    }
+
 
     private inner class SwipeToRefreshListListener : SwipeRefreshLayout.OnRefreshListener {
         override fun onRefresh() {
