@@ -16,12 +16,15 @@ import com.roix.mapchat.ui.common.activities.BaseSingleFragmentActivity
 import com.roix.mapchat.ui.common.view.ToolbarType
 import com.roix.mapchat.ui.group.views.GroupFragment
 import com.roix.mapchat.ui.groups.views.GroupsFragment
+import com.roix.mapchat.ui.invitiation.viewmodels.InvitiationViewModel
 import com.roix.mapchat.ui.invitiation.views.InvitiationFragment
+import com.roix.mapchat.ui.new_group.viewmodels.NewGroupViewModel
 import com.roix.mapchat.ui.new_group.views.NewGroupFragment
 import com.roix.mapchat.ui.root.models.NavigationAction
 import com.roix.mapchat.ui.root.models.Screen
 import com.roix.mapchat.ui.root.models.ToolbarState
 import com.roix.mapchat.ui.root.viewmodels.RootViewModel
+import com.roix.mapchat.ui.share.viewmodels.ShareViewModel
 import com.roix.mapchat.ui.share.views.ShareFragment
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.android.AppNavigator
@@ -34,6 +37,10 @@ import ru.terrakok.cicerone.commands.Command
  */
 
 class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBinding>() {
+
+    lateinit var shareViewModel: ShareViewModel
+    lateinit var invitationViewModel: InvitiationViewModel
+    lateinit var newGroupViewModel: NewGroupViewModel
 
     override fun getFragmentContainerId(): Int = R.id.container
 
@@ -56,11 +63,10 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
         super.setupUi()
         listenDynamicLinks()
 
-        viewModel.toolbarAction.sub {
-            when (it) {
-                NavigationAction.ON_CLICKED_SHARE -> viewModel.gotoShareScreen()
-            }
-        }
+        shareViewModel = bindViewModel(ShareViewModel::class.java)
+        invitationViewModel = bindViewModel(InvitiationViewModel::class.java)
+        newGroupViewModel = bindViewModel(NewGroupViewModel::class.java)
+
         viewModel.toolbarState.sub {
             when (it) {
                 ToolbarState.ROOT -> {
@@ -70,7 +76,9 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                     setToolbarWithTitle(getString(R.string.toolbar_title_new_group))
                     clearToolbarItems()
                     addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
-                        viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_ADD_GROUP)
+                        newGroupViewModel.createGroup().sub {
+                            if (it != null) viewModel.gotoChatScreen(it, true)
+                        }
                     })
 
                 }
@@ -81,7 +89,7 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                         //TODO dont show toolbar item
                         clearToolbarItems()
                         addToolbarItem(R.drawable.ic_share_white, View.OnClickListener {
-                            viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_SHARE)
+                            viewModel.gotoShareScreen()
                         })
                     }
                 }
@@ -89,14 +97,18 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                     setToolbarWithTitle(getString(R.string.title_toolbar_share))
                     clearToolbarItems()
                     addToolbarItem(R.drawable.ic_share_white, View.OnClickListener {
-                        viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_PROCEED_SHARE)
+                        shareViewModel.shareClickEvent().subNoHistory { s ->
+                            if (s != null) sendShareIntent(s)
+                        }
                     })
                 }
                 ToolbarState.ENTER_GROUP -> {
                     setToolbarWithTitle(getString(R.string.toolbar_title_invintation))
                     clearToolbarItems()
                     addToolbarItem(R.drawable.ic_send_white, View.OnClickListener {
-                        viewModel.toolbarAction.setValueNoHistory(NavigationAction.ON_CLICKED_INVITE)
+                        invitationViewModel.enterToGroup(viewModel.activeGroup.value!!.ownerUUid).sub {
+                            viewModel.gotoChatScreen(it, true)
+                        }
                     })
 
                 }
@@ -106,7 +118,7 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
     }
 
     private fun setToolbarWithTitle(title: String) {
-        val type = ToolbarType(this,title = title)
+        val type = ToolbarType(this, title = title)
         setupToolbar(type)
     }
 
@@ -157,6 +169,16 @@ class RootActivity : BaseSingleFragmentActivity<RootViewModel, ActivityRootBindi
                 .addOnFailureListener(this) { e -> Log.w("boux", "getDynamicLink:onFailure", e) }
 
     }
+
+    private fun sendShareIntent(link: String) {
+        val sendIntent = Intent()
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.putExtra(Intent.EXTRA_TEXT, link)
+        sendIntent.type = "text/plain"
+        startActivity(sendIntent)
+
+    }
+
 
 }
 

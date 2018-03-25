@@ -42,14 +42,6 @@ class InvitiationFragment : BaseDatabindingFragment<InvitiationViewModel, Fragme
             //TODO very strange bug 2
             binding.ivIcon.setImageResource(viewModel.choosenIcon.value!!.resId)
         }
-
-        rootViewModel.toolbarAction.sub { navigationAction ->
-            if (navigationAction == NavigationAction.ON_CLICKED_INVITE) {
-                viewModel.enterToGroup(rootViewModel.activeGroup.value!!.ownerUUid).subNoHistory {
-                    if (it != null) rootViewModel.gotoChatScreen(it,true)
-                }
-            }
-        }
     }
 }
 

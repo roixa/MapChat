@@ -8,6 +8,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.annotation.CallSuper
+import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
 import com.roix.mapchat.R
 import com.roix.mapchat.application.CommonApplication
@@ -39,7 +40,7 @@ abstract class BaseLifecycleActivity<ViewModel : BaseLifecycleViewModel> : AppCo
         setupUi()
     }
 
-    private fun <T : BaseLifecycleViewModel> bindViewModel(clazz: Class<T>): T {
+    protected fun <T : BaseLifecycleViewModel> bindViewModel(clazz: Class<T>): T {
         val viewModel = ViewModelProviders.of(this).get(clazz)
         viewModel.loadingLiveData.sub { b -> handleProgress(b) }
         viewModel.showMessageDialogLiveData.sub { s -> this.showMessageDialog(s) }
@@ -91,6 +92,33 @@ abstract class BaseLifecycleActivity<ViewModel : BaseLifecycleViewModel> : AppCo
 
     protected fun <T> Flowable<T>.sub(func: (T) -> Unit) {
         viewModel.toLiveDataFun(this.toObservable()).sub(func)
+    }
+
+    protected fun <T> LiveData<T>.subNoHistory(func: (T?) -> Unit) {
+        var isUsed = false
+        observe(this@BaseLifecycleActivity, Observer { T ->
+            if (!isUsed) {
+                func.invoke(T)
+                isUsed = true
+            }
+        })
+    }
+
+
+    protected fun <T> Observable<T>.subNoHistory(func: (T?) -> Unit) {
+        viewModel.toLiveDataFun(this).subNoHistory(func)
+    }
+
+    protected fun <T> Single<T>.subNoHistory(func: (T?) -> Unit) {
+        viewModel.toLiveDataFun(this.toObservable()).subNoHistory(func)
+    }
+
+    protected fun Completable.subNoHistory(func: (Boolean?) -> Unit) {
+        viewModel.toLiveDataFun(this).subNoHistory(func)
+    }
+
+    protected fun <T> Flowable<T>.subNoHistory(func: (T?) -> Unit) {
+        viewModel.toLiveDataFun(this.toObservable()).subNoHistory(func)
     }
 
     fun <T> MutableLiveData<T>.setValueNoHistory(t: T) {

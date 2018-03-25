@@ -29,13 +29,6 @@ class NewGroupFragment : BaseDatabindingFragment<NewGroupViewModel, FragmentNewG
         retainInstance = true
         rootViewModel = bindViewModel(RootViewModel::class.java)
         rootViewModel.toolbarState.value=ToolbarState.NEW_GROUP
-        rootViewModel.toolbarAction.sub { action ->
-            if (action == NavigationAction.ON_CLICKED_ADD_GROUP) {
-                viewModel.createGroup().subNoHistory {
-                    if (it != null) rootViewModel.gotoChatScreen(it,true)
-                }
-            }
-        }
     }
 
     override fun setupBinding() {

@@ -17,7 +17,7 @@ class ChatInteractor : IChatInteractor {
 
     @Inject lateinit var firebaseRepository: FirebaseRepository
 
-    override fun loadItems(page: Long): Single<List<MessageItem>> = Single.create { e -> e.onSuccess(emptyList()) }
+    override fun loadItems(page: Long): Single<List<MessageItem>> = Single.never()
 
     override fun postMessage(ownerUuid: Long, message: String, author: String, unixTimeStamp: Long): Completable= firebaseRepository
             .postMessagesInGroupChat(ownerUuid,message,author,unixTimeStamp,null)

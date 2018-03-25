@@ -44,25 +44,7 @@ class ShareFragment : BaseDatabindingFragment<ShareViewModel, FragmentShareBindi
         }
 
         viewModel.receiveCurrentGroup(rootViewModel.activeGroup.value!!)
-        rootViewModel.toolbarAction.sub {
-            when (it) {
-                NavigationAction.ON_CLICKED_PROCEED_SHARE ->
-                    viewModel.shareClickEvent().subNoHistory { s ->
-                        if (s != null) {
-                            sendShareIntent(s)
-                        }
-                    }
-            }
-        }
     }
 
-    private fun sendShareIntent(link: String) {
-        val sendIntent = Intent()
-        sendIntent.action = Intent.ACTION_SEND
-        sendIntent.putExtra(Intent.EXTRA_TEXT, link)
-        sendIntent.type = "text/plain"
-        mActivity.startActivity(sendIntent)
-
-    }
 }
 

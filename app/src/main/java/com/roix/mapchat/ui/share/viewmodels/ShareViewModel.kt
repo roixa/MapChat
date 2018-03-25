@@ -67,7 +67,7 @@ class ShareViewModel : BaseLifecycleViewModel() {
         var ret = true
         isValidTextCommon(name.value).apply {
             nameError.value = !this
-            ret = this || determPerson.value ?: false
+            ret = this || !(determPerson.value ?: false)
         }
         return ret
     }

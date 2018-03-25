@@ -26,7 +26,7 @@ class ChatFragment : BaseListFragment<ChatViewModel, FragmentChatBinding, ItemMe
 
     lateinit var rootViewModel: RootViewModel
     lateinit var mapViewModel: MapViewModel
-    lateinit var groupViewModel:GroupViewModel
+    lateinit var groupViewModel: GroupViewModel
 
     override fun setupBinding() {
         super.setupBinding()
@@ -43,10 +43,10 @@ class ChatFragment : BaseListFragment<ChatViewModel, FragmentChatBinding, ItemMe
             viewModel.onPostMessageClicked()
         }
         ItemClickSupport.addTo(binding.rv).setOnChildClickListener(R.id.iv_to_map_arrow, { recyclerView, i, view ->
-            if(i>-1){
+            if (i > -1) {
                 mapViewModel.focusLocation.value = viewModel.items[i].location
                 //TODO refactor this
-                groupViewModel.isMapSwitch.value=true
+                groupViewModel.isMapSwitch.value = true
             }
             return@setOnChildClickListener false
         })
@@ -54,12 +54,12 @@ class ChatFragment : BaseListFragment<ChatViewModel, FragmentChatBinding, ItemMe
 
     override fun <ItemDataBinding : ViewDataBinding> setupRecyclerView(recyclerView: RecyclerView, baseAdapter: BaseObservableAdapter<MessageItem, ItemDataBinding>, swipeToRefreshLayout: SwipeRefreshLayout?) {
         super.setupRecyclerView(recyclerView, baseAdapter, swipeToRefreshLayout)
-        val manager=LinearLayoutManager(activity)
+        val manager = LinearLayoutManager(activity)
         manager.apply {
-            reverseLayout=false
-            stackFromEnd=true
+            reverseLayout = false
+            stackFromEnd = true
         }
-        recyclerView.layoutManager= manager
+        recyclerView.layoutManager = manager
     }
 
     override fun getRecyclerView(): RecyclerView = binding.rv

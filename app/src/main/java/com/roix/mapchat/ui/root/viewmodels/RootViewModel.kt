@@ -18,8 +18,6 @@ import javax.inject.Inject
  */
 class RootViewModel : BaseLifecycleViewModel() {
 
-    val toolbarAction = MutableLiveData<NavigationAction>()
-
     val activeGroup = MutableLiveData<GroupItem>()
 
     val toolbarState = MutableLiveData<ToolbarState>()

@@ -29,14 +29,14 @@ fun convertBooleanToVisibility(visible: Boolean): Int {
 
 @BindingAdapter("bind:srcVector")
 fun setSrcVector(imageView: ImageView, @DrawableRes res: Int) {
-    Log.d("boux","setSrcVector "+res)
+    Log.d("boux", "setSrcVector " + res)
     imageView.setImageResource(res)
     imageView.refreshDrawableState()
 }
 
 @BindingAdapter("bind:icon")
-fun setIcon(imageView: ImageView, icon:IconItem) {
-    Log.d("boux","setIcon "+icon.resId)
+fun setIcon(imageView: ImageView, icon: IconItem) {
+    Log.d("boux", "setIcon " + icon.resId)
     imageView.setImageResource(icon.resId)
     imageView.refreshDrawableState()
 }
@@ -58,13 +58,13 @@ fun setTint(view: ImageView, @ColorRes colorRes: Int) {
 }
 
 @BindingAdapter("bind:errorText")
-fun handleErrorText(view: TextInputEditText,isErrorCommand: Boolean?) {
-    if(isErrorCommand==true){
+fun handleErrorText(view: TextInputEditText, isErrorCommand: Boolean?) {
+    if (isErrorCommand == true) {
         view.error = view.context.getString(R.string.error_edit_text_common)
-    }else{
+    } else {
         view.setError(null)
     }
-    view.addTextChangedListener(object : TextWatcher{
+    view.addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(p0: Editable?) {
         }
 
@@ -73,9 +73,9 @@ fun handleErrorText(view: TextInputEditText,isErrorCommand: Boolean?) {
         }
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            if(isValidTextCommon(p0)){
+            if (isValidTextCommon(p0)) {
                 view.setError(null)
-            }else{
+            } else {
                 view.error = view.context.getString(R.string.error_edit_text_common)
             }
         }
@@ -83,7 +83,7 @@ fun handleErrorText(view: TextInputEditText,isErrorCommand: Boolean?) {
     })
 }
 
-fun isValidTextCommon(p0: CharSequence?):Boolean = p0!=null&&p0.length>3
+fun isValidTextCommon(p0: CharSequence?): Boolean = p0 != null && p0.length > 3
 
 
 @BindingAdapter("bind:tintColor")
@@ -92,14 +92,14 @@ fun setTintColor(view: ImageView, color: Int) {
 }
 
 @BindingAdapter("bind:statusTextViewState")
-fun setTintColor(view: TextView, item:GroupItem) {
-    if(item.status == GroupItem.Status.OWNER){
+fun setTintColor(view: TextView, item: GroupItem) {
+    if (item.status == GroupItem.Status.OWNER) {
         view.setTextColor(view.resources.getColor(R.color.colorAccent))
         view.setText(R.string.status_owner)
-    }else if(item.status ==GroupItem.Status.MEMBER){
+    } else if (item.status == GroupItem.Status.MEMBER) {
         view.setTextColor(view.resources.getColor(R.color.colorPrimary))
         view.setText(R.string.status_member)
-    }else{
+    } else {
         view.setText(R.string.status_not_member)
     }
 }
